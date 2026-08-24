@@ -5,74 +5,284 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Deletion - DuitJom</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f7f8;
-    color: #333;
-    line-height: 1.7;
-    padding: 20px;
-}
-.container {
-    max-width: 850px;
-    margin: auto;
-    background: #fff;
-    padding: 35px;
-    border-radius: 15px;
-}
-h1, h2 {
-    color: #006b4f;
-}
-h1 {
-    margin-top: 0;
-}
-a {
-    color: #006b4f;
-}
-.back-link {
-    display: inline-block;
-    margin-bottom: 20px;
-    font-weight: 700;
-    text-decoration: none;
-}
-.notice {
-    background: #f0faf6;
-    border-left: 4px solid #006b4f;
-    padding: 14px 16px;
-    border-radius: 8px;
-}
-@media (max-width: 600px) {
-    body { padding: 12px; }
-    .container { padding: 24px 20px; }
-}
+    /* VARIABLES UNTUK TEMA FINTECH GELAP & EKSKLUSIF */
+    :root {
+        --bg-dark: #0a0f16;
+        --bg-gradient: radial-gradient(circle at 10% 10%, #172433 0%, #0a0f16 100%);
+        --primary-color: #00e676; /* Hijau Fintech */
+        --primary-glow: rgba(0, 230, 118, 0.4);
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --glass-bg: rgba(25, 33, 44, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg-dark);
+        background-image: var(--bg-gradient);
+        background-attachment: fixed;
+        color: var(--text-muted);
+        line-height: 1.8;
+        padding: 40px 20px;
+        margin: 0;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    /* KESAN KACA (GLASSMORPHISM) UNTUK SETIAP KOTAK */
+    .glass-box {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 35px;
+        margin-bottom: 30px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        transition: transform 0.4s ease, border-color 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .glass-box:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 230, 118, 0.3);
+    }
+
+    /* SUSUN ATUR PENGEPALA & IKON */
+    .header-group {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 20px;
+    }
+
+    h1, h2 {
+        color: var(--text-main);
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+    }
+
+    h1 { font-size: 2.2rem; text-shadow: 0 0 20px rgba(0, 230, 118, 0.3); }
+    h2 { font-size: 1.5rem; }
+
+    p { margin-top: 0; }
+    strong { color: var(--text-main); }
+
+    a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    a:hover {
+        color: #fff;
+        text-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 30px;
+        font-weight: 600;
+        padding: 10px 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+    }
+    .back-link:hover {
+        background: var(--primary-color);
+        color: #000;
+        box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    /* GAYA SVG - SAIZ BESAR */
+    .svg-icon {
+        width: 72px;
+        height: 72px;
+        flex-shrink: 0;
+        stroke: var(--primary-color);
+        filter: drop-shadow(0 0 12px var(--primary-glow));
+    }
+
+    .notice {
+        background: rgba(0, 230, 118, 0.05);
+        border-left: 4px solid var(--primary-color);
+        padding: 20px;
+        border-radius: 0 12px 12px 0;
+        margin-top: 20px;
+        color: var(--text-main);
+    }
+
+    /* --- ANIMASI CSS UNTUK IKON LIVE --- */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    @keyframes pulse-glow {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.7; }
+    }
+    @keyframes scan {
+        0%, 100% { transform: translateY(-5px); opacity: 0; }
+        10% { opacity: 1; }
+        50% { transform: translateY(15px); opacity: 1; }
+        90% { opacity: 0; }
+    }
+    @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    @keyframes dash-draw {
+        0% { stroke-dashoffset: 100; }
+        50% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: 100; }
+    }
+    @keyframes bounce-x {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(8px); }
+    }
+
+    /* KELAS ANIMASI */
+    .anim-float { animation: float 3s ease-in-out infinite; }
+    .anim-pulse { animation: pulse-glow 2.5s ease-in-out infinite; }
+    .anim-scan { animation: scan 2.5s linear infinite; }
+    .anim-spin { animation: spin-slow 8s linear infinite; transform-origin: center; }
+    .anim-draw { 
+        stroke-dasharray: 100; 
+        animation: dash-draw 4s ease-in-out infinite; 
+    }
+    .anim-bounce { animation: bounce-x 2s ease-in-out infinite; }
+
+    /* RESPONSIVE UNTUK TELEFON PINTAR */
+    @media (max-width: 600px) {
+        body { padding: 20px 10px; }
+        .glass-box { padding: 25px 20px; }
+        .header-group { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .svg-icon { width: 56px; height: 56px; }
+        h1 { font-size: 1.8rem; }
+    }
 </style>
 </head>
 <body>
+
 <div class="container">
-<a class="back-link" href="../index.html">← Kembali ke DuitJom</a>
-<h1>Data Deletion</h1>
-<p><strong>Kemaskini terakhir:</strong> 20 Ogos 2026</p>
+    <a class="back-link" href="../index.html">← Kembali ke DuitJom</a>
 
-<div class="notice">
-    Pengguna boleh meminta pemadaman data peribadi yang dikaitkan dengan penggunaan perkhidmatan DuitJom melalui saluran sokongan rasmi.
+    <!-- MAIN HEADER: DATA DELETION -->
+    <div class="glass-box">
+        <div class="header-group">
+            <!-- Icon 1: Server/Database Shield dengan Scanning (Animasi Scan & Float) -->
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="anim-float" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <line class="anim-scan" x1="4" y1="12" x2="20" y2="12" stroke="#fff" stroke-width="2"/>
+                <path class="anim-pulse" d="M12 8v4M12 16h.01" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <div>
+                <h1>Data Deletion</h1>
+                <p><strong>Kemaskini terakhir:</strong> 20 Ogos 2026</p>
+            </div>
+        </div>
+        <div class="notice">
+            Pengguna boleh meminta pemadaman data peribadi yang dikaitkan dengan penggunaan perkhidmatan DuitJom melalui saluran sokongan rasmi.
+        </div>
+    </div>
+
+    <!-- SECTION 1: CARA MEMBUAT PERMINTAAN -->
+    <div class="glass-box">
+        <div class="header-group">
+            <!-- Icon 2: Mail & Send Arrow (Animasi Bounce/Gerak Kanan) -->
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <path class="anim-draw" d="M22 6l-10 7L2 6"/>
+                <path class="anim-bounce" d="M12 16h8" stroke="#fff" stroke-width="1.5"/>
+                <path class="anim-bounce" d="M17 13l3 3-3 3" stroke="#fff" stroke-width="1.5"/>
+            </svg>
+            <h2>1. Cara Membuat Permintaan</h2>
+        </div>
+        <p>Hantar permintaan pemadaman data kepada <a href="mailto:support@duitjom.my">support@duitjom.my</a> menggunakan alamat e-mel yang berkaitan dengan akaun anda. Sila nyatakan nama penuh dan maklumat pengenalan yang diperlukan supaya kami boleh mengesahkan permintaan tersebut dengan selamat. Jangan hantar kata laluan, kod pengesahan atau maklumat pembayaran penuh melalui e-mel.</p>
+    </div>
+
+    <!-- SECTION 2: PROSES PENGESAHAN -->
+    <div class="glass-box">
+        <div class="header-group">
+            <!-- Icon 3: Fingerprint / Biometric Check (Animasi Lukisan/Draw) -->
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="anim-draw" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10"/>
+                <path class="anim-pulse" d="M5 15a7.5 7.5 0 0114 0"/>
+                <path d="M8.5 18a3.5 3.5 0 017 0"/>
+                <path class="anim-draw" d="M9 11l2 2 4-4" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <h2>2. Proses Pengesahan</h2>
+        </div>
+        <p>Pasukan sokongan mungkin meminta maklumat tambahan yang munasabah untuk mengesahkan identiti pemohon dan mengelakkan pemadaman yang tidak dibenarkan. Permintaan yang tidak dapat disahkan mungkin memerlukan maklumat lanjut sebelum diproses.</p>
+    </div>
+
+    <!-- SECTION 3: SKOP PEMADAMAN -->
+    <div class="glass-box">
+        <div class="header-group">
+            <!-- Icon 4: Data Wiping (Animasi Float dan Pulse) -->
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path class="anim-pulse" d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path class="anim-draw" d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                <line x1="8" y1="12" x2="16" y2="12" stroke="#fff" stroke-width="1.5" class="anim-pulse"/>
+            </svg>
+            <h2>3. Skop Pemadaman</h2>
+        </div>
+        <p>Selepas permintaan diluluskan, data peribadi yang tidak lagi diperlukan untuk tujuan perkhidmatan akan dipadam atau dinyahkenal pasti, tertakluk kepada keperluan undang-undang, keselamatan, pencegahan penipuan, rekod transaksi dan penyelesaian pertikaian.</p>
+    </div>
+
+    <!-- SECTION 4: TEMPOH PEMPROSESAN -->
+    <div class="glass-box">
+        <div class="header-group">
+            <!-- Icon 5: Clock / Timer (Animasi Pusing / Spin) -->
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" stroke-dasharray="8 4" class="anim-spin"/>
+                <circle cx="12" cy="12" r="7"/>
+                <path class="anim-spin" d="M12 8v4l2.5 2.5" stroke="#fff" stroke-width="2" style="animation-duration: 4s;"/>
+            </svg>
+            <h2>4. Tempoh Pemprosesan</h2>
+        </div>
+        <p>Kami akan menyemak permintaan dalam tempoh yang munasabah dan memaklumkan pemohon jika terdapat maklumat tambahan yang diperlukan. Sesetengah rekod mungkin perlu disimpan untuk tempoh tertentu apabila diwajibkan oleh undang-undang atau diperlukan bagi tujuan pematuhan.</p>
+    </div>
+
+    <!-- SECTION 5: HUBUNGI KAMI & FOOTER -->
+    <div class="glass-box">
+        <div class="header-group">
+            <!-- Icon 6: Headset Support (Animasi Float & Draw) -->
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="anim-float" d="M3 18v-6a9 9 0 0118 0v6"/>
+                <path d="M21 19a2 2 0 01-2 2h-1v-6h3v4z"/>
+                <path d="M3 19a2 2 0 002 2h1v-6H3v4z"/>
+                <path class="anim-pulse" d="M14 21h-4" stroke="#fff" stroke-width="2"/>
+            </svg>
+            <h2>5. Hubungi Kami</h2>
+        </div>
+        <p>Untuk pertanyaan berkaitan pemadaman data, sila hubungi:</p>
+        <p><strong>Email:</strong> <a href="mailto:support@duitjom.my">support@duitjom.my</a></p>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <a href="privacy-policy.html" style="display: inline-flex; align-items: center; gap: 10px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Lihat Polisi Privasi
+            </a>
+        </div>
+    </div>
+
 </div>
 
-<h2>1. Cara Membuat Permintaan</h2>
-<p>Hantar permintaan pemadaman data kepada <a href="mailto:support@duitjom.my">support@duitjom.my</a> menggunakan alamat e-mel yang berkaitan dengan akaun anda. Sila nyatakan nama penuh dan maklumat pengenalan yang diperlukan supaya kami boleh mengesahkan permintaan tersebut dengan selamat. Jangan hantar kata laluan, kod pengesahan atau maklumat pembayaran penuh melalui e-mel.</p>
-
-<h2>2. Proses Pengesahan</h2>
-<p>Pasukan sokongan mungkin meminta maklumat tambahan yang munasabah untuk mengesahkan identiti pemohon dan mengelakkan pemadaman yang tidak dibenarkan. Permintaan yang tidak dapat disahkan mungkin memerlukan maklumat lanjut sebelum diproses.</p>
-
-<h2>3. Skop Pemadaman</h2>
-<p>Selepas permintaan diluluskan, data peribadi yang tidak lagi diperlukan untuk tujuan perkhidmatan akan dipadam atau dinyahkenal pasti, tertakluk kepada keperluan undang-undang, keselamatan, pencegahan penipuan, rekod transaksi dan penyelesaian pertikaian.</p>
-
-<h2>4. Tempoh Pemprosesan</h2>
-<p>Kami akan menyemak permintaan dalam tempoh yang munasabah dan memaklumkan pemohon jika terdapat maklumat tambahan yang diperlukan. Sesetengah rekod mungkin perlu disimpan untuk tempoh tertentu apabila diwajibkan oleh undang-undang atau diperlukan bagi tujuan pematuhan.</p>
-
-<h2>5. Hubungi Kami</h2>
-<p>Untuk pertanyaan berkaitan pemadaman data, sila hubungi:</p>
-<p><strong>Email:</strong> <a href="mailto:support@duitjom.my">support@duitjom.my</a></p>
-
-<p><a href="privacy-policy.html">Lihat Polisi Privasi</a></p>
-</div>
 </body>
 </html>
