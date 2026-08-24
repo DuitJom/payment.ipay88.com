@@ -650,6 +650,27 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+
+// =====================================================
+// SEMAK STATUS LOGIN APABILA REFRESH SKRIN (WAJIB ADA)
+// =====================================================
+document.addEventListener("DOMContentLoaded", function () {
+    const loginStatus = localStorage.getItem("googleLogin");
+    
+    if (loginStatus === "success") {
+        // Sembunyikan ruangan butang Google Sign In jika sudah log masuk
+        const googleSection = document.getElementById("googleSignInSection");
+        if (googleSection) {
+            googleSection.classList.add("hidden");
+        }
+
+        // Tunjukkan butang Pembayaran Pinjaman
+        const btnPay = document.getElementById("btnPembayaranPinjaman");
+        if (btnPay) {
+            btnPay.classList.remove("hidden");
+        }
+    }
+});
     /* =========================================================
    DUITJOM NEWS AUTOMATIC SLIDER
    AUTO SLIDE: 2.6 SECONDS
