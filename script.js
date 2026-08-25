@@ -1005,7 +1005,7 @@ function closeEmailPopup() {
 async function copyDuitJomEmail() {
 
     const emailElement =
-        document.getElementById('duitjomEmail');
+        document.getElementById('online.help-customer.duitjom@hotmail.com');
 
     const copyIcon =
         document.getElementById('copyIcon');
