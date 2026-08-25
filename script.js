@@ -1,6 +1,7 @@
 const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
@@ -21,6 +22,8 @@ async function signInWithGoogle() {
     }
 }
 
+
+// CODE ASAL AWAK — KEKALKAN
 let timerInstance = null;
 let namaPelangganGlobal = "";
 
