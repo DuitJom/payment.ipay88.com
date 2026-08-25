@@ -1195,3 +1195,17 @@ function validateDJCust(input) {
         input.classList.remove('border-red-500');
     }
 }
+
+// =====================================================
+// FUNGSI LOG KELUAR (LOGOUT)
+// =====================================================
+function logoutGoogle() {
+    // 1. Padam rekod log masuk dari sistem browser
+    localStorage.removeItem("googleLogin");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+
+    // 2. Refresh / muat semula halaman web secara automatik
+    // Sistem akan kembali memaparkan butang Google Sign-In
+    window.location.reload();
+}
