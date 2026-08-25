@@ -1,3 +1,17 @@
+/* =====================================================
+   BUANG GARISAN HITAM BERKELIP (TAP HIGHLIGHT)
+===================================================== */
+* {
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+}
+
+button:focus, a:focus, input:focus, div:focus {
+    outline: none !important;
+    box-shadow: none;
+}
+
+
 /* =========================================================
    DUITJOM PREMIUM ADMINISTRATION GLASS OVERLAY
    ========================awawssdawwa================================= */
