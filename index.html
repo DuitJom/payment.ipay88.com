@@ -138,6 +138,72 @@
 
                   </button>
               </div>
+
+                <!-- =====================================================
+                     EMAIL OTP LOGIN
+                   ===================================================== -->
+                 <div id="emailOtpSection" class="w-full max-w-sm mx-auto mt-6">
+
+                   <div class="border-t border-gray-300 relative pt-5">
+                      <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#FAF6F0] px-3 text-xs text-gray-500 font-medium">
+                          ATAU
+                     </span>
+                  </div>
+
+                 <!-- EMAIL -->
+                 <div class="mt-5">
+                   <label for="otpEmail" class="block text-sm font-medium text-gray-700 mb-2">.    
+                        Email
+                   </label>
+
+            <input
+                  type="email"
+                  id="otpEmail"
+                  placeholder="Masukkan email anda"
+                  autocomplete="email"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+              
+               
+                >
+           </div>
+              <!-- SEND OTP -->
+              <button
+                 type="button"
+                 onclick="sendEmailOTP()"
+                 class="w-full mt-4 px-5 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition">
+                     Hantar OTP
+              </button>
+
+              <!-- OTP -->
+              <div id="otpVerificationSection" class="mt-4 hidden">
+
+              <label for="otpCode" class="block text-sm font-medium text-gray-700 mb-2">
+                    Masukkan OTP
+              </label>
+
+              <input
+                    type="text"
+                    id="otpCode"
+                    maxlength="6"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    placeholder="6 digit OTP"
+                    class="w-full px-4 py-3 text-center tracking-[0.5em] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500".  
+                 >
+
+             <button
+                    type="button"
+                    onclick="verifyEmailOTP()"
+                    class="w-full mt-4 px-5 py-3 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition">
+                         Sahkan OTP
+             </button>
+
+          </div>
+
+       </div>
+   <!-- =====================================================
+        END EMAIL OTP LOGIN
+    ===================================================== -->
                 
                 <!-- Divider -->
                 <div class="flex items-center gap-3 my-4">
