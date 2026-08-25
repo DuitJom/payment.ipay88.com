@@ -1,3 +1,26 @@
+const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+async function signInWithGoogle() {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: window.location.origin
+        }
+    });
+
+    if (error) {
+        console.error(error);
+        alert("Google Sign-In gagal: " + error.message);
+    }
+}
+
 let timerInstance = null;
 let namaPelangganGlobal = "";
 
