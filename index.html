@@ -585,14 +585,19 @@
             </div>
 
             <!-- Pindahkan ID dan 'hidden' ke div pembungkus ini -->
-            <div id="btnPembayaranPinjaman" class="hidden w-full max-w-xs mb-16">
+<div id="btnPembayaranPinjaman" class="hidden w-full max-w-xs mb-16">
     
-             <!-- Butang Pembayaran (Kini tiada lagi konflik hidden vs flex) -->
-                <button onclick="goToPaymentPage()" class="w-full bg-green-300 hover:bg-green-300 text-black font-semibold text-md px-6 py-4 rounded-xl shadow-lg shadow-gray-400/30 transition duration-200 mb-6 flex justify-center items-center gap-2">
-                    Teruskan <i class="fas fa-arrow-right text-sm"></i>
-                 </button>
+    <!-- Butang Pembayaran (Sedia Ada) -->
+    <button onclick="goToPaymentPage()" class="w-full bg-green-300 hover:bg-green-300 text-black font-semibold text-md px-6 py-4 rounded-xl shadow-lg shadow-gray-400/30 transition duration-200 flex justify-center items-center gap-2">
+        Teruskan <i class="fas fa-arrow-right text-sm"></i>
+    </button>
 
-             </div>
+    <!-- Butang Log Keluar (Baru Ditambah) -->
+    <button onclick="logoutGoogle()" class="w-full mt-4 bg-red-100 hover:bg-red-200 text-red-600 font-semibold text-sm px-6 py-3 rounded-xl transition duration-200 flex justify-center items-center gap-2">
+        Log Keluar
+    </button>
+
+</div>
 
                 <!-- GOOGLE OAUTH LOGIN (Halaman Utama) -->
                 <div id="googleSignInSection" class="border-t border-gray-300 relative mt-4 pt-8">
