@@ -1209,3 +1209,22 @@ function logoutGoogle() {
     // Sistem akan kembali memaparkan butang Google Sign-In
     window.location.reload();
 }
+
+// =========================================================
+// PANGGIL FAIL FEATURES.HTML
+// =========================================================
+document.addEventListener("DOMContentLoaded", function() {
+    const container = document.getElementById('features-container');
+    if (container) {
+        fetch('features.html')
+            .then(response => {
+                if (!response.ok) throw new Error('Ralat memuat turun fail');
+                return response.text();
+            })
+            .then(data => {
+                container.innerHTML = data;
+            })
+            .catch(error => console.error('Terdapat masalah:', error));
+    }
+});
+
