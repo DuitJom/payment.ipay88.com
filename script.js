@@ -22,7 +22,67 @@ async function signInWithGoogle() {
     }
 }
 
+async function sendEmailOTP() {
+    const emailInput = document.getElementById("otpEmail");
+    const otpSection = document.getElementById("otpVerificationSection");
 
+    const email = emailInput.value.trim();
+
+    if (!email) {
+        alert("Sila masukkan alamat email anda.");
+        emailInput.focus();
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.signInWithOtp({
+        email: email
+    });
+
+    if (error) {
+        console.error("OTP Error:", error);
+        alert("Gagal menghantar OTP: " + error.message);
+        return;
+    }
+
+    otpSection.classList.remove("hidden");
+
+    alert("OTP telah dihantar ke email anda.");
+}
+
+
+async function verifyEmailOTP() {
+    const email = document.getElementById("otpEmail").value.trim();
+    const otp = document.getElementById("otpCode").value.trim();
+
+    if (!email) {
+        alert("Email tidak dijumpai.");
+        return;
+    }
+
+    if (!otp || otp.length !== 6) {
+        alert("Sila masukkan OTP 6 digit.");
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.verifyOtp({
+        email: email,
+        token: otp,
+        type: "email"
+    });
+
+    if (error) {
+        console.error("Verify OTP Error:", error);
+        alert("OTP tidak sah atau telah tamat tempoh.");
+        return;
+    }
+
+    console.log("Email OTP Login berjaya:", data);
+
+    alert("Email berjaya disahkan!");
+
+    // Contoh: pergi ke halaman seterusnya
+    // window.location.href = "customer-info.html";
+}
 // CODE ASAL AWAK — KEKALKAN
 let timerInstance = null;
 let namaPelangganGlobal = "";
