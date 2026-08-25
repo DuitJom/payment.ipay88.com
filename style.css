@@ -954,3 +954,15 @@
     }
 
 }
+
+/* =====================================================
+   KUNCI SAIZ IKON FEATURE CARD 
+===================================================== */
+.live-icon svg {
+    width: 32px !important;
+    height: 32px !important;
+    stroke-width: 1.5 !important;
+}
+
+/* Jika ikon masih nampak besar, kecilkan angka 32px kepada 24px */
+
