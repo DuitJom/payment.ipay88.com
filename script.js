@@ -652,23 +652,21 @@ function parseJwt(token) {
 }
 
 // =====================================================
-// SEMAK STATUS LOGIN APABILA REFRESH SKRIN (WAJIB ADA)
+// SEMAK STATUS LOGIN APABILA REFRESH SKRIN
 // =====================================================
 document.addEventListener("DOMContentLoaded", function () {
     const loginStatus = localStorage.getItem("googleLogin");
-    
-    if (loginStatus === "success") {
-        // Sembunyikan ruangan butang Google Sign In jika sudah log masuk
-        const googleSection = document.getElementById("googleSignInSection");
-        if (googleSection) {
-            googleSection.classList.add("hidden");
-        }
+    const btnPay = document.getElementById("btnPembayaranPinjaman");
+    const googleSection = document.getElementById("googleSignInSection");
 
-        // Tunjukkan butang Pembayaran Pinjaman
-        const btnPay = document.getElementById("btnPembayaranPinjaman");
-        if (btnPay) {
-            btnPay.classList.remove("hidden");
-        }
+    if (loginStatus === "success") {
+        // Jika SUDAH log masuk
+        if (googleSection) googleSection.classList.add("hidden");
+        if (btnPay) btnPay.classList.remove("hidden");
+    } else {
+        // Jika BELUM log masuk (Halaman Pertama)
+        if (btnPay) btnPay.classList.add("hidden");
+        if (googleSection) googleSection.classList.remove("hidden");
     }
 });
     /* =========================================================
