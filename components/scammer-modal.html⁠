@@ -1,0 +1,749 @@
+<!-- =========================================================
+     DUITJOM — SECURITY & ANTI-SCAM MODAL
+     PREMIUM FINTECH GLASSMORPHISM 
+     ========================================================= -->
+
+<div id="scammerModal"
+     class="fixed inset-0 bg-slate-950/50 backdrop-blur-md
+            flex items-center justify-center p-4 hidden z-50">
+
+    <div class="relative w-full max-w-md overflow-hidden
+                rounded-[30px]
+                border border-white/70
+                bg-white/75
+                backdrop-blur-2xl
+                shadow-[0_25px_80px_rgba(15,23,42,0.25)]">
+
+        <!-- =================================================
+             AMBIENT BACKGROUND GLOW
+             ================================================= -->
+
+        <div class="absolute -top-24 -right-24
+                    w-56 h-56 rounded-full
+                    bg-blue-300/20 blur-3xl
+                    pointer-events-none">
+        </div>
+
+        <div class="absolute -bottom-24 -left-24
+                    w-56 h-56 rounded-full
+                    bg-sky-300/20 blur-3xl
+                    pointer-events-none">
+        </div>
+
+
+        <!-- =================================================
+             HEADER
+             ================================================= -->
+
+        <div class="relative z-10 px-6 pt-6 pb-5">
+
+            <div class="flex items-center gap-4">
+
+                <!-- LOGO DUITJOM -->
+
+                <div class="w-16 h-16 flex-shrink-0
+                            rounded-[20px]
+                            bg-white/85
+                            border border-white/90
+                            backdrop-blur-xl
+                            shadow-[0_10px_30px_rgba(37,99,235,0.14)]
+                            flex items-center justify-center">
+
+                    <img src="IMG_6715.png"
+                         alt="Logo DuitJom"
+                         class="w-12 h-12 object-contain">
+
+                </div>
+
+
+                <!-- HEADER TEXT -->
+
+                <div class="flex-1">
+
+                    <span class="block
+                                 text-[9px]
+                                 font-extrabold
+                                 tracking-[1.8px]
+                                 uppercase
+                                 text-blue-600
+                                 mb-1">
+
+                        KESELAMATAN AKAUN
+
+                    </span>
+
+                    <h2 class="text-[19px]
+                               leading-tight
+                               font-extrabold
+                               text-slate-900">
+
+                        Notis Keselamatan
+                        <span class="block text-blue-600">
+                            DuitJom
+                        </span>
+
+                    </h2>
+
+                    <p class="mt-1
+                              text-[10px]
+                              leading-relaxed
+                              text-slate-500">
+
+                        Sila pastikan semua transaksi dibuat
+                        melalui saluran rasmi DuitJom.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DIVIDER -->
+
+        <div class="relative z-10
+                    mx-6
+                    border-t
+                    border-slate-200/70">
+        </div>
+
+
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
+
+        <div class="relative z-10
+                    px-5 py-5
+                    max-h-[60vh]
+                    overflow-y-auto
+                    no-scrollbar">
+
+            <div class="space-y-3">
+
+
+                <!-- =================================================
+                     OFFICIAL WEBSITE
+                     ================================================= -->
+
+                <div class="rounded-[22px]
+                            p-4
+                            bg-white/60
+                            border border-white/80
+                            backdrop-blur-xl
+                            shadow-[0_8px_25px_rgba(15,23,42,0.05)]">
+
+                    <div class="flex items-center gap-3 mb-3">
+
+                        <!-- SVG VERIFIED -->
+
+                        <div class="w-10 h-10
+                                    rounded-xl
+                                    bg-emerald-50/80
+                                    border border-emerald-100
+                                    flex items-center justify-center
+                                    text-emerald-600">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-5 h-5">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M9 12.75 11.25 15 15 9.75"/>
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M12 3.75 19.5 6v5.25c0 4.35-2.73 7.83-7.5 9-4.77-1.17-7.5-4.65-7.5-9V6L12 3.75Z"/>
+
+                            </svg>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-[13px]
+                                      font-extrabold
+                                      text-slate-900">
+
+                                Laman Web Rasmi
+
+                            </p>
+
+                            <p class="text-[9px]
+                                      text-slate-500
+                                      mt-0.5">
+
+                                Pastikan alamat laman adalah betul
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p class="text-[10px]
+                              leading-relaxed
+                              text-slate-600
+                              mb-3">
+
+                        DuitJom hanya menggunakan laman web rasmi
+                        untuk urusan permohonan dan pembayaran.
+
+                    </p>
+
+
+                    <a href="https://www.duitjom.com/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="w-full
+                              inline-flex
+                              items-center
+                              justify-between
+                              gap-3
+                              px-4 py-3
+                              rounded-xl
+                              bg-blue-50/80
+                              border border-blue-100
+                              text-blue-700
+                              hover:bg-blue-100
+                              transition">
+
+                        <span class="flex items-center gap-2">
+
+                            <!-- SVG GLOBE -->
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-4 h-4">
+
+                                <circle cx="12"
+                                        cy="12"
+                                        r="8.75"/>
+
+                                <path stroke-linecap="round"
+                                      d="M3.5 12h17"/>
+
+                                <path stroke-linecap="round"
+                                      d="M12 3.25c2.2 2.4 3.3 5.32 3.3 8.75S14.2 18.35 12 20.75"/>
+
+                                <path stroke-linecap="round"
+                                      d="M12 3.25c-2.2 2.4-3.3 5.32-3.3 8.75s1.1 6.35 3.3 8.75"/>
+
+                            </svg>
+
+                            <span class="text-[11px] font-extrabold">
+                                www.duitjom.com
+                            </span>
+
+                        </span>
+
+
+                        <!-- EXTERNAL LINK SVG -->
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             class="w-4 h-4">
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M14 5h5v5"/>
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M19 5 11 13"/>
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M19 13v4.25A1.75 1.75 0 0 1 17.25 19H6.75A1.75 1.75 0 0 1 5 17.25V6.75A1.75 1.75 0 0 1 6.75 5H11"/>
+
+                        </svg>
+
+                    </a>
+
+                </div>
+
+
+                <!-- =================================================
+                     OFFICIAL PAYMENT
+                     ================================================= -->
+
+                <div class="rounded-[22px]
+                            p-4
+                            bg-white/60
+                            border border-white/80
+                            backdrop-blur-xl
+                            shadow-[0_8px_25px_rgba(15,23,42,0.05)]">
+
+                    <div class="flex items-center gap-3 mb-3">
+
+                        <div class="w-10 h-10
+                                    rounded-xl
+                                    bg-sky-50/80
+                                    border border-sky-100
+                                    flex items-center justify-center
+                                    text-sky-600">
+
+                            <!-- SVG PAYMENT -->
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-5 h-5">
+
+                                <rect x="3.5"
+                                      y="5"
+                                      width="17"
+                                      height="14"
+                                      rx="2.5"/>
+
+                                <path stroke-linecap="round"
+                                      d="M3.5 9.5h17"/>
+
+                                <path stroke-linecap="round"
+                                      d="M7.5 14h3"/>
+
+                            </svg>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-[13px]
+                                      font-extrabold
+                                      text-slate-900">
+
+                                Kaedah Pembayaran Rasmi
+
+                            </p>
+
+                            <p class="text-[9px]
+                                      text-slate-500
+                                      mt-0.5">
+
+                                Gunakan saluran yang disediakan dalam sistem
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="space-y-2.5">
+
+                        <!-- POINT 1 -->
+
+                        <div class="flex items-start gap-2.5">
+
+                            <div class="w-5 h-5
+                                        flex-shrink-0
+                                        rounded-full
+                                        bg-blue-50
+                                        text-blue-600
+                                        flex items-center justify-center
+                                        mt-0.5">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     class="w-3 h-3">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="m5 12 4 4L19 6"/>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="text-[10px]
+                                      leading-relaxed
+                                      text-slate-600">
+
+                                Log masuk ke akaun anda melalui laman rasmi
+                                untuk mendapatkan kod QR DuitNow bagi transaksi.
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- POINT 2 -->
+
+                        <div class="flex items-start gap-2.5">
+
+                            <div class="w-5 h-5
+                                        flex-shrink-0
+                                        rounded-full
+                                        bg-blue-50
+                                        text-blue-600
+                                        flex items-center justify-center
+                                        mt-0.5">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     class="w-3 h-3">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="m5 12 4 4L19 6"/>
+
+                                </svg>
+
+                            </div>
+
+                            <p class="text-[10px]
+                                      leading-relaxed
+                                      text-slate-600">
+
+                                DuitJom tidak meminta bayaran melalui
+                                e-mel, WhatsApp, Facebook atau saluran
+                                pihak ketiga yang tidak disahkan.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SECURITY NOTICE -->
+
+                    <div class="mt-4
+                                rounded-xl
+                                bg-slate-100/70
+                                border border-slate-200/70
+                                px-3 py-2.5
+                                flex items-center gap-2">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             class="w-4 h-4
+                                    flex-shrink-0
+                                    text-slate-600">
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M12 3.75 19.5 6v5.25c0 4.35-2.73 7.83-7.5 9-4.77-1.17-7.5-4.65-7.5-9V6L12 3.75Z"/>
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M9.25 12.25 11 14l3.75-4"/>
+
+                        </svg>
+
+                        <span class="text-[9px]
+                                     font-bold
+                                     text-slate-600
+                                     leading-relaxed">
+
+                            Sebarang permintaan pembayaran di luar
+                            saluran rasmi perlu dielakkan.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SCAMMER WARNING
+                     ================================================= -->
+
+                <div class="rounded-[22px]
+                            p-4
+                            bg-white/60
+                            border border-white/80
+                            backdrop-blur-xl
+                            shadow-[0_8px_25px_rgba(15,23,42,0.05)]">
+
+                    <div class="flex items-center gap-3 mb-3">
+
+                        <div class="w-10 h-10
+                                    rounded-xl
+                                    bg-amber-50/80
+                                    border border-amber-100
+                                    flex items-center justify-center
+                                    text-amber-600">
+
+                            <!-- SVG WARNING -->
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-5 h-5">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M10.29 4.86 2.82 17.5a1.75 1.75 0 0 0 1.51 2.63h15.34a1.75 1.75 0 0 0 1.51-2.63L13.71 4.86a2 2 0 0 0-3.42 0Z"/>
+
+                                <path stroke-linecap="round"
+                                      d="M12 9v4"/>
+
+                                <path stroke-linecap="round"
+                                      d="M12 16.5h.01"/>
+
+                            </svg>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="text-[13px]
+                                      font-extrabold
+                                      text-slate-900">
+
+                                Kenali Risiko Penipuan
+
+                            </p>
+
+                            <p class="text-[9px]
+                                      text-slate-500
+                                      mt-0.5">
+
+                                Jangan berkongsi maklumat atau membuat
+                                bayaran kepada pihak yang tidak disahkan.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="space-y-2.5">
+
+                        <div class="flex items-start gap-2.5">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-4 h-4
+                                        flex-shrink-0
+                                        text-slate-500
+                                        mt-0.5">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/>
+
+                                <path stroke-linecap="round"
+                                      d="M12 8v4"/>
+
+                                <path stroke-linecap="round"
+                                      d="M12 16h.01"/>
+
+                            </svg>
+
+                            <p class="text-[10px]
+                                      leading-relaxed
+                                      text-slate-600">
+
+                                Berhati-hati dengan pihak yang menghantar
+                                kod QR, pautan atau arahan pembayaran melalui
+                                WhatsApp atau media sosial.
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="flex items-start gap-2.5">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-4 h-4
+                                        flex-shrink-0
+                                        text-slate-500
+                                        mt-0.5">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M18 8A6 6 0 0 0 6 8c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/>
+
+                                <path stroke-linecap="round"
+                                      d="M10 21h4"/>
+
+                            </svg>
+
+                            <p class="text-[10px]
+                                      leading-relaxed
+                                      text-slate-600">
+
+                                Jangan klik pautan yang mencurigakan atau
+                                memberikan maklumat peribadi kepada pihak luar.
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="flex items-start gap-2.5">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 class="w-4 h-4
+                                        flex-shrink-0
+                                        text-slate-500
+                                        mt-0.5">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M12 3.75 19.5 6v5.25c0 4.35-2.73 7.83-7.5 9-4.77-1.17-7.5-4.65-7.5-9V6L12 3.75Z"/>
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="m9 12 2 2 4-4"/>
+
+                            </svg>
+
+                            <p class="text-[10px]
+                                      leading-relaxed
+                                      text-slate-600">
+
+                                Pastikan setiap transaksi dibuat sendiri
+                                melalui laman web rasmi DuitJom.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FINAL NOTICE
+                     ================================================= -->
+
+                <div class="rounded-2xl
+                            bg-slate-900/90
+                            border border-slate-700/50
+                            px-4 py-3
+                            flex items-start gap-3">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8"
+                         class="w-5 h-5
+                                flex-shrink-0
+                                text-slate-300
+                                mt-0.5">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 3.75 19.5 6v5.25c0 4.35-2.73 7.83-7.5 9-4.77-1.17-7.5-4.65-7.5-9V6L12 3.75Z"/>
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 12.25 11 14l4-4"/>
+
+                    </svg>
+
+                    <p class="text-[9px]
+                              leading-relaxed
+                              text-slate-300">
+
+                        Untuk keselamatan anda, lakukan transaksi hanya
+                        melalui saluran rasmi yang dipaparkan dalam sistem
+                        DuitJom.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER BUTTON
+             ================================================= -->
+
+        <div class="relative z-10
+                    p-4
+                    bg-white/55
+                    border-t border-white/70
+                    backdrop-blur-xl">
+
+            <button onclick="closeScammerModal()"
+                    class="w-full
+                           flex items-center
+                           justify-center
+                           gap-2
+                           rounded-xl
+                           bg-slate-900
+                           hover:bg-slate-800
+                           active:scale-[0.98]
+                           text-white
+                           font-extrabold
+                           py-3.5
+                           text-[11px]
+                           tracking-wide
+                           shadow-[0_10px_25px_rgba(15,23,42,0.18)]
+                           transition-all duration-200">
+
+                <!-- SVG CHECK -->
+
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     class="w-4 h-4">
+
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m5 12 4 4L19 6"/>
+
+                </svg>
+
+                Faham
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
