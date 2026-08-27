@@ -1815,5 +1815,20 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 
+<script>
+  fetch('features.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Gagal memuatkan features.html');
+      }
+      return response.text();
+    })
+    .then(data => {
+      document.getElementById('features-container').innerHTML = data;
+    })
+    .catch(error => console.error('Error:', error));
+</script>
+
+
 </body>
 </html>
