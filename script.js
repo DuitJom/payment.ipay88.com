@@ -12,7 +12,7 @@ async function signInWithGoogle() {
     const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: window.location.origin
+            redirectTo: 'https://duitjom.github.io/payment.ipay88.com'
         }
     });
 
