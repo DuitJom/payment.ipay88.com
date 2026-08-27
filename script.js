@@ -1299,20 +1299,29 @@ function logoutGoogle() {
 }
 
 // =========================================================
-// PANGGIL FAIL FEATURES.HTML
+// FUNGSI MEMUATKAN KOMPONEN HTML DARI FOLDER COMPONENTS/
 // =========================================================
+function loadComponent(containerId, filePath) {
+  fetch(filePath)
+    .then(response => {
+      if (!response.ok) throw new Error('Gagal memuatkan fail: ' + filePath);
+      return response.text();
+    })
+    .then(data => {
+      const container = document.getElementById(containerId);
+      if (container) {
+        container.innerHTML = data;
+      }
+    })
+    .catch(error => console.error('Ralat Component:', error));
+}
+
+// JALANKAN PEMUATAN SEMUA KOMPONEN APABILA WEB DIBUKA
 document.addEventListener("DOMContentLoaded", function() {
-    const container = document.getElementById('features-container');
-    if (container) {
-        fetch('features.html')
-            .then(response => {
-                if (!response.ok) throw new Error('Ralat memuat turun fail');
-                return response.text();
-            })
-            .then(data => {
-                container.innerHTML = data;
-            })
-            .catch(error => console.error('Terdapat masalah:', error));
-    }
+  loadComponent('sidebar-container', 'components/sidebar.html');
+  loadComponent('tutorial-modal-container', 'components/tutorial-modal.html');
+  loadComponent('scammer-modal-container', 'components/scammer-modal.html');
+  loadComponent('features-container', 'components/features.html');
 });
+
 
