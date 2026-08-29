@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJElN";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
 
 console.log("SUPABASE URL:", SUPABASE_URL);
 console.log("SUPABASE KEY:", SUPABASE_PUBLISHABLE_KEY);
