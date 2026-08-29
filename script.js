@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwaW5jaWxka2pzZXhtdGF0Y2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc1Njc2MjIsImV4cCI6MjEwMzE0MzYyMn0.iMTFSYrcj-_5BdzdBkqLCgC55op9QKBf0OHYnt-IUe8";
 
 console.log("SUPABASE URL:", SUPABASE_URL);
 console.log("SUPABASE KEY:", SUPABASE_PUBLISHABLE_KEY);
@@ -1453,5 +1453,3 @@ document.addEventListener("DOMContentLoaded", function() {
   loadComponent('scammer-modal-container', 'components/scammer-modal.html');
   loadComponent('features-container', 'features.html');
 });
-
-
