@@ -1,5 +1,10 @@
 const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJElN";
+
+console.log("SUPABASE URL:", SUPABASE_URL);
+console.log("SUPABASE KEY:", SUPABASE_PUBLISHABLE_KEY);
+console.log("SUPABASE OBJECT:", window.supabase);
+
 const AUTH_REDIRECT_URL = `${window.location.origin}${window.location.pathname}`;
 
 const supabaseClient = window.supabase?.createClient
