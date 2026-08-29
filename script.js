@@ -4,6 +4,10 @@ const SUPABASE_URL =
 const SUPABASE_PUBLISHABLE_KEY =
 "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
 
+const AUTH_REDIRECT_URL =
+window.location.origin +
+window.location.pathname;
+
 const supabaseClient =
 window.supabase
 ? window.supabase.createClient(
