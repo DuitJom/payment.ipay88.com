@@ -1,23 +1,24 @@
-const SUPABASE_URL = "https://cpincildkjsexmtatcid.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
+const SUPABASE_URL =
+"https://cpincildkjsexmtatcid.supabase.co";
 
-console.log("SUPABASE URL:", SUPABASE_URL);
-console.log("SUPABASE KEY:", SUPABASE_PUBLISHABLE_KEY);
-console.log("SUPABASE OBJECT:", window.supabase);
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn";
 
-const AUTH_REDIRECT_URL = `${window.location.origin}${window.location.pathname}`;
+const supabaseClient =
+window.supabase
+? window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    }
+  )
+: null;
 
-const
- SUPABASE_PUBLISHABLE_KEY = 
-"sb_publishable_OfZvXHIJsU8f5exU6bQXug_iqsOJELn"
-;
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-        }
-    })
-    : null;
 
 // Namespaced diagnostic handle; the publishable client remains safe for browser use.
 window.duitjomSupabaseClient = supabaseClient;
