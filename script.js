@@ -176,7 +176,11 @@ async function submitEmailPassword(event) {
         }
 
         setAuthBusy(true);
+
+        console.log("SIGNUP START");
+
         const { data, error } = await client.auth.signUp({
+
             email,
             password,
             options: {
@@ -184,6 +188,11 @@ async function submitEmailPassword(event) {
                 emailRedirectTo: AUTH_REDIRECT_URL
             }
         });
+        
+        console.log("SIGNUP RESULT");
+        console.log(data);
+        console.log(error);
+
         setAuthBusy(false);
 
         if (error) {
