@@ -2,6 +2,12 @@
   const phoneValue = () => `+60${(document.getElementById('phoneOtpNumber')?.value || '').replace(/\D/g, '').replace(/^0/, '')}`;
   const setMessage = (text, type) => window.setLoginMessage?.(text, type);
 
+  /**
+   * Sends a one-time password (OTP) via SMS to the specified Malaysian phone number.
+   * @async
+   * @param {Event} [event] - The form submit event to prevent default behavior
+   * @returns {Promise<void>}
+   */
   window.sendPhoneOtp = async function sendPhoneOtp(event) {
     event?.preventDefault();
     const phone = phoneValue();
@@ -14,6 +20,12 @@
     setMessage('Kod OTP telah dihantar melalui SMS.', 'success');
   };
 
+  /**
+   * Verifies the OTP code received via SMS for phone number authentication.
+   * @async
+   * @param {Event} [event] - The form submit event to prevent default behavior
+   * @returns {Promise<void>}
+   */
   window.verifyPhoneOtp = async function verifyPhoneOtp(event) {
     event?.preventDefault();
     const token = (document.getElementById('phoneOtpCode')?.value || '').replace(/\D/g, '');

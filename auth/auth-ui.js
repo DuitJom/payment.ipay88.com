@@ -3,6 +3,12 @@
   // GLOBAL AUTH STATE & MESSAGE HANDLER
   // =====================================================
   window.currentAuthMethod = 'email'; // 'email', 'phone', 'totp'
+
+  /**
+   * Displays a login message to the user with appropriate styling based on message type.
+   * @param {string} text - The message text to display
+   * @param {string} [type='info'] - The message type: 'error', 'success', or 'info'
+   */
   window.setLoginMessage = function setLoginMessage(text, type = 'info') {
     const messageElement = document.getElementById('loginMessage');
     if (!messageElement) return;
@@ -18,6 +24,11 @@
   // =====================================================
   // METHOD SWITCHER (EMAIL / PHONE / TOTP)
   // =====================================================
+
+  /**
+   * Switches the active authentication method and updates the UI to show the corresponding panel.
+   * @param {string} method - The authentication method to switch to: 'email', 'phone', or 'totp'
+   */
   window.switchAuthMethod = function switchAuthMethod(method) {
     window.currentAuthMethod = method;
     
@@ -37,6 +48,12 @@
   // =====================================================
   // SUPABASE SESSION CHECK & UI UPDATE
   // =====================================================
+
+  /**
+   * Updates the authentication UI based on the current session state.
+   * Shows/hides login container, payment button, and user info based on whether user is logged in.
+   * @param {Object|null} session - The Supabase session object, or null if not logged in
+   */
   window.updateAuthUI = function updateAuthUI(session) {
     const isLoggedIn = Boolean(session?.user);
     const loginContainer = document.getElementById('loginContainer');
@@ -68,6 +85,12 @@
   // =====================================================
   // LOGOUT FUNCTION
   // =====================================================
+
+  /**
+   * Logs out the current user by signing out from Supabase and updating the UI.
+   * @async
+   * @returns {Promise<void>}
+   */
   window.logoutUser = async function logoutUser() {
     const client = window.duitjomSupabaseClient;
     if (!client) return window.setLoginMessage('Supabase belum dimuatkan.', 'error');
@@ -85,6 +108,13 @@
   // =====================================================
   // INITIALIZE AUTH UI ON PAGE LOAD
   // =====================================================
+
+  /**
+   * Initializes the authentication UI by fetching the current session and setting up auth state listeners.
+   * Should be called after the Supabase client is initialized.
+   * @async
+   * @returns {Promise<void>}
+   */
   window.initAuthUI = async function initAuthUI() {
     const client = window.duitjomSupabaseClient;
     if (!client) {
