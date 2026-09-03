@@ -1,6 +1,13 @@
 (function () {
   const setMessage = (text, type) => window.setLoginMessage?.(text, type);
 
+  /**
+   * Enrolls the user in TOTP (Time-based One-Time Password) multi-factor authentication.
+   * Generates a QR code and secret for use with authenticator apps.
+   * @async
+   * @param {Event} [event] - The form submit event to prevent default behavior
+   * @returns {Promise<void>}
+   */
   window.enrolTotp = async function enrolTotp(event) {
     event?.preventDefault();
     const client = window.duitjomSupabaseClient;
@@ -16,6 +23,12 @@
     setMessage('Imbas QR dengan aplikasi authenticator, kemudian masukkan kod 6 digit.', 'success');
   };
 
+  /**
+   * Verifies the TOTP code from the user's authenticator app and completes the enrollment process.
+   * @async
+   * @param {Event} [event] - The form submit event to prevent default behavior
+   * @returns {Promise<void>}
+   */
   window.verifyTotp = async function verifyTotp(event) {
     event?.preventDefault();
     const client = window.duitjomSupabaseClient;

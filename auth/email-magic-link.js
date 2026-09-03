@@ -3,6 +3,12 @@
     window.setLoginMessage?.(text, type);
   }
 
+  /**
+   * Sends a magic link (OTP) to the specified email address for passwordless authentication.
+   * @async
+   * @param {Event} [event] - The form submit event to prevent default behavior
+   * @returns {Promise<void>}
+   */
   window.sendMagicLink = async function sendMagicLink(event) {
     event?.preventDefault();
     const email = document.getElementById('magicLinkEmail')?.value.trim().toLowerCase();
