@@ -1,1 +1,117 @@
-(function () {\n  // =====================================================\n  // GLOBAL AUTH STATE & MESSAGE HANDLER\n  // =====================================================\n  window.currentAuthMethod = 'email'; // 'email', 'phone', 'totp'\n  window.setLoginMessage = function setLoginMessage(text, type = 'info') {\n    const messageElement = document.getElementById('loginMessage');\n    if (!messageElement) return;\n    messageElement.textContent = text || '';\n    messageElement.className = 'login-message';\n    messageElement.classList.add(\n      type === 'error' ? 'text-red-600' : \n      type === 'success' ? 'text-emerald-600' : \n      'text-slate-500'\n    );\n  };\n\n  // =====================================================\n  // METHOD SWITCHER (EMAIL / PHONE / TOTP)\n  // =====================================================\n  window.switchAuthMethod = function switchAuthMethod(method) {\n    window.currentAuthMethod = method;\n    \n    // Update tab styling\n    document.querySelectorAll('.auth-method-tab').forEach(tab => {\n      tab.classList.toggle('is-active', tab.dataset.method === method);\n    });\n\n    // Show/hide panels\n    document.getElementById('emailPanel')?.classList.toggle('hidden', method !== 'email');\n    document.getElementById('phonePanel')?.classList.toggle('hidden', method !== 'phone');\n    document.getElementById('totpPanel')?.classList.toggle('hidden', method !== 'totp');\n\n    window.setLoginMessage('');\n  };\n\n  // =====================================================\n  // SUPABASE SESSION CHECK & UI UPDATE\n  // =====================================================\n  window.updateAuthUI = function updateAuthUI(session) {\n    const isLoggedIn = Boolean(session?.user);\n    const loginContainer = document.getElementById('loginContainer');\n    const btnPay = document.getElementById('btnPembayaranPinjaman');\n    const userInfo = document.getElementById('userInfo');\n    const logoutBtn = document.getElementById('logoutButton');\n\n    if (isLoggedIn) {\n      // User telah login\n      loginContainer?.classList.add('hidden');\n      btnPay?.classList.remove('hidden');\n      userInfo?.classList.remove('hidden');\n      \n      // Paparkan email pengguna jika tersedia\n      if (userInfo && session.user?.email) {\n        const userEmail = document.getElementById('userEmail');\n        if (userEmail) userEmail.textContent = session.user.email;\n      }\n    } else {\n      // User belum login\n      loginContainer?.classList.remove('hidden');\n      btnPay?.classList.add('hidden');\n      userInfo?.classList.add('hidden');\n      logoutBtn?.classList.add('hidden');\n      window.setLoginMessage('');\n    }\n  };\n\n  // =====================================================\n  // LOGOUT FUNCTION\n  // =====================================================\n  window.logoutUser = async function logoutUser() {\n    const client = window.duitjomSupabaseClient;\n    if (!client) return window.setLoginMessage('Supabase belum dimuatkan.', 'error');\n\n    const { error } = await client.auth.signOut();\n    if (error) {\n      console.error('Logout error:', error);\n      return window.setLoginMessage('Logout gagal: ' + error.message, 'error');\n    }\n\n    window.setLoginMessage('Anda telah log keluar.', 'success');\n    window.updateAuthUI(null);\n  };\n\n  // =====================================================\n  // INITIALIZE AUTH UI ON PAGE LOAD\n  // =====================================================\n  window.initAuthUI = async function initAuthUI() {\n    const client = window.duitjomSupabaseClient;\n    if (!client) {\n      console.error('Supabase client not initialized');\n      window.updateAuthUI(null);\n      return;\n    }\n\n    // Dapatkan session semasa\n    const { data, error } = await client.auth.getSession();\n    if (error) console.error('Session error:', error);\n    \n    window.updateAuthUI(data?.session || null);\n\n    // Dengarkan perubahan auth state\n    const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {\n      console.log('Auth state changed:', event);\n      window.updateAuthUI(session);\n    });\n\n    // Cleanup subscription pada unload\n    window.addEventListener('beforeunload', () => subscription?.unsubscribe());\n  };\n\n  // Jalankan init selepas Supabase dimulakan\n  document.addEventListener('DOMContentLoaded', () => {\n    // Tunggu 500ms untuk Supabase dimulakan\n    setTimeout(window.initAuthUI, 500);\n  });\n}());\n
+(function () {
+  // =====================================================
+  // GLOBAL AUTH STATE & MESSAGE HANDLER
+  // =====================================================
+  window.currentAuthMethod = 'email'; // 'email', 'phone', 'totp'
+  window.setLoginMessage = function setLoginMessage(text, type = 'info') {
+    const messageElement = document.getElementById('loginMessage');
+    if (!messageElement) return;
+    messageElement.textContent = text || '';
+    messageElement.className = 'login-message';
+    messageElement.classList.add(
+      type === 'error' ? 'text-red-600' : 
+      type === 'success' ? 'text-emerald-600' : 
+      'text-slate-500'
+    );
+  };
+
+  // =====================================================
+  // METHOD SWITCHER (EMAIL / PHONE / TOTP)
+  // =====================================================
+  window.switchAuthMethod = function switchAuthMethod(method) {
+    window.currentAuthMethod = method;
+    
+    // Update tab styling
+    document.querySelectorAll('.auth-method-tab').forEach(tab => {
+      tab.classList.toggle('is-active', tab.dataset.method === method);
+    });
+
+    // Show/hide panels
+    document.getElementById('emailPanel')?.classList.toggle('hidden', method !== 'email');
+    document.getElementById('phonePanel')?.classList.toggle('hidden', method !== 'phone');
+    document.getElementById('totpPanel')?.classList.toggle('hidden', method !== 'totp');
+
+    window.setLoginMessage('');
+  };
+
+  // =====================================================
+  // SUPABASE SESSION CHECK & UI UPDATE
+  // =====================================================
+  window.updateAuthUI = function updateAuthUI(session) {
+    const isLoggedIn = Boolean(session?.user);
+    const loginContainer = document.getElementById('loginContainer');
+    const btnPay = document.getElementById('btnPembayaranPinjaman');
+    const userInfo = document.getElementById('userInfo');
+    const logoutBtn = document.getElementById('logoutButton');
+
+    if (isLoggedIn) {
+      // User telah login
+      loginContainer?.classList.add('hidden');
+      btnPay?.classList.remove('hidden');
+      userInfo?.classList.remove('hidden');
+      
+      // Paparkan email pengguna jika tersedia
+      if (userInfo && session.user?.email) {
+        const userEmail = document.getElementById('userEmail');
+        if (userEmail) userEmail.textContent = session.user.email;
+      }
+    } else {
+      // User belum login
+      loginContainer?.classList.remove('hidden');
+      btnPay?.classList.add('hidden');
+      userInfo?.classList.add('hidden');
+      logoutBtn?.classList.add('hidden');
+      window.setLoginMessage('');
+    }
+  };
+
+  // =====================================================
+  // LOGOUT FUNCTION
+  // =====================================================
+  window.logoutUser = async function logoutUser() {
+    const client = window.duitjomSupabaseClient;
+    if (!client) return window.setLoginMessage('Supabase belum dimuatkan.', 'error');
+
+    const { error } = await client.auth.signOut();
+    if (error) {
+      console.error('Logout error:', error);
+      return window.setLoginMessage('Logout gagal: ' + error.message, 'error');
+    }
+
+    window.setLoginMessage('Anda telah log keluar.', 'success');
+    window.updateAuthUI(null);
+  };
+
+  // =====================================================
+  // INITIALIZE AUTH UI ON PAGE LOAD
+  // =====================================================
+  window.initAuthUI = async function initAuthUI() {
+    const client = window.duitjomSupabaseClient;
+    if (!client) {
+      console.error('Supabase client not initialized');
+      window.updateAuthUI(null);
+      return;
+    }
+
+    // Dapatkan session semasa
+    const { data, error } = await client.auth.getSession();
+    if (error) console.error('Session error:', error);
+    
+    window.updateAuthUI(data?.session || null);
+
+    // Dengarkan perubahan auth state
+    const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event);
+      window.updateAuthUI(session);
+    });
+
+    // Cleanup subscription pada unload
+    window.addEventListener('beforeunload', () => subscription?.unsubscribe());
+  };
+
+  // Jalankan init selepas Supabase dimulakan
+  document.addEventListener('DOMContentLoaded', () => {
+    // Tunggu 500ms untuk Supabase dimulakan
+    setTimeout(window.initAuthUI, 500);
+  });
+}());
