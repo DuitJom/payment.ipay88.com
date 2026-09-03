@@ -1,0 +1,149 @@
+<!-- Auth Login Component for Sidebar -->
+<div id="loginContainer" class="login-card">
+  <!-- Header -->
+  <p class="login-kicker">SUPABASE AUTH</p>
+  <h3 class="login-title">Log Masuk</h3>
+  <p class="login-subtitle">Pilih kaedah log masuk yang anda prefer</p>
+
+  <!-- Method Switcher (Email / Phone / TOTP) -->
+  <div class="login-methods">
+    <button 
+      class="login-method active" 
+      data-method="email" 
+      onclick="window.switchAuthMethod('email')" 
+      title="Email Magic Link">
+      ✉️ Email
+    </button>
+    <button 
+      class="login-method" 
+      data-method="phone" 
+      onclick="window.switchAuthMethod('phone')" 
+      title="Phone OTP">
+      📱 Telefon
+    </button>
+    <button 
+      class="login-method" 
+      data-method="totp" 
+      onclick="window.switchAuthMethod('totp')" 
+      title="TOTP Authenticator">
+      🔐 TOTP
+    </button>
+  </div>
+
+  <!-- ===== EMAIL MAGIC LINK PANEL ===== -->
+  <div id="emailPanel" class="login-panel">
+    <label for="magicLinkEmail">Alamat Email</label>
+    <input 
+      type="email" 
+      id="magicLinkEmail" 
+      placeholder="nama@example.com" 
+      required>
+    <p class="login-help">Kami akan hantar pautan log masuk ke email anda. Tiada kata laluan diperlukan.</p>
+    <button 
+      class="login-primary-button" 
+      id="magicLinkButton" 
+      onclick="window.sendMagicLink(event)">
+      Hantar Pautan Log Masuk
+    </button>
+  </div>
+
+  <!-- ===== PHONE OTP PANEL ===== -->
+  <div id="phonePanel" class="login-panel hidden">
+    <label for="phoneOtpNumber">Nombor Telefon</label>
+    <div class="phone-field">
+      <span>+60</span>
+      <input 
+        type="tel" 
+        id="phoneOtpNumber" 
+        placeholder="12 345 6789" 
+        inputmode="numeric"
+        pattern="[0-9\s]*"
+        required>
+    </div>
+    <p class="login-help">Masukkan nombor Malaysia anda. Kami akan hantar kod OTP 6 digit melalui SMS.</p>
+    <button 
+      class="login-primary-button" 
+      id="sendPhoneOtpButton" 
+      onclick="window.sendPhoneOtp(event)">
+      Hantar Kod OTP
+    </button>
+
+    <!-- OTP Verification Field (Hidden until OTP sent) -->
+    <div id="phoneOtpVerify" class="hidden" style="margin-top: 1rem;">
+      <label for="phoneOtpCode">Kod OTP (6 digit)</label>
+      <input 
+        type="text" 
+        id="phoneOtpCode" 
+        placeholder="000000" 
+        inputmode="numeric"
+        maxlength="6"
+        pattern="[0-9]{6}"
+        required>
+      <button 
+        class="login-secondary-button" 
+        onclick="window.verifyPhoneOtp(event)" 
+        style="margin-top: 0.75rem;">
+        Sahkan Kod OTP
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== TOTP (2FA) PANEL ===== -->
+  <div id="totpPanel" class="login-panel hidden">
+    <p class="login-help">TOTP (Time-based One-Time Password) boleh didaftarkan selepas anda log masuk dengan Email atau Telefon terlebih dahulu.</p>
+    
+    <!-- Setup Details (Hidden until enroll clicked) -->
+    <div id="totpSetupDetails" class="totp-setup hidden">
+      <img id="totpQrCode" src="" alt="TOTP QR Code">
+      <p>Imbas QR di atas dengan aplikasi authenticator (contohnya Google Authenticator, Microsoft Authenticator, Authy)</p>
+      <p style="margin-top: 0.75rem; font-weight: 700; color: #0f172a;">Kunci Rahsia:</p>
+      <code id="totpSecret"></code>
+      <p style="margin-top: 0.75rem; font-size: 0.65rem; color: #64748b;">Simpan kunci rahsia ini di tempat yang selamat untuk recovery.</p>
+    </div>
+
+    <!-- Verification Input (Hidden until QR shown) -->
+    <div id="totpVerifySection" class="hidden" style="margin-top: 1rem;">
+      <label for="totpCode">Kod Authenticator (6 digit)</label>
+      <input 
+        type="text" 
+        id="totpCode" 
+        placeholder="000000" 
+        inputmode="numeric"
+        maxlength="6"
+        pattern="[0-9]{6}"
+        required>
+      <input type="hidden" id="totpFactorId">
+      <button 
+        class="login-secondary-button" 
+        onclick="window.verifyTotp(event)" 
+        style="margin-top: 0.75rem;">
+        Sahkan TOTP
+      </button>
+    </div>
+
+    <!-- Enroll Button -->
+    <button 
+      class="login-primary-button" 
+      id="enrollTotpButton" 
+      onclick="window.enrolTotp(event)">
+      Daftar TOTP
+    </button>
+  </div>
+
+  <!-- Message/Notification Area -->
+  <div id="loginMessage" class="login-message"></div>
+</div>
+
+<!-- ===== USER INFO & LOGOUT (Shown when logged in) ===== -->
+<div id="userInfo" class="login-card hidden">
+  <p class="login-kicker">AKAUN ANDA</p>
+  <h3 class="login-title">Log Masuk Berjaya</h3>
+  <p class="login-subtitle">Email: <span id="userEmail"></span></p>
+  <button 
+    class="login-secondary-button" 
+    id="logoutButton" 
+    onclick="window.logoutUser()" 
+    style="margin-top: 1rem;">
+    Log Keluar
+  </button>
+</div>
