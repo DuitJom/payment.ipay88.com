@@ -34,7 +34,7 @@
     
     // Update tab styling
     document.querySelectorAll('.login-method').forEach(tab => {
-      tab.classList.toggle('is-active', tab.dataset.method === method);
+       tab.classList.toggle('active', tab.dataset.method === method);
     });
 
     // Show/hide panels
