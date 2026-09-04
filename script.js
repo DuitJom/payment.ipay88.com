@@ -163,10 +163,13 @@ function generateQR() {
     if (qrGenerated) return;
     qrGenerated = true;
 
-    const djCustomerID = document.getElementById("djcustInput")?.value.toUpperCase() || "";
-    const amountInput = document.getElementById("amountInput")?.value || "";
+    const djcustEl = document.getElementById("djcustInput");
+    const djCustomerID = djcustEl ? djcustEl.value.toUpperCase() : "";
+    const amountEl = document.getElementById("amountInput");
+    const amountInput = amountEl ? amountEl.value : "";
     const amount = parseFloat(amountInput);
-    namaPelangganGlobal = document.getElementById("namaInput")?.value || "Pelanggan";
+    const namaEl = document.getElementById("namaInput");
+    namaPelangganGlobal = namaEl ? namaEl.value : "Pelanggan";
 
     if (!djCustomerID || !amount || amount <= 0) {
         alert("Sila isi semua medan dengan betul.");
@@ -203,8 +206,10 @@ function generateQR() {
                 }
                 console.log("QR Code generated successfully");
 
-                document.getElementById("formPage")?.classList.add("hidden");
-                document.getElementById("qrPage")?.classList.remove("hidden");
+                var formPage = document.getElementById("formPage");
+                if (formPage) { formPage.classList.add("hidden"); }
+                var qrPage = document.getElementById("qrPage");
+                if (qrPage) { qrPage.classList.remove("hidden"); }
                 startTimer(600);
             }
         );
@@ -219,8 +224,10 @@ function backToForm() {
     qrGenerated = false;
     if (timerInstance) clearInterval(timerInstance);
 
-    document.getElementById("qrPage")?.classList.add("hidden");
-    document.getElementById("formPage")?.classList.remove("hidden");
+    var qrPageBack = document.getElementById("qrPage");
+    if (qrPageBack) { qrPageBack.classList.add("hidden"); }
+    var formPageBack = document.getElementById("formPage");
+    if (formPageBack) { formPageBack.classList.remove("hidden"); }
 }
 
 /* =========================================================
@@ -250,10 +257,13 @@ function finalSubmission() {
     const susunanAyat = "Terima kasih <span class='font-extrabold text-slate-900'>" + namaPelangganGlobal + "</span> kerana telah berjaya membuat bayaran balik pinjaman anda di <span class='text-blue-400 font-bold'>DuitJom</span>. Pembayaran anda sedang diproses dan akan disemak dalam masa <span class='font-bold'>24 jam</span>. Anda akan menerima notifikasi melalui SMS atau email apabila pembayaran telah disahkan.";
     document.getElementById('thanksMessage').innerHTML = susunanAyat;
 
-    document.getElementById('qrPage')?.classList.add('hidden');
-    const thanksPage = document.getElementById('thanksPage');
-    thanksPage?.classList.remove('hidden');
-    thanksPage?.classList.add('flex');
+    var qrPageFinal = document.getElementById('qrPage');
+    if (qrPageFinal) { qrPageFinal.classList.add('hidden'); }
+    var thanksPage = document.getElementById('thanksPage');
+    if (thanksPage) {
+        thanksPage.classList.remove('hidden');
+        thanksPage.classList.add('flex');
+    }
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
