@@ -33,7 +33,7 @@
     window.currentAuthMethod = method;
     
     // Update tab styling
-    document.querySelectorAll('.auth-method-tab').forEach(tab => {
+    document.querySelectorAll('.login-method').forEach(tab => {
       tab.classList.toggle('is-active', tab.dataset.method === method);
     });
 
