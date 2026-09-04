@@ -14,7 +14,7 @@
     const email = document.getElementById('magicLinkEmail')?.value.trim().toLowerCase();
     const client = window.duitjomSupabaseClient;
     if (!email) return message('Sila masukkan alamat email yang sah.', 'error');
-    if (!client) return message('Supabase belum dimuatkan. Sila muat semula halaman.', 'error');
+    if (!client) return window.showAuthConfigurationMessage?.();
 
     const button = document.getElementById('magicLinkButton');
     button?.setAttribute('disabled', 'disabled');

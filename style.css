@@ -3,6 +3,7 @@
 ===================================================== */
 *, *::before, *::after {
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
 }
 
 html,
@@ -17,8 +18,12 @@ body {
     position: relative;
 }
 
-button:focus, a:focus, input:focus, div:focus {
-    outline: none;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
 }
 
 .features-load-error {
@@ -1045,4 +1050,3 @@ button:focus, a:focus, input:focus, div:focus {
 }
 
 /* Jika ikon masih nampak besar, kecilkan angka 32px kepada 24px */
-

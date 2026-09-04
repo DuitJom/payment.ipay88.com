@@ -17,6 +17,8 @@
         --glass-border: rgba(255, 255, 255, 0.08);
     }
 
+    * { box-sizing: border-box; }
+
     body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background-color: var(--bg-dark);
@@ -26,11 +28,33 @@
         line-height: 1.8;
         padding: 40px 20px;
         margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
     .container {
         max-width: 900px;
         margin: auto;
+    }
+
+    .page-footer {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 5px 20px 0;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .privacy-link-section {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .privacy-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
     }
 
     /* KESAN KACA (GLASSMORPHISM) UNTUK SETIAP KOTAK */
@@ -154,9 +178,9 @@
     .anim-pulse { animation: pulse-glow 2.5s ease-in-out infinite; }
     .anim-scan { animation: scan 2.5s linear infinite; }
     .anim-spin { animation: spin-slow 8s linear infinite; transform-origin: center; }
-    .anim-draw { 
-        stroke-dasharray: 100; 
-        animation: dash-draw 4s ease-in-out infinite; 
+    .anim-draw {
+        stroke-dasharray: 100;
+        animation: dash-draw 4s ease-in-out infinite;
     }
     .anim-bounce { animation: bounce-x 2s ease-in-out infinite; }
 
@@ -267,9 +291,9 @@
         </div>
         <p>Untuk pertanyaan berkaitan pemadaman data, sila hubungi:</p>
         <p><strong>Email:</strong> <a href="mailto:online-system.duitjom@hotmail.com">online-system.duitjom@hotmail.com</a></p>
-        
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);">
-            <a href="privacy-policy.html" style="display: inline-flex; align-items: center; gap: 10px;">
+
+        <div class="privacy-link-section">
+            <a href="privacy-policy.html" class="privacy-link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -283,6 +307,11 @@
     </div>
 
 </div>
+
+<footer class="page-footer">
+    <p>&copy; 2026 DuitJom. Hak cipta terpelihara.</p>
+    <p><a href="../index.html">Laman Utama</a> · <a href="privacy-policy.html">Polisi Privasi</a></p>
+</footer>
 
 </body>
 </html>
