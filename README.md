@@ -1,4 +1,4 @@
-# duitjom.razorpaycurlec
+# duitjom.my
 DuitJom
 
 Digital Financial Services & Payment Platform
