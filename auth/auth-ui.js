@@ -139,9 +139,13 @@
     window.addEventListener('beforeunload', () => subscription?.unsubscribe());
   };
 
-  // Jalankan init selepas Supabase dimulakan
-  document.addEventListener('DOMContentLoaded', () => {
-    // Tunggu 500ms untuk Supabase dimulakan
-    setTimeout(window.initAuthUI, 500);
-  });
+   // Jalankan init selepas Supabase dimulakan
+    document.addEventListener('duitjom:component-loaded', (event) => {
+     if (event.detail?.containerId === 'auth-login-container') {
+       setTimeout(() => {
+         window.initAuthUI();
+       }, 100);
+     }
+   });
+
 }());
