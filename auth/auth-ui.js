@@ -153,8 +153,18 @@
      if (event.detail?.containerId === 'auth-login-container') {
        setTimeout(() => {
          window.initAuthUI();
+
+         // Render Turnstile widget (anti-bot, tidak ganggu Supabase)
+         const tsContainer = document.querySelector('.cf-turnstile');
+         if (tsContainer) {
+           if (window.turnstile) {
+             window.turnstile.render(tsContainer);
+           } else {
+             setTimeout(() => {
+               if (window.turnstile) window.turnstile.render(tsContainer);
+             }, 500);
+           }
+         }
        }, 100);
      }
    });
-
-}());
