@@ -11,7 +11,7 @@
   window.enrolTotp = async function enrolTotp(event) {
     event?.preventDefault();
     const client = window.duitjomSupabaseClient;
-    if (!client) return setMessage('Supabase belum dimuatkan. Sila muat semula halaman.', 'error');
+    if (!client) return window.showAuthConfigurationMessage?.();
     const { data: factors } = await client.auth.mfa.listFactors();
     if (factors?.totp?.length) return setMessage('TOTP telah didaftarkan untuk akaun ini.', 'info');
     const { data, error } = await client.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'DuitJom Authenticator' });
@@ -32,6 +32,7 @@
   window.verifyTotp = async function verifyTotp(event) {
     event?.preventDefault();
     const client = window.duitjomSupabaseClient;
+    if (!client) return window.showAuthConfigurationMessage?.();
     const factorId = document.getElementById('totpFactorId')?.value;
     const code = (document.getElementById('totpCode')?.value || '').replace(/\D/g, '');
     if (!factorId || !/^\d{6}$/.test(code)) return setMessage('Mulakan TOTP dahulu dan masukkan kod 6 digit.', 'error');

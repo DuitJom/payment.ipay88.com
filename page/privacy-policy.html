@@ -7,12 +7,18 @@
 <title>Privacy Policy - DuitJom</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background:#f5f7f8;
     color:#333;
     line-height:1.7;
     padding:20px;
+    margin:0;
+    overflow-x:hidden;
 }
 
 .container {
@@ -95,12 +101,40 @@ h1, h2 {
     margin-top: 10px;
 }
 
+.back-link,
+.page-footer a {
+    color:#006b4f;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.back-link {
+    display:inline-block;
+    margin-bottom:20px;
+}
+
+.page-footer {
+    max-width:850px;
+    margin:20px auto 0;
+    text-align:center;
+    color:#666;
+    font-size:13px;
+}
+
+@media (max-width: 600px) {
+    body { padding:12px; }
+    .container { padding:22px 18px; }
+    .overlay-cards { grid-template-columns:1fr; }
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="container">
+
+<a class="back-link" href="../index.html">← Kembali ke DuitJom</a>
 
 <h1>Privacy Policy DuitJom</h1>
 
@@ -232,6 +266,11 @@ Jika anda mempunyai pertanyaan berkaitan privasi, sila hubungi:
 </p>
 
 </div>
+
+<footer class="page-footer">
+    <p>&copy; 2026 DuitJom. Hak cipta terpelihara.</p>
+    <p><a href="term-conditional.html">Terma &amp; Syarat (FAQ)</a> · <a href="data-deletion.html">Data Pengguna</a></p>
+</footer>
 
 </body>
 </html>

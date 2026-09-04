@@ -1,13 +1,31 @@
-<!-- Auth Login Component for Sidebar -->
-<div id="loginContainer" class="login-card">
+<!-- Auth Login Component for Homepage -->
+<div id="loginContainer" data-auth-sign-in class="login-card">
   <!-- Header -->
   <p class="login-kicker">SUPABASE AUTH</p>
   <h3 class="login-title">Log Masuk</h3>
-  <p class="login-subtitle">Pilih kaedah log masuk yang anda prefer</p>
+  <p class="login-subtitle">Pilih kaedah log masuk yang anda mahu gunakan.</p>
+
+  <!-- Google OAuth -->
+  <button
+    type="button"
+    class="login-provider-button"
+    data-google-sign-in
+    onclick="window.signInWithGoogle(event)">
+    <svg class="google-provider-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.22z"/>
+      <path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.5z"/>
+      <path fill="#FBBC05" d="M6.54 13.59A5.86 5.86 0 0 1 6.23 12c0-.55.11-1.09.31-1.59V7.88H3.29A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.12l3.25-2.53z"/>
+      <path fill="#EA4335" d="M12 6.38c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.84 3.46 14.63 2.5 12 2.5a9.75 9.75 0 0 0-8.71 5.38l3.25 2.53C7.31 8.1 9.46 6.38 12 6.38z"/>
+    </svg>
+    Sign in with Google
+  </button>
+
+  <div class="login-divider">atau</div>
 
   <!-- Method Switcher (Email / Phone / TOTP) -->
   <div class="login-methods">
     <button 
+      type="button"
       class="login-method active" 
       data-method="email" 
       onclick="window.switchAuthMethod('email')" 
@@ -15,6 +33,7 @@
       ✉️ Email
     </button>
     <button 
+      type="button"
       class="login-method" 
       data-method="phone" 
       onclick="window.switchAuthMethod('phone')" 
@@ -22,6 +41,7 @@
       📱 Telefon
     </button>
     <button 
+      type="button"
       class="login-method" 
       data-method="totp" 
       onclick="window.switchAuthMethod('totp')" 
@@ -31,7 +51,7 @@
   </div>
 
   <!-- Cloudflare Turnstile - Anti-bot verification -->
-  <div class="cf-turnstile" data-sitekey="0x4AAAAAAEmbWsa84bSUfE7X"></div>
+  <div class="turnstile-placeholder" data-sitekey=""></div>
 
   <!-- ===== EMAIL MAGIC LINK PANEL ===== -->
   <div id="emailPanel" class="login-panel">
@@ -43,6 +63,7 @@
       required>
     <p class="login-help">Kami akan hantar pautan log masuk ke email anda. Tiada kata laluan diperlukan.</p>
     <button 
+      type="button"
       class="login-primary-button" 
       id="magicLinkButton" 
       onclick="window.sendMagicLink(event)">
@@ -65,6 +86,7 @@
     </div>
     <p class="login-help">Masukkan nombor Malaysia anda. Kami akan hantar kod OTP 6 digit melalui SMS.</p>
     <button 
+      type="button"
       class="login-primary-button" 
       id="sendPhoneOtpButton" 
       onclick="window.sendPhoneOtp(event)">
@@ -83,6 +105,7 @@
         pattern="[0-9]{6}"
         required>
       <button 
+        type="button"
         class="login-secondary-button" 
         onclick="window.verifyPhoneOtp(event)" 
         style="margin-top: 0.75rem;">
@@ -117,6 +140,7 @@
         required>
       <input type="hidden" id="totpFactorId">
       <button 
+        type="button"
         class="login-secondary-button" 
         onclick="window.verifyTotp(event)" 
         style="margin-top: 0.75rem;">
@@ -126,6 +150,7 @@
 
     <!-- Enroll Button -->
     <button 
+      type="button"
       class="login-primary-button" 
       id="enrollTotpButton" 
       onclick="window.enrolTotp(event)">
@@ -134,19 +159,13 @@
   </div>
 
   <!-- Message/Notification Area -->
-  <div id="loginMessage" class="login-message"></div>
+  <div id="loginMessage" class="login-message" data-auth-message></div>
 </div>
 
 <!-- ===== USER INFO & LOGOUT (Shown when logged in) ===== -->
-<div id="userInfo" class="login-card hidden">
+<div id="userInfo" data-auth-account class="login-card hidden">
   <p class="login-kicker">AKAUN ANDA</p>
   <h3 class="login-title">Log Masuk Berjaya</h3>
-  <p class="login-subtitle">Email: <span id="userEmail"></span></p>
-  <button 
-    class="login-secondary-button" 
-    id="logoutButton" 
-    onclick="window.logoutUser()" 
-    style="margin-top: 1rem;">
-    Log Keluar
-  </button>
+  <p class="login-subtitle">Akaun: <span id="userEmail"></span></p>
+  <p class="login-help">Gunakan butang Teruskan atau Log Keluar di bawah untuk langkah seterusnya.</p>
 </div>

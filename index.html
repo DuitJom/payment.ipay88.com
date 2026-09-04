@@ -38,7 +38,7 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 </head>
-<body class="font-sans bg-[#FAF6F0] text-gray-900 min-h-screen flex flex-col pt-[72px]">
+<body data-page="home" class="font-sans bg-[#FAF6F0] text-gray-900 min-h-screen flex flex-col pt-[72px] overflow-x-hidden">
 
     <!-- GLOBAL FIXED NAVBAR UNTUK SEMUA HALAMAN -->
     <header class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-100">
@@ -66,7 +66,7 @@
                 </div>
 
                 <!-- Butang Hamburger -->
-                <button onclick="openSidebar()" class="text-gray-500 hover:text-black transition">
+                <button type="button" onclick="openSidebar()" class="text-gray-500 hover:text-black transition" aria-label="Buka menu">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
             </div>
@@ -74,7 +74,7 @@
     </header>
 
     <div id="sidebar-container"></div>
-    <div id="auth-login-container"></div>
+    <div id="auth-login-container" class="w-full max-w-md mx-auto px-4 pt-6" aria-live="polite"></div>
 
     <!-- =========================================================
          MAIN PAGE — DIPERBAIKI
@@ -127,12 +127,17 @@
                 </div>
             </div>
 
-            <!-- Pindahkan ID dan 'hidden' ke div pembungkus ini -->
-            <div id="btnPembayaranPinjaman" class="hidden w-full max-w-xs mb-16">
-                <!-- Butang Pembayaran (Sedia Ada) -->
-                <button onclick="goToPaymentPage()" class="w-full bg-green-300 hover:bg-green-300 text-black font-semibold text-md px-6 py-4 rounded-xl shadow-lg shadow-gray-400/30 transition duration-200 flex justify-center items-center gap-2">
-                    Teruskan <i class="fas fa-arrow-right text-sm"></i>
-                </button>
+            <div id="btnPembayaranPinjaman" class="hidden w-full max-w-xs mb-10 rounded-2xl border border-emerald-100 bg-white/80 p-4 shadow-sm">
+                <p class="text-[10px] font-bold uppercase tracking-wide text-emerald-700">Log masuk berjaya</p>
+                <p id="authUserLabel" class="mt-1 truncate text-sm font-semibold text-slate-700" aria-live="polite"></p>
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <button type="button" onclick="goToPaymentPage()" class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600 transition">
+                        Teruskan <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" onclick="window.logoutUser()" class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 transition">
+                        <i class="fas fa-right-from-bracket text-xs" aria-hidden="true"></i> Log Keluar
+                    </button>
+                </div>
             </div>
 
             <!-- DUITJOM NEWS PREMIUM SLIDER -->
@@ -321,11 +326,11 @@
 
 
 <!-- FOOTER LEGAL LINKS -->
-<footer class="bg-[#111827] text-gray-400 py-6 text-xs text-center border-t border-gray-800 w-full">
+<footer id="siteFooter" class="bg-[#111827] text-gray-400 py-6 text-xs text-center border-t border-gray-800 w-full">
     <p>&copy; 2026 DuitJom. Hak cipta terpelihara.</p>
     <p class="mt-3 flex flex-wrap justify-center gap-2 px-4">
         <a href="page/privacy-policy.html" class="hover:text-white transition">Privasi Pengguna</a> |
-        <a href="page/term-conditional.html" class="hover:text-white transition">Terma & Syarat(FAQ)</a> |
+        <a href="page/term-conditional.html" class="hover:text-white transition">Terma &amp; Syarat (FAQ)</a> |
         <a href="page/data-deletion.html" class="hover:text-white transition">Data Pengguna</a>
     </p>
 </footer>
@@ -507,14 +512,15 @@
     <script>
         function goToPaymentPage() {
             document.getElementById('mainPage')?.classList.add('hidden');
+            document.getElementById('auth-login-container')?.classList.add('hidden');
+            document.getElementById('siteFooter')?.classList.add('hidden');
             document.getElementById('paymentPage')?.classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function goToNextStepPage(event) {
             event?.preventDefault();
-            document.getElementById('paymentPage')?.classList.add('hidden');
-            document.getElementById('nextStepPage')?.classList.remove('hidden');
+            generateQR();
         }
 
         function formatIC(input) {

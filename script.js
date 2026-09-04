@@ -1,13 +1,17 @@
 // =====================================================
 // SUPABASE CONFIGURATION
 // =====================================================
-// PASTE YOUR SUPABASE CREDENTIALS HERE:
-const SUPABASE_URL = "YOUR_SUPABASE_URL_HERE";
-const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+// Masukkan URL projek dan publishable/anon key apabila sedia.
+// Jangan gunakan service_role key dalam kod frontend.
+const SUPABASE_URL = "";
+const SUPABASE_PUBLISHABLE_KEY = "";
 const DUITJOM_AUTH_REDIRECT_URL = window.location.origin + window.location.pathname;
 
 // Initialize Supabase Client
-const supabaseClient = window.supabase
+const isSupabaseConfigured = Boolean(
+  SUPABASE_URL.trim() && SUPABASE_PUBLISHABLE_KEY.trim() && window.supabase
+);
+const supabaseClient = isSupabaseConfigured
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
         persistSession: true,
@@ -20,9 +24,14 @@ const supabaseClient = window.supabase
 // Namespaced for safe browser use
 window.duitjomSupabaseClient = supabaseClient;
 window.DUITJOM_AUTH_REDIRECT_URL = DUITJOM_AUTH_REDIRECT_URL;
+window.showAuthConfigurationMessage = function showAuthConfigurationMessage() {
+  const message = 'Log masuk belum dikonfigurasi. Masukkan SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY di script.js.';
+  if (window.setLoginMessage) window.setLoginMessage(message, 'error');
+  else alert(message);
+};
 
 if (!supabaseClient) {
-  console.warn('Supabase client not initialized. Check your credentials in script.js');
+  console.info('Supabase Auth menunggu URL projek dan publishable key dalam script.js.');
 }
 
 // =====================================================
@@ -35,6 +44,9 @@ let namaPelangganGlobal = "";
 function openSidebar() {
     const overlay = document.getElementById('sidebarOverlay');
     const menu = document.getElementById('sidebarMenu');
+    if (!overlay || !menu) return;
+
+    document.body.style.overflowY = 'hidden';
     overlay.classList.remove('hidden');
     setTimeout(() => {
         overlay.classList.remove('opacity-0');
@@ -45,6 +57,9 @@ function openSidebar() {
 function closeSidebar() {
     const overlay = document.getElementById('sidebarOverlay');
     const menu = document.getElementById('sidebarMenu');
+    if (!overlay || !menu) return;
+
+    document.body.style.overflowY = '';
     overlay.classList.add('opacity-0');
     menu.classList.add('translate-x-full');
     setTimeout(() => {
@@ -115,21 +130,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /* =========================================================
-   FEATURE CARD ICON SIZING
-========================================================= */
-.live-icon svg {
-    width: 32px !important;
-    height: 32px !important;
-    stroke-width: 1.5 !important;
-}
-
-/* =========================================================
    TIMER FUNCTIONALITY
 ========================================================= */
 function startTimer(durationInSeconds) {
     let remainingSeconds = durationInSeconds;
     const timerDisplay = document.getElementById("timerDisplay");
-    const qrPage = document.getElementById("qrPage");
 
     if (timerInstance) clearInterval(timerInstance);
 
@@ -145,7 +150,8 @@ function startTimer(durationInSeconds) {
 
         if (remainingSeconds <= 0) {
             clearInterval(timerInstance);
-            if (qrPage) qrPage.classList.add("hidden");
+            backToForm();
+            return;
         }
         remainingSeconds--;
     }
@@ -187,32 +193,20 @@ function generateQR() {
 
     try {
         qrCodeElement.innerHTML = "";
-        QRCode.toCanvas(
-            qrCodeElement,
-            qrData,
-            {
-                errorCorrectionLevel: "H",
-                type: "image/png",
-                width: 200,
-                margin: 2,
-                color: { dark: "#000", light: "#FFF" }
-            },
-            function (error) {
-                if (error) {
-                    console.error(error);
-                    alert("Gagal menjana kod QR.");
-                    qrGenerated = false;
-                    return;
-                }
-                console.log("QR Code generated successfully");
+        if (typeof QRCode !== "function") throw new Error("Pustaka QRCode tidak tersedia");
 
-                var formPage = document.getElementById("formPage");
-                if (formPage) { formPage.classList.add("hidden"); }
-                var qrPage = document.getElementById("qrPage");
-                if (qrPage) { qrPage.classList.remove("hidden"); }
-                startTimer(600);
-            }
-        );
+        new QRCode(qrCodeElement, {
+            text: qrData,
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        var paymentPage = document.getElementById("paymentPage");
+        if (paymentPage) paymentPage.classList.add("hidden");
+        var qrPage = document.getElementById("qrPage");
+        if (qrPage) qrPage.classList.remove("hidden");
+        startTimer(600);
     } catch (err) {
         console.error("QR Code generation error:", err);
         alert("Ralat semasa menjana kod QR.");
@@ -226,8 +220,8 @@ function backToForm() {
 
     var qrPageBack = document.getElementById("qrPage");
     if (qrPageBack) { qrPageBack.classList.add("hidden"); }
-    var formPageBack = document.getElementById("formPage");
-    if (formPageBack) { formPageBack.classList.remove("hidden"); }
+    var paymentPageBack = document.getElementById("paymentPage");
+    if (paymentPageBack) { paymentPageBack.classList.remove("hidden"); }
 }
 
 /* =========================================================
@@ -293,7 +287,7 @@ function loadComponent(containerId, filePath) {
     });
 }
 
-// Features belong to the sign-in view only; auth-ui calls this after confirming no active session.
+// features.html ialah partial homepage sahaja.
 let loginFeaturesLoaded = false;
 window.loadLoginFeatures = function loadLoginFeatures() {
   if (loginFeaturesLoaded) return;
@@ -307,6 +301,7 @@ document.addEventListener("DOMContentLoaded", function() {
   loadComponent('auth-login-container', 'components/auth-login.html');
   loadComponent('tutorial-modal-container', 'components/tutorial-modal.html');
   loadComponent('scammer-modal-container', 'components/scammer-modal.html');
+  if (document.body.dataset.page === 'home') window.loadLoginFeatures();
 });
 
 /* =========================================================
@@ -317,7 +312,9 @@ function validateDJCust(input) {
     const value = input.value.toUpperCase();
     input.value = value;
     
-    if (value.length > 0 && !/^(DJ|CUST)/.test(value)) {
+    const isValid = /^(?:DJ|CUST)[0-9/]+$/.test(value);
+
+    if (value.length > 0 && !isValid) {
         errorElement.classList.remove('hidden');
         input.classList.add('border-red-500');
     } else {
@@ -325,3 +322,101 @@ function validateDJCust(input) {
         input.classList.remove('border-red-500');
     }
 }
+
+/* =========================================================
+   SIDEBAR & MODAL ACTIONS
+========================================================= */
+function sidebarHomeAction() {
+    closeSidebar();
+}
+
+function aboutUsAction() {
+    closeSidebar();
+}
+
+function blogAction() {
+    closeSidebar();
+}
+
+function applyNowAction() {
+    window.open('https://www.duitjom.com/', '_blank', 'noopener,noreferrer');
+}
+
+function packageAction() {
+    closeSidebar();
+    window.open('https://www.duitjom.com/', '_blank', 'noopener,noreferrer');
+}
+
+function closeTutorialModal() {
+    document.getElementById('tutorialModal')?.classList.add('hidden');
+    document.getElementById('scammerModal')?.classList.remove('hidden');
+}
+
+function closeScammerModal() {
+    document.getElementById('scammerModal')?.classList.add('hidden');
+}
+
+function openEmailPopup() {
+    const overlay = document.getElementById('emailPopupOverlay');
+    const popup = document.getElementById('emailPopup');
+    const popupBox = document.getElementById('emailPopupBox');
+    if (!overlay || !popup || !popupBox) return;
+
+    overlay.classList.remove('hidden');
+    popup.classList.remove('hidden');
+    popup.classList.add('flex');
+    requestAnimationFrame(() => {
+        overlay.classList.replace('opacity-0', 'opacity-100');
+        popupBox.classList.remove('scale-95', 'opacity-0');
+        popupBox.classList.add('scale-100', 'opacity-100');
+    });
+}
+
+function closeEmailPopup() {
+    const overlay = document.getElementById('emailPopupOverlay');
+    const popup = document.getElementById('emailPopup');
+    const popupBox = document.getElementById('emailPopupBox');
+    if (!overlay || !popup || !popupBox) return;
+
+    overlay.classList.replace('opacity-100', 'opacity-0');
+    popupBox.classList.remove('scale-100', 'opacity-100');
+    popupBox.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        popup.classList.add('hidden');
+        popup.classList.remove('flex');
+    }, 300);
+}
+
+async function copyDuitjomEmail() {
+    const email = document.getElementById('duitjomEmail')?.textContent.trim();
+    if (!email) return;
+
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(email);
+        } else {
+            const input = document.createElement('textarea');
+            input.value = email;
+            input.style.position = 'fixed';
+            input.style.opacity = '0';
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            input.remove();
+        }
+
+        document.getElementById('copyIcon')?.classList.add('hidden');
+        document.getElementById('copiedIcon')?.classList.remove('hidden');
+        document.getElementById('copiedStatus')?.classList.remove('hidden');
+    } catch (error) {
+        console.error('Copy email gagal:', error);
+    }
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeEmailPopup();
+        closeSidebar();
+    }
+});
