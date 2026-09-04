@@ -2,8 +2,9 @@
   // =====================================================
   // GLOBAL AUTH STATE & MESSAGE HANDLER
   // =====================================================
-  window.currentAuthMethod = 'email'; // 'email', 'phone', 'totp'
-
+     window.currentAuthMethod = 'email'; // 'email', 'phone', 'totp'
+     let authUIInitialized = false;
+    
   /**
    * Displays a login message to the user with appropriate styling based on message type.
    * @param {string} text - The message text to display
@@ -116,28 +117,36 @@
    * @returns {Promise<void>}
    */
   window.initAuthUI = async function initAuthUI() {
-    const client = window.duitjomSupabaseClient;
-    if (!client) {
-      console.error('Supabase client not initialized');
-      window.updateAuthUI(null);
-      return;
-    }
+  if (authUIInitialized) return;
+  authUIInitialized = true;
 
-    // Dapatkan session semasa
-    const { data, error } = await client.auth.getSession();
-    if (error) console.error('Session error:', error);
-    
-    window.updateAuthUI(data?.session || null);
+  const client = window.duitjomSupabaseClient;
 
-    // Dengarkan perubahan auth state
-    const { data: { subscription } } = client.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event);
-      window.updateAuthUI(session);
-    });
+  if (!client) {
+    console.error('Supabase client not initialized');
+    window.updateAuthUI(null);
+    return;
+  }
 
-    // Cleanup subscription pada unload
-    window.addEventListener('beforeunload', () => subscription?.unsubscribe());
-  };
+  const { data, error } = await client.auth.getSession();
+
+  if (error) {
+    console.error('Session error:', error);
+  }
+
+  window.updateAuthUI(data?.session || null);
+
+  const {
+    data: { subscription }
+  } = client.auth.onAuthStateChange((event, session) => {
+    console.log('Auth state changed:', event);
+    window.updateAuthUI(session);
+  });
+
+  window.addEventListener('beforeunload', () => {
+    subscription?.unsubscribe();
+  });
+};
 
    // Jalankan init selepas Supabase dimulakan
     document.addEventListener('duitjom:component-loaded', (event) => {
