@@ -4,56 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DuitJom - Log Masuk</title>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body>
 
-  <div style="text-align: center; margin-top: 50px;">
+  <div id="auth-login-container" style="text-align: center; margin-top: 50px;">
     <h2>Log Masuk ke DuitJom</h2>
-    <button id="btn-login" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+    
+    <!-- Butang Google menggunakan handler dari auth-ui.js -->
+    <button 
+      type="button" 
+      data-google-sign-in 
+      onclick="window.signInWithGoogle(event)" 
+      style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
       Log Masuk dengan Google
     </button>
   </div>
 
-  <!-- Gunakan type="module" supaya kod import Firebase dari CDN berfungsi -->
-  <script type="module">
-    // 1. Import SDK Firebase daripada CDN Google
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  <!-- Bekas reCAPTCHA untuk Phone OTP -->
+  <div id="recaptcha-container"></div>
 
-    // 2. Konfigurasi projek Firebase anda (duitjom-sign-up-in)
-    const firebaseConfig = {
-      apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
-      authDomain: "duitjom-sign-up-in.firebaseapp.com",
-      projectId: "duitjom-sign-up-in",
-      storageBucket: "duitjom-sign-up-in.firebasestorage.app",
-      messagingSenderId: "246834525616",
-      appId: "1:246834525616:web:a8429bda0166e6e03c1275",
-      measurementId: "G-T52Q57SJC4"
-    };
+  <!-- Panggil fail JS di bahagian bawah body secara bersiri -->
+  <script type="module" src="firebase-config.js"></script>
+  <script src="auth-ui.js"></script>
+  <script src="email-magic-link.js"></script>
+  <script src="phone-otp.js"></script>
+  <script src="totp.js"></script>
 
-    // 3. Mulakan Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    // 4. Sediakan fungsi klik butang untuk Log Masuk Google
-    document.getElementById("btn-login").addEventListener("click", () => {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const user = result.user;
-          alert("Log masuk berjaya! Selamat datang, " + user.displayName);
-          console.log("Pengguna:", user);
-          
-          // Seterusnya: Anda boleh alihkan pengguna ke halaman dashboard anda
-          // window.location.href = "dashboard.html";
-        })
-        .catch((error) => {
-          console.error("Ralat log masuk:", error);
-          alert("Gagal log masuk: " + error.message);
-        });
-    });
-  </script>
 </body>
 </html>
