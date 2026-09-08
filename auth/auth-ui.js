@@ -1,6 +1,6 @@
 (function () {
   let authUIInitialized = false;
-  let currentSession = null;
+  let currentUser = null;
   window.currentAuthMethod = 'email';
 
   window.setLoginMessage = function setLoginMessage(text, type = 'info') {
@@ -18,10 +18,11 @@
     });
   };
 
-  function requireClient() {
-    const client = window.duitjomSupabaseClient;
-    if (!client) window.showAuthConfigurationMessage?.();
-    return client;
+  // 1. Dapatkan Firebase Auth instance daripada window
+  function requireAuth() {
+    const auth = window.duitjomFirebaseAuth;
+    if (!auth) window.showAuthConfigurationMessage?.();
+    return auth;
   }
 
   function setGoogleButtonsDisabled(disabled) {
@@ -45,18 +46,16 @@
     window.setLoginMessage('');
   };
 
+  // 2. Google Sign-In menggunakan Firebase
   window.signInWithGoogle = async function signInWithGoogle(event) {
     event?.preventDefault();
-    const client = requireClient();
-    if (!client) return;
+    const auth = requireAuth();
+    if (!auth) return;
 
     setGoogleButtonsDisabled(true);
     try {
-      const { error } = await client.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.DUITJOM_AUTH_REDIRECT_URL }
-      });
-      if (error) throw error;
+      const provider = new window.firebaseAuth.GoogleAuthProvider();
+      await window.firebaseAuth.signInWithPopup(auth, provider);
     } catch (error) {
       console.error('Google Sign-In gagal:', error);
       window.setLoginMessage('Google Sign-In gagal: ' + error.message, 'error');
@@ -64,6 +63,7 @@
     }
   };
 
+  // 3. Email Magic Link (Gantian untuk OTP Email)
   window.sendEmailOTP = async function sendEmailOTP() {
     const emailInput = document.getElementById('otpEmail');
     const email = emailInput?.value.trim().toLowerCase();
@@ -71,44 +71,52 @@
       emailInput?.focus();
       return window.setLoginMessage('Sila masukkan alamat email yang sah.', 'error');
     }
-    const client = requireClient();
-    if (!client) return;
+    const auth = requireAuth();
+    if (!auth) return;
 
-    const { error } = await client.auth.signInWithOtp({ email });
-    if (error) {
-      console.error('Email OTP gagal:', error);
-      return window.setLoginMessage('OTP tidak dapat dihantar: ' + error.message, 'error');
+    const actionCodeSettings = {
+      url: window.DUITJOM_AUTH_REDIRECT_URL || window.location.href,
+      handleCodeInApp: true,
+    };
+
+    try {
+      await window.firebaseAuth.sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      window.localStorage.setItem('emailForSignIn', email);
+      document.getElementById('otpVerificationSection')?.classList.remove('hidden');
+      window.setLoginMessage('Pautan log masuk telah dihantar ke email anda.', 'success');
+    } catch (error) {
+      console.error('Email Link gagal:', error);
+      window.setLoginMessage('Pautan log masuk tidak dapat dihantar: ' + error.message, 'error');
     }
-
-    document.getElementById('otpVerificationSection')?.classList.remove('hidden');
-    window.setLoginMessage('Kod OTP telah dihantar ke email anda.', 'success');
   };
 
+  // Pengesahan Pautan Email (Jika pengguna menekan pautan email)
   window.verifyEmailOTP = async function verifyEmailOTP() {
-    const email = document.getElementById('otpEmail')?.value.trim().toLowerCase();
-    const token = (document.getElementById('otpCode')?.value || '').replace(/\D/g, '');
-    if (!email || !/^\d{6}$/.test(token)) {
-      return window.setLoginMessage('Masukkan email dan kod OTP 6 digit.', 'error');
-    }
-    const client = requireClient();
-    if (!client) return;
+    const auth = requireAuth();
+    if (!auth) return;
 
-    const { data, error } = await client.auth.verifyOtp({ email, token, type: 'email' });
-    if (error) {
-      console.error('Pengesahan OTP gagal:', error);
-      return window.setLoginMessage('Kod OTP tidak sah atau telah tamat tempoh.', 'error');
+    if (window.firebaseAuth.isSignInWithEmailLink(auth, window.location.href)) {
+      let email = window.localStorage.getItem('emailForSignIn');
+      if (!email) {
+        email = window.prompt('Sila masukkan email anda untuk pengesahan:');
+      }
+      try {
+        const result = await window.firebaseAuth.signInWithEmailLink(auth, email, window.location.href);
+        window.localStorage.removeItem('emailForSignIn');
+        window.updateAuthUI(result.user);
+        window.closeSidebar?.();
+      } catch (error) {
+        console.error('Pengesahan pautan email gagal:', error);
+        window.setLoginMessage('Pautan log masuk tidak sah atau telah tamat tempoh.', 'error');
+      }
     }
-
-    window.updateAuthUI(data.session);
-    window.closeSidebar?.();
   };
 
-  window.updateAuthUI = function updateAuthUI(session) {
-    currentSession = session || null;
-    const isLoggedIn = Boolean(currentSession?.user);
-    const user = currentSession?.user;
-    const metadata = user?.user_metadata || {};
-    const displayName = metadata.full_name || metadata.name || user?.email || user?.phone || '';
+  // 4. Update UI berdasarkan Firebase User Object
+  window.updateAuthUI = function updateAuthUI(user) {
+    currentUser = user || null;
+    const isLoggedIn = Boolean(currentUser);
+    const displayName = currentUser?.displayName || currentUser?.email || currentUser?.phoneNumber || '';
 
     document.querySelectorAll('[data-auth-sign-in]').forEach((section) => {
       section.classList.toggle('hidden', isLoggedIn);
@@ -126,33 +134,31 @@
     const authUserLabel = document.getElementById('authUserLabel');
     const userEmail = document.getElementById('userEmail');
     if (authUserLabel) authUserLabel.textContent = displayName;
-    if (userEmail) userEmail.textContent = user?.email || user?.phone || displayName;
+    if (userEmail) userEmail.textContent = currentUser?.email || currentUser?.phoneNumber || displayName;
 
     if (!isLoggedIn) window.setLoginMessage('');
   };
 
+  // 5. Log keluar pengguna
   window.logoutUser = async function logoutUser() {
-    const client = requireClient();
-    if (!client) return;
+    const auth = requireAuth();
+    if (!auth) return;
 
-    import { signOut } from "firebase/auth";
-
-    await signOut(auth);
-
-    if (error) {
+    try {
+      await window.firebaseAuth.signOut(auth);
+      window.updateAuthUI(null);
+      window.closeSidebar?.();
+      document.getElementById('paymentPage')?.classList.add('hidden');
+      document.getElementById('qrPage')?.classList.add('hidden');
+      document.getElementById('thanksPage')?.classList.add('hidden');
+      document.getElementById('mainPage')?.classList.remove('hidden');
+      document.getElementById('auth-login-container')?.classList.remove('hidden');
+      document.getElementById('siteFooter')?.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
       console.error('Logout gagal:', error);
-      return window.setLoginMessage('Log keluar gagal: ' + error.message, 'error');
+      window.setLoginMessage('Log keluar gagal: ' + error.message, 'error');
     }
-
-    window.updateAuthUI(null);
-    window.closeSidebar?.();
-    document.getElementById('paymentPage')?.classList.add('hidden');
-    document.getElementById('qrPage')?.classList.add('hidden');
-    document.getElementById('thanksPage')?.classList.add('hidden');
-    document.getElementById('mainPage')?.classList.remove('hidden');
-    document.getElementById('auth-login-container')?.classList.remove('hidden');
-    document.getElementById('siteFooter')?.classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   function renderTurnstileIfConfigured() {
@@ -165,24 +171,25 @@
     container.dataset.rendered = 'true';
   }
 
+  // 6. Listener Status Pengesahan Firebase
   window.initAuthUI = async function initAuthUI() {
     if (authUIInitialized) return;
     authUIInitialized = true;
 
-    const client = window.duitjomSupabaseClient;
-    if (!client) {
+    const auth = window.duitjomFirebaseAuth;
+    if (!auth) {
       window.updateAuthUI(null);
-      window.setLoginMessage('Log masuk tersedia selepas konfigurasi Supabase dilengkapkan.', 'info');
+      window.setLoginMessage('Log masuk tersedia selepas konfigurasi Firebase dilengkapkan.', 'info');
       return;
     }
 
-    const { data, error } = await client.auth.getSession();
-    if (error) console.error('Sesi Supabase gagal dimuatkan:', error);
-    window.updateAuthUI(data?.session || null);
-
-    client.auth.onAuthStateChange((_event, session) => {
-      window.updateAuthUI(session);
+    // Listener automatik Firebase apabila status log masuk berubah
+    window.firebaseAuth.onAuthStateChanged(auth, (user) => {
+      window.updateAuthUI(user);
     });
+
+    // Semak jika pengguna sampai melalui Email Link
+    window.verifyEmailOTP();
   };
 
   document.addEventListener('duitjom:component-loaded', (event) => {
@@ -192,7 +199,7 @@
     }
 
     if (event.detail?.containerId === 'sidebar-container') {
-      window.updateAuthUI(currentSession);
+      window.updateAuthUI(currentUser);
     }
   });
 }());
