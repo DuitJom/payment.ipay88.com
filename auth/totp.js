@@ -1,44 +1,65 @@
 (function () {
   const setMessage = (text, type) => window.setLoginMessage?.(text, type);
 
+  // Menyimpan secret TOTP sementara menunggu pengesahan kod
+  let totpSecretInstance = null;
+
   /**
-   * Enrolls the user in TOTP (Time-based One-Time Password) multi-factor authentication.
-   * Generates a QR code and secret for use with authenticator apps.
-   * @async
-   * @param {Event} [event] - The form submit event to prevent default behavior
-   * @returns {Promise<void>}
+   * Memulakan pendaftaran TOTP MFA pada Firebase.
    */
   window.enrolTotp = async function enrolTotp(event) {
     event?.preventDefault();
-    const client = window.duitjomSupabaseClient;
-    if (!client) return window.showAuthConfigurationMessage?.();
-    const { data: factors } = await client.auth.mfa.listFactors();
-    if (factors?.totp?.length) return setMessage('TOTP telah didaftarkan untuk akaun ini.', 'info');
-    const { data, error } = await client.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'DuitJom Authenticator' });
-    if (error) return setMessage(`TOTP tidak dapat dimulakan: ${error.message}`, 'error');
-    document.getElementById('totpQrCode').src = data.totp.qr_code;
-    document.getElementById('totpSecret').textContent = data.totp.secret;
-    document.getElementById('totpFactorId').value = data.id;
-    document.getElementById('totpSetupDetails')?.classList.remove('hidden');
-    setMessage('Imbas QR dengan aplikasi authenticator, kemudian masukkan kod 6 digit.', 'success');
+    const auth = window.duitjomFirebaseAuth;
+    const user = auth?.currentUser;
+
+    if (!auth || !user) return setMessage('Sila log masuk dahulu untuk mendaftar TOTP.', 'error');
+
+    try {
+      const multiFactorSession = await window.firebaseAuth.multiFactor(user).getSession();
+      totpSecretInstance = await window.firebaseAuth.TotpMultiFactorGenerator.generateSecret(multiFactorSession);
+
+      // Dapatkan URL/QR Code daripada Firebase TOTP secret
+      const qrCodeUrl = totpSecretInstance.generateQrCodeUrl(user.email || 'User', 'DuitJom');
+      
+      // Jika anda menggunakan pustaka luaran untuk memapar QR Code dari URL:
+      const qrImgElement = document.getElementById('totpQrCode');
+      if (qrImgElement) {
+        qrImgElement.src = `https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent(qrCodeUrl)}`;
+      }
+
+      document.getElementById('totpSecret').textContent = totpSecretInstance.secretKey;
+      document.getElementById('totpSetupDetails')?.classList.remove('hidden');
+      setMessage('Imbas QR dengan aplikasi authenticator, kemudian masukkan kod 6 digit.', 'success');
+    } catch (error) {
+      console.error('TOTP Enrollment gagal:', error);
+      setMessage(`TOTP tidak dapat dimulakan: ${error.message}`, 'error');
+    }
   };
 
   /**
-   * Verifies the TOTP code from the user's authenticator app and completes the enrollment process.
-   * @async
-   * @param {Event} [event] - The form submit event to prevent default behavior
-   * @returns {Promise<void>}
+   * Mengesahkan kod TOTP dan melengkapkan pendaftaran MFA.
    */
   window.verifyTotp = async function verifyTotp(event) {
     event?.preventDefault();
-    const client = window.duitjomSupabaseClient;
-    if (!client) return window.showAuthConfigurationMessage?.();
-    const factorId = document.getElementById('totpFactorId')?.value;
+    const auth = window.duitjomFirebaseAuth;
+    const user = auth?.currentUser;
     const code = (document.getElementById('totpCode')?.value || '').replace(/\D/g, '');
-    if (!factorId || !/^\d{6}$/.test(code)) return setMessage('Mulakan TOTP dahulu dan masukkan kod 6 digit.', 'error');
-    const { data: challenge, error: challengeError } = await client.auth.mfa.challenge({ factorId });
-    if (challengeError) return setMessage(`Cabaran TOTP gagal: ${challengeError.message}`, 'error');
-    const { error } = await client.auth.mfa.verify({ factorId, challengeId: challenge.id, code });
-    setMessage(error ? `Pengesahan TOTP gagal: ${error.message}` : 'TOTP berjaya diaktifkan.', error ? 'error' : 'success');
+
+    if (!totpSecretInstance || !/^\d{6}$/.test(code)) {
+      return setMessage('Mulakan TOTP dahulu dan masukkan kod 6 digit.', 'error');
+    }
+
+    try {
+      const multiFactorAssertion = window.firebaseAuth.TotpMultiFactorGenerator.assertionForEnrollment(
+        totpSecretInstance,
+        code
+      );
+
+      await window.firebaseAuth.multiFactor(user).enroll(multiFactorAssertion, 'DuitJom Authenticator');
+      setMessage('TOTP berjaya diaktifkan.', 'success');
+    } catch (error) {
+      console.error('Pengesahan TOTP gagal:', error);
+      setMessage(`Pengesahan TOTP gagal: ${error.message}`, 'error');
+    }
   };
 }());
