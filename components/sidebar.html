@@ -1,5 +1,39 @@
 <!-- ====================================================== -->
-<!-- FIREBASE AUTHENTICATION SCRIPT (Google & Email/Password) -->
+<!-- 1. SCRIPT API RECAPTCHA (Penting: Wajib diletakkan)    -->
+<!-- ====================================================== -->
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+
+<!-- ====================================================== -->
+<!-- 2. STRUKTUR UI SIDEBAR (Mengandungi Butang reCAPTCHA)  -->
+<!-- ====================================================== -->
+<div id="sidebarGoogleSection">
+    <!-- Input Form -->
+    <input type="email" id="userEmail" placeholder="Masukkan Email">
+    <input type="password" id="userPassword" placeholder="Masukkan Kata Laluan">
+    <p id="sidebarAuthMessage" style="color: red;"></p>
+
+    <!-- BUTANG RECAPTCHA YANG TELAH DIGABUNGKAN -->
+    <!-- Butang ini akan memanggil fungsi 'onSubmit' setelah pengesahan berjaya -->
+    <button class="g-recaptcha"
+        data-sitekey="6LexGLEtAAAAANmnkuqhGTVZY7cW-E8QolJaSQmq"
+        data-callback="onSubmit"
+        data-action="submit">
+      Submit (Log Masuk)
+    </button>
+    
+    <button onclick="signInWithGoogle()">Log Masuk Google</button>
+    <button onclick="signUpWithEmail()">Daftar Akaun Baru</button>
+</div>
+
+<div id="sidebarAccountSection" class="hidden">
+    <p>Selamat kembali, <span data-auth-user-name></span></p>
+    <button onclick="logoutUser()">Log Keluar</button>
+</div>
+
+<div id="loginSpinnerOverlay" class="hidden">Sila tunggu...</div>
+
+<!-- ====================================================== -->
+<!-- 3. FIREBASE AUTHENTICATION SCRIPT                      -->
 <!-- ====================================================== -->
 <script type="module">
     // 1. Import fungsi Firebase 
@@ -54,9 +88,20 @@
         }
     });
 
-    // 5. Fungsi Log Masuk Google
+    // 5. CALLBACK RECAPTCHA (Penting: Letak pada 'window' supaya boleh dibaca dari HTML)
+    window.onSubmit = async (token) => {
+        console.log("Token reCAPTCHA berjaya dijana:", token);
+        
+        // Pilih fungsi yang nak dicetuskan. 
+        // Contoh di sini: kita terus panggil fungsi Log Masuk Email/Password (Sign In)
+        await window.loginWithEmail();
+        
+        // Pilihan: Boleh juga tukar ke window.signUpWithEmail() jika anda mahu butang tersebut berfungsi sebagai pendaftaran.
+    };
+
+    // 6. Fungsi Log Masuk Google
     window.signInWithGoogle = async (e) => {
-        e.preventDefault();
+        if(e) e.preventDefault();
         if(authMessage) authMessage.textContent = ""; 
         
         try {
@@ -70,7 +115,7 @@
         }
     };
 
-    // 6. Fungsi Log Keluar
+    // 7. Fungsi Log Keluar
     window.logoutUser = async () => {
         try {
             await signOut(auth);
@@ -79,7 +124,7 @@
         }
     };
 
-    // 7. Fungsi Daftar Akaun Baru (Sign Up Email & Password)
+    // 8. Fungsi Daftar Akaun Baru (Sign Up Email & Password)
     window.signUpWithEmail = async () => {
         const email = document.getElementById('userEmail').value;
         const password = document.getElementById('userPassword').value;
@@ -106,7 +151,7 @@
         }
     };
 
-    // 8. Fungsi Log Masuk Email/Password (Sign In)
+    // 9. Fungsi Log Masuk Email/Password (Sign In)
     window.loginWithEmail = async () => {
         const email = document.getElementById('userEmail').value;
         const password = document.getElementById('userPassword').value;
