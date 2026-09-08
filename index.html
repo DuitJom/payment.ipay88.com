@@ -31,9 +31,6 @@
     <link rel="stylesheet" href="features.css">
     <link rel="stylesheet" href="auth/login.css">
 
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
-    
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
@@ -74,7 +71,44 @@
     </header>
 
     <div id="sidebar-container"></div>
-    <div id="auth-login-container" class="w-full max-w-md mx-auto px-4 pt-6" aria-live="polite"></div>
+    <section id="firebaseAuthContainer" class="w-full max-w-md mx-auto px-4 pt-6" aria-labelledby="authTitle">
+        <div id="authLoginPanel" class="login-card">
+            <p class="login-kicker">FIREBASE AUTHENTICATION</p>
+            <h2 id="authTitle" class="login-title">Log Masuk</h2>
+            <p class="login-subtitle">Gunakan akaun Google atau email dan kata laluan anda.</p>
+
+            <button id="googleLoginButton" type="button" class="login-provider-button">
+                <svg class="google-provider-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.22z"/>
+                    <path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.5z"/>
+                    <path fill="#FBBC05" d="M6.54 13.59A5.86 5.86 0 0 1 6.23 12c0-.55.11-1.09.31-1.59V7.88H3.29A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.12l3.25-2.53z"/>
+                    <path fill="#EA4335" d="M12 6.38c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.84 3.46 14.63 2.5 12 2.5a9.75 9.75 0 0 0-8.71 5.38l3.25 2.53C7.31 8.1 9.46 6.38 12 6.38z"/>
+                </svg>
+                Log Masuk dengan Google
+            </button>
+
+            <div class="login-divider">atau</div>
+
+            <form id="emailLoginForm" class="login-panel">
+                <label for="emailInput">Email</label>
+                <input id="emailInput" type="email" autocomplete="email" placeholder="nama@example.com" required>
+
+                <label for="passwordInput" class="mt-3">Password</label>
+                <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Masukkan password" required>
+
+                <button id="emailLoginButton" type="submit" class="login-primary-button mt-4">Log Masuk Email</button>
+            </form>
+        </div>
+
+        <div id="authUserPanel" class="login-card hidden">
+            <p class="login-kicker">AKAUN ANDA</p>
+            <h2 class="login-title">Log Masuk Berjaya</h2>
+            <p id="userDisplay" class="login-subtitle" aria-live="polite"></p>
+            <button id="logoutButton" type="button" class="login-secondary-button mt-4">Log Keluar</button>
+        </div>
+
+        <p id="authMessage" class="login-message" role="status" aria-live="polite"></p>
+    </section>
 
     <!-- =========================================================
          MAIN PAGE — DIPERBAIKI
@@ -242,10 +276,10 @@
                                 </span>
                             </div>
                             <h3>
-                                Supabase Authentication
+                                Firebase Authentication
                             </h3>
                             <p>
-                                Sistem autentikasi terbaru dengan Email Magic Link, Phone OTP, dan TOTP.
+                                Sistem autentikasi modular dengan Google dan Email/Password.
                             </p>
                             <div class="news-footer">
                                 <span>
@@ -499,11 +533,121 @@
     <!-- Main Scripts -->
     <script src="script.js"></script>
     
-    <!-- Auth Modules -->
-    <script src="auth/email-magic-link.js"></script>
-    <script src="auth/phone-otp.js"></script>
-    <script src="auth/totp.js"></script>
-    <script src="auth/auth-ui.js"></script>
+    <!-- Firebase Authentication UI -->
+    <script type="module">
+        import {
+            loginWithGoogle,
+            loginWithEmail,
+            logOut,
+            monitorAuthState
+        } from "./auth.js";
+
+        const loginPanel = document.getElementById("authLoginPanel");
+        const userPanel = document.getElementById("authUserPanel");
+        const userDisplay = document.getElementById("userDisplay");
+        const authMessage = document.getElementById("authMessage");
+        const googleButton = document.getElementById("googleLoginButton");
+        const emailForm = document.getElementById("emailLoginForm");
+        const emailButton = document.getElementById("emailLoginButton");
+        const logoutButton = document.getElementById("logoutButton");
+
+        function showMessage(message, isError = false) {
+            authMessage.textContent = message;
+            authMessage.classList.toggle("text-red-600", isError);
+            authMessage.classList.toggle("text-emerald-600", !isError && Boolean(message));
+        }
+
+        async function handleGoogleLogin() {
+            googleButton.disabled = true;
+            showMessage("");
+
+            try {
+                await loginWithGoogle();
+            } catch (error) {
+                console.error("Google login gagal:", error);
+                showMessage("Log masuk Google gagal. Sila cuba lagi.", true);
+            } finally {
+                googleButton.disabled = false;
+            }
+        }
+
+        async function handleEmailLogin(event) {
+            event.preventDefault();
+            emailButton.disabled = true;
+            showMessage("");
+
+            const email = document.getElementById("emailInput").value.trim();
+            const password = document.getElementById("passwordInput").value;
+
+            try {
+                await loginWithEmail(email, password);
+            } catch (error) {
+                console.error("Email login gagal:", error);
+                showMessage("Email atau password tidak sah.", true);
+            } finally {
+                emailButton.disabled = false;
+            }
+        }
+
+        async function handleLogout() {
+            logoutButton.disabled = true;
+            showMessage("");
+
+            try {
+                await logOut();
+                document.getElementById("paymentPage")?.classList.add("hidden");
+                document.getElementById("qrPage")?.classList.add("hidden");
+                document.getElementById("thanksPage")?.classList.add("hidden");
+                document.getElementById("mainPage")?.classList.remove("hidden");
+                document.getElementById("firebaseAuthContainer")?.classList.remove("hidden");
+                document.getElementById("siteFooter")?.classList.remove("hidden");
+                window.closeSidebar?.();
+            } catch (error) {
+                console.error("Log keluar gagal:", error);
+                showMessage("Log keluar gagal. Sila cuba lagi.", true);
+            } finally {
+                logoutButton.disabled = false;
+            }
+        }
+
+        googleButton.addEventListener("click", handleGoogleLogin);
+        emailForm.addEventListener("submit", handleEmailLogin);
+        logoutButton.addEventListener("click", handleLogout);
+
+        // Kekalkan butang log keluar sedia ada pada kad pembayaran.
+        window.logoutUser = handleLogout;
+        window.signInWithGoogle = handleGoogleLogin;
+
+        let currentUser = null;
+
+        function updateAuthUI(user) {
+            const isLoggedIn = Boolean(user);
+            const displayName = user?.displayName || user?.email || "Pengguna Firebase";
+
+            loginPanel.classList.toggle("hidden", isLoggedIn);
+            userPanel.classList.toggle("hidden", !isLoggedIn);
+            document.getElementById("btnPembayaranPinjaman")?.classList.toggle("hidden", !isLoggedIn);
+            document.getElementById("authUserLabel").textContent = isLoggedIn ? displayName : "";
+            userDisplay.textContent = isLoggedIn ? displayName : "";
+            document.getElementById("sidebarGoogleSection")?.classList.add("hidden");
+            document.getElementById("sidebarAccountSection")?.classList.toggle("hidden", !isLoggedIn);
+            document.querySelectorAll("[data-auth-user-name]").forEach((element) => {
+                element.textContent = isLoggedIn ? displayName : "";
+            });
+            showMessage(isLoggedIn ? "Anda telah berjaya log masuk." : "");
+        }
+
+        monitorAuthState((user) => {
+            currentUser = user;
+            updateAuthUI(currentUser);
+        });
+
+        document.addEventListener("duitjom:component-loaded", (event) => {
+            if (event.detail?.containerId === "sidebar-container") {
+                updateAuthUI(currentUser);
+            }
+        });
+    </script>
 
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -512,7 +656,7 @@
     <script>
         function goToPaymentPage() {
             document.getElementById('mainPage')?.classList.add('hidden');
-            document.getElementById('auth-login-container')?.classList.add('hidden');
+            document.getElementById('firebaseAuthContainer')?.classList.add('hidden');
             document.getElementById('siteFooter')?.classList.add('hidden');
             document.getElementById('paymentPage')?.classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
