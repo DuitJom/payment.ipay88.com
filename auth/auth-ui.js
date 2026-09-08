@@ -135,7 +135,10 @@
     const client = requireClient();
     if (!client) return;
 
-    const { error } = await client.auth.signOut();
+    import { signOut } from "firebase/auth";
+
+    await signOut(auth);
+
     if (error) {
       console.error('Logout gagal:', error);
       return window.setLoginMessage('Log keluar gagal: ' + error.message, 'error');
