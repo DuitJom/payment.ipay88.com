@@ -8,23 +8,77 @@
 </head>
 <body>
 
-  <div id="auth-login-container" style="text-align: center; margin-top: 50px;">
+  <!-- Bekas Borang Log Masuk Utama -->
+  <div id="auth-login-container">
     <h2>Log Masuk ke DuitJom</h2>
-    
-    <!-- Butang Google menggunakan handler dari auth-ui.js -->
+
+    <!-- Messages Container -->
+    <p data-auth-message class="login-message"></p>
+
+    <!-- Google Sign-In Button -->
     <button 
       type="button" 
+      class="login-provider-button"
       data-google-sign-in 
-      onclick="window.signInWithGoogle(event)" 
-      style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+      onclick="window.signInWithGoogle(event)">
       Log Masuk dengan Google
     </button>
+
+    <!-- Tab pilihan kaedah log masuk -->
+    <div class="login-methods mt-4">
+      <button type="button" class="login-method active" data-method="email" onclick="window.switchAuthMethod('email')">Email</button>
+      <button type="button" class="login-method" data-method="phone" onclick="window.switchAuthMethod('phone')">Telefon</button>
+      <button type="button" class="login-method" data-method="totp" onclick="window.switchAuthMethod('totp')">TOTP</button>
+    </div>
+
+    <!-- Panel Email (Magic Link) -->
+    <div id="emailPanel" class="login-panel">
+      <label for="magicLinkEmail">Alamat Email</label>
+      <input type="email" id="magicLinkEmail" placeholder="nama@email.com" />
+      <button id="magicLinkButton" type="button" class="login-primary-button mt-3" onclick="window.sendMagicLink(event)">
+        Hantar pautan log masuk
+      </button>
+    </div>
+
+    <!-- Panel Telefon (SMS OTP) -->
+    <div id="phonePanel" class="login-panel hidden">
+      <label for="phoneOtpNumber">Nombor Telefon</label>
+      <div class="phone-field">
+        <span>+60</span>
+        <input type="tel" id="phoneOtpNumber" placeholder="12 345 6789" />
+      </div>
+
+      <!-- Bekas reCAPTCHA Invisible (Diperlukan oleh Firebase) -->
+      <div id="recaptcha-container"></div>
+
+      <button type="button" class="login-primary-button mt-3" onclick="window.sendPhoneOtp(event)">
+        Hantar Kod OTP
+      </button>
+
+      <div id="phoneOtpVerify" class="hidden mt-4">
+        <label for="phoneOtpCode">Kod OTP (6 Digit)</label>
+        <input type="text" id="phoneOtpCode" maxlength="6" placeholder="123456" />
+        <button type="button" class="login-secondary-button mt-2" onclick="window.verifyPhoneOtp(event)">
+          Sahkan OTP
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel TOTP (2FA) -->
+    <div id="totpPanel" class="login-panel hidden">
+      <button type="button" class="login-primary-button" onclick="window.enrolTotp(event)">Mula Daftar TOTP</button>
+      
+      <div id="totpSetupDetails" class="totp-setup hidden">
+        <img id="totpQrCode" alt="QR Code TOTP" />
+        <p>Secret: <code id="totpSecret"></code></p>
+        <input type="hidden" id="totpFactorId" />
+        <input type="text" id="totpCode" maxlength="6" placeholder="123456" class="mt-2" />
+        <button type="button" class="login-secondary-button mt-2" onclick="window.verifyTotp(event)">Sahkan Kod TOTP</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Bekas reCAPTCHA untuk Phone OTP -->
-  <div id="recaptcha-container"></div>
-
-  <!-- Panggil fail JS di bahagian bawah body secara bersiri -->
+  <!-- Panggil fail JS Firebase dan Skrip UI di BAHAGIAN BAWAH </body> -->
   <script type="module" src="firebase-config.js"></script>
   <script src="auth-ui.js"></script>
   <script src="email-magic-link.js"></script>
