@@ -1,8 +1,8 @@
 <!-- ====================================================== -->
-<!-- FIREBASE AUTHENTICATION SCRIPT (Google, OTP & Analytics) -->
+<!-- FIREBASE AUTHENTICATION SCRIPT (Google & Email/Password) -->
 <!-- ====================================================== -->
 <script type="module">
-    // 1. Import fungsi Firebase (Menggunakan versi 12.18.0)
+    // 1. Import fungsi Firebase 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
     import { 
@@ -10,10 +10,12 @@
         signInWithPopup, 
         GoogleAuthProvider, 
         onAuthStateChanged, 
-        signOut 
+        signOut,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-    // 2. FIREBASE CONFIG ANDA (Telah dikemas kini)
+    // 2. FIREBASE CONFIG ANDA
     const firebaseConfig = {
         apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
         authDomain: "duitjom-sign-up-in.firebaseapp.com",
@@ -40,7 +42,7 @@
     // 4. Pantau Status Log Masuk Pengguna
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Jika sudah login, sembunyikan borang login, tunjuk akaun aktif
+            // Jika sudah login
             if(googleSection) googleSection.classList.add('hidden');
             if(accountSection) accountSection.classList.remove('hidden');
             if(userNameElement) userNameElement.textContent = user.displayName || user.email;
@@ -59,13 +61,8 @@
         
         try {
             if(spinner) spinner.classList.remove('hidden');
-            
             await signInWithPopup(auth, googleProvider);
-            
-            setTimeout(() => {
-                if(spinner) spinner.classList.add('hidden');
-            }, 1000);
-
+            setTimeout(() => { if(spinner) spinner.classList.add('hidden'); }, 1000);
         } catch (error) {
             console.error("Ralat Log Masuk Google:", error);
             if(spinner) spinner.classList.add('hidden');
@@ -82,19 +79,47 @@
         }
     };
 
-    // 7. Dummy Function untuk Email OTP
-    window.sendEmailOTP = () => {
-        const email = document.getElementById('otpEmail').value;
-        if(email) {
-            document.getElementById('otpVerificationSection').classList.remove('hidden');
-            alert('Fungsi OTP perlu disambung ke Firebase Cloud Functions atau SendGrid.');
-        } else {
-            alert('Sila masukkan email.');
+    // 7. Fungsi Daftar Akaun Baru (Sign Up Email & Password)
+    window.signUpWithEmail = async () => {
+        const email = document.getElementById('userEmail').value;
+        const password = document.getElementById('userPassword').value;
+        if(authMessage) authMessage.textContent = "";
+
+        if(password.length < 6) {
+            alert("Kata laluan mesti melebihi 6 aksara.");
+            return;
+        }
+
+        try {
+            if(spinner) spinner.classList.remove('hidden');
+            await createUserWithEmailAndPassword(auth, email, password);
+            setTimeout(() => { if(spinner) spinner.classList.add('hidden'); }, 1000);
+        } catch (error) {
+            console.error("Ralat Daftar:", error);
+            if(spinner) spinner.classList.add('hidden');
+            
+            if(error.code === 'auth/email-already-in-use') {
+                if(authMessage) authMessage.textContent = "Email ini telah didaftarkan. Sila log masuk.";
+            } else {
+                if(authMessage) authMessage.textContent = "Gagal mendaftar. Pastikan format email betul.";
+            }
         }
     };
 
-    window.verifyEmailOTP = () => {
-        const code = document.getElementById('otpCode').value;
-        alert(`Mengesahkan kod: ${code}`);
+    // 8. Fungsi Log Masuk Email/Password (Sign In)
+    window.loginWithEmail = async () => {
+        const email = document.getElementById('userEmail').value;
+        const password = document.getElementById('userPassword').value;
+        if(authMessage) authMessage.textContent = "";
+
+        try {
+            if(spinner) spinner.classList.remove('hidden');
+            await signInWithEmailAndPassword(auth, email, password);
+            setTimeout(() => { if(spinner) spinner.classList.add('hidden'); }, 1000);
+        } catch (error) {
+            console.error("Ralat Log Masuk:", error);
+            if(spinner) spinner.classList.add('hidden');
+            if(authMessage) authMessage.textContent = "Email atau kata laluan salah.";
+        }
     };
 </script>
