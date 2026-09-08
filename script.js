@@ -1,40 +1,4 @@
 // =====================================================
-// SUPABASE CONFIGURATION
-// =====================================================
-// Masukkan URL projek dan publishable/anon key apabila sedia.
-// Jangan gunakan service_role key dalam kod frontend.
-const SUPABASE_URL = "";
-const SUPABASE_PUBLISHABLE_KEY = "";
-const DUITJOM_AUTH_REDIRECT_URL = window.location.origin + window.location.pathname;
-
-// Initialize Supabase Client
-const isSupabaseConfigured = Boolean(
-  SUPABASE_URL.trim() && SUPABASE_PUBLISHABLE_KEY.trim() && window.supabase
-);
-const supabaseClient = isSupabaseConfigured
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    })
-  : null;
-
-// Namespaced for safe browser use
-window.duitjomSupabaseClient = supabaseClient;
-window.DUITJOM_AUTH_REDIRECT_URL = DUITJOM_AUTH_REDIRECT_URL;
-window.showAuthConfigurationMessage = function showAuthConfigurationMessage() {
-  const message = 'Log masuk belum dikonfigurasi. Masukkan SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY di script.js.';
-  if (window.setLoginMessage) window.setLoginMessage(message, 'error');
-  else alert(message);
-};
-
-if (!supabaseClient) {
-  console.info('Supabase Auth menunggu URL projek dan publishable key dalam script.js.');
-}
-
-// =====================================================
 // CODE ASAL AWAK — KEKALKAN
 // =====================================================
 let timerInstance = null;
@@ -298,7 +262,6 @@ window.loadLoginFeatures = function loadLoginFeatures() {
 // JALANKAN PEMUATAN KOMPONEN BERSAMA APABILA WEB DIBUKA
 document.addEventListener("DOMContentLoaded", function() {
   loadComponent('sidebar-container', 'components/sidebar.html');
-  loadComponent('auth-login-container', 'components/auth-login.html');
   loadComponent('tutorial-modal-container', 'components/tutorial-modal.html');
   loadComponent('scammer-modal-container', 'components/scammer-modal.html');
   if (document.body.dataset.page === 'home') window.loadLoginFeatures();
