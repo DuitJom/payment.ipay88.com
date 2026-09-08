@@ -193,31 +193,34 @@
 </div>
 
 <!-- ====================================================== -->
-<!-- FIREBASE AUTHENTICATION SCRIPT (Google & OTP) -->
+<!-- FIREBASE AUTHENTICATION SCRIPT (Google, OTP & Analytics) -->
 <!-- ====================================================== -->
 <script type="module">
-    // 1. Import fungsi Firebase 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    // 1. Import fungsi Firebase (Menggunakan versi 12.18.0)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
     import { 
         getAuth, 
         signInWithPopup, 
         GoogleAuthProvider, 
         onAuthStateChanged, 
         signOut 
-    } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-    // 2. GANTI DENGAN FIREBASE CONFIG ANDA
+    // 2. FIREBASE CONFIG ANDA
     const firebaseConfig = {
-        apiKey: "API_KEY_ANDA",
-        authDomain: "DOMAIN_ANDA.firebaseapp.com",
-        projectId: "PROJECT_ID_ANDA",
-        storageBucket: "BUCKET_ANDA.appspot.com",
-        messagingSenderId: "SENDER_ID_ANDA",
-        appId: "APP_ID_ANDA"
+        apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
+        authDomain: "duitjom-sign-up-in.firebaseapp.com",
+        projectId: "duitjom-sign-up-in",
+        storageBucket: "duitjom-sign-up-in.firebasestorage.app",
+        messagingSenderId: "246834525616",
+        appId: "1:246834525616:web:43af7e37f9a14d1d3c1275",
+        measurementId: "G-8MFF6QP391"
     };
 
-    // 3. Initialize Firebase
+    // 3. Initialize Firebase, Analytics & Auth
     const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
 
@@ -228,7 +231,7 @@
     const authMessage = document.getElementById('sidebarAuthMessage');
     const spinner = document.getElementById('loginSpinnerOverlay');
 
-    // 4. Pantau Status Log Masuk Pengguna (Auth State Observer)
+    // 4. Pantau Status Log Masuk Pengguna
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // Jika sudah login, sembunyikan borang login, tunjuk akaun aktif
@@ -243,17 +246,15 @@
         }
     });
 
-    // 5. Fungsi Log Masuk Google (Dipanggil dari butang HTML)
+    // 5. Fungsi Log Masuk Google
     window.signInWithGoogle = async (e) => {
         e.preventDefault();
         authMessage.textContent = ""; 
         
         try {
-            // Tunjuk spinner loading (Pilihan - jika perlukan efek visual)
             if(spinner) spinner.classList.remove('hidden');
             
             await signInWithPopup(auth, googleProvider);
-            // Log masuk berjaya. onAuthStateChanged akan menukar UI secara automatik.
             
             setTimeout(() => {
                 if(spinner) spinner.classList.add('hidden');
@@ -266,7 +267,7 @@
         }
     };
 
-    // 6. Fungsi Log Keluar (Dipanggil dari butang Log Keluar)
+    // 6. Fungsi Log Keluar
     window.logoutUser = async () => {
         try {
             await signOut(auth);
@@ -276,8 +277,6 @@
     };
 
     // 7. Dummy Function untuk Email OTP
-    // Nota: Firebase menggunakan 'Magic Link' (Email Link) berbanding 6-digit OTP secara default.
-    // Jika anda mahu guna 6-digit OTP, anda perlukan Firebase Cloud Functions.
     window.sendEmailOTP = () => {
         const email = document.getElementById('otpEmail').value;
         if(email) {
@@ -293,3 +292,4 @@
         alert(`Mengesahkan kod: ${code}`);
     };
 </script>
+
