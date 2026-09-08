@@ -1,197 +1,3 @@
-<!-- SIDEBAR MENU -->
-<div id="sidebarOverlay"
-     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden transition-opacity duration-300 opacity-0"
-     onclick="closeSidebar()">
-</div>
-
-<div id="sidebarMenu"
-     class="fixed top-0 right-0 w-[min(300px,100vw)] h-full bg-white/95 backdrop-blur-2xl shadow-2xl z-[60] transform translate-x-full transition-transform duration-300 flex flex-col border-l border-gray-200/60 overflow-y-auto">
-
-    <!-- Header Sidebar -->
-    <div class="flex justify-between items-center px-5 py-4 border-b border-gray-100/80 bg-gradient-to-r from-gray-50 to-white shrink-0">
-        <div class="flex items-center gap-3">
-            <button type="button" onclick="closeSidebar()"
-                    class="text-xs font-bold text-gray-500 hover:text-slate-900 flex items-center gap-1.5 transition group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:-translate-x-0.5 transition-transform"><path d="m15 18-6-6 6-6"/></svg>
-                Back
-            </button>
-            <div class="h-4 w-[1px] bg-gray-300"></div>
-            <img src="IMG_6715.png"
-                 alt="Logo DuitJom"
-                 class="h-7 object-contain">
-        </div>
-        <button type="button" onclick="closeSidebar()"
-                class="w-8 h-8 rounded-full bg-gray-100 hover:bg-red-50 text-gray-400 hover:text-red-500 flex items-center justify-center transition"
-                aria-label="Close Sidebar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-    </div>
-
-    <!-- KANDUNGAN SIDEBAR -->
-    <div class="p-5 flex flex-col flex-grow">
-
-        <!-- ========================================= -->
-        <!-- GOOGLE SIGN IN — BLACK & WHITE PREMIUM -->
-        <!-- ========================================= -->
-        <div id="sidebarGoogleSection" data-auth-sign-in class="w-full mb-6">
-            <div class="relative overflow-hidden rounded-2xl border border-gray-200/80 bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-xl shadow-gray-900/20 p-5">
-                <!-- Decorative Elements -->
-                <div class="absolute -top-8 -right-8 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -bottom-8 -left-8 w-28 h-28 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-
-                <div class="relative z-10">
-                    <!-- Sign In Title -->
-                    <div class="flex items-center justify-center gap-2.5 mb-4">
-                        <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/10 backdrop-blur-md flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-[11px] font-extrabold text-white tracking-wide">Selamat Datang</p>
-                            <p class="text-[9px] text-gray-400 font-medium">Log masuk untuk meneruskan</p>
-                        </div>
-                    </div>
-
-                    <!-- GOOGLE OAUTH LOGIN BUTTON -->
-                    <div class="flex justify-center w-full">
-                        <button type="button"
-                                onclick="window.signInWithGoogle(event)"
-                                data-google-sign-in
-                                class="flex items-center justify-center gap-3 w-full max-w-sm px-5 py-3 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 transition duration-200">
-                            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-                                <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.22z"/>
-                                <path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.5z"/>
-                                <path fill="#FBBC05" d="M6.54 13.59A5.86 5.86 0 0 1 6.23 12c0-.55.11-1.09.31-1.59V7.88H3.29A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.12l3.25-2.53z"/>
-                                <path fill="#EA4335" d="M12 6.38c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.84 3.46 14.63 2.5 12 2.5a9.75 9.75 0 0 0-8.71 5.38l3.25 2.53C7.31 8.1 9.46 6.38 12 6.38z"/>
-                            </svg>
-                            <span class="font-medium text-gray-700">Sign in with Google</span>
-                        </button>
-                    </div>
-
-                    <!-- EMAIL OTP LOGIN -->
-                    <div id="emailOtpSection" class="w-full max-w-sm mx-auto mt-6">
-                        <div class="border-t border-gray-300 relative pt-5">
-                            <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#FAF6F0] px-3 text-xs text-gray-500 font-medium">ATAU</span>
-                        </div>
-                        <div class="mt-5">
-                            <label for="otpEmail" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" id="otpEmail" placeholder="Masukkan email anda" autocomplete="email" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900">
-                        </div>
-                        <button type="button" onclick="window.sendEmailOTP()" class="w-full mt-4 px-5 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition">Hantar OTP</button>
-
-                        <div id="otpVerificationSection" class="mt-4 hidden">
-                            <label for="otpCode" class="block text-sm font-medium text-gray-700 mb-2">Masukkan OTP</label>
-                            <input type="text" id="otpCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="6 digit OTP" class="w-full px-4 py-3 text-center tracking-[0.5em] border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900">
-                            <button type="button" onclick="window.verifyEmailOTP()" class="w-full mt-4 px-5 py-3 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition">Sahkan OTP</button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-3 my-4">
-                        <div class="flex-1 h-px bg-white/10"></div>
-                        <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">atau</span>
-                        <div class="flex-1 h-px bg-white/10"></div>
-                    </div>
-
-                    <p class="text-center text-[9px] text-gray-500 font-medium">Log masuk diperlukan untuk akses penuh</p>
-                    <p id="sidebarAuthMessage" class="login-message text-center text-xs mt-2 text-red-400" data-auth-message aria-live="polite"></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========================================= -->
-        <!-- USER ACCOUNT SECTION (HIDDEN BY DEFAULT) -->
-        <!-- ========================================= -->
-        <div id="sidebarAccountSection" data-auth-account class="hidden w-full mb-6">
-            <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                <p class="text-[10px] font-bold uppercase tracking-wide text-emerald-700">Akaun aktif</p>
-                <p data-auth-user-name class="mt-1 truncate text-sm font-semibold text-slate-800"></p>
-                <button type="button" onclick="window.logoutUser()" class="mt-3 inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition shadow-sm">
-                    Log Keluar
-                </button>
-            </div>
-        </div>
-
-        <!-- ========================================= -->
-        <!-- SIDEBAR NAVIGATION MENU -->
-        <!-- ========================================= -->
-        <div class="space-y-1.5">
-            <a href="index.html" class="group flex items-center gap-3.5 text-sm font-semibold text-gray-500 hover:bg-slate-50 hover:text-slate-900 px-3.5 py-3 rounded-xl transition-all duration-200 border border-transparent hover:border-gray-100">
-                <div class="w-9 h-9 rounded-xl bg-slate-100 group-hover:bg-white group-hover:shadow-md flex items-center justify-center text-slate-500 group-hover:text-slate-900 transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                </div>
-                <span class="flex-1">Laman Utama</span>
-            </a>
-            
-            <a href="page/privacy-policy.html" class="group flex items-center gap-3.5 text-sm font-semibold text-gray-500 hover:bg-emerald-50/60 hover:text-emerald-700 px-3.5 py-3 rounded-xl transition-all duration-200 border border-transparent hover:border-emerald-100">
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 group-hover:bg-white group-hover:shadow-md flex items-center justify-center text-emerald-500 group-hover:text-emerald-600 transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-                </div>
-                <span class="flex-1">Privasi</span>
-            </a>
-            
-            <a href="page/term-conditional.html" class="group flex items-center gap-3.5 text-sm font-semibold text-gray-500 hover:bg-violet-50/60 hover:text-violet-700 px-3.5 py-3 rounded-xl transition-all duration-200 border border-transparent hover:border-violet-100">
-                <div class="w-9 h-9 rounded-xl bg-violet-50 group-hover:bg-white group-hover:shadow-md flex items-center justify-center text-violet-500 group-hover:text-violet-600 transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
-                </div>
-                <span class="flex-1">Soalan Lazim (FAQ)</span>
-            </a>
-
-            <a href="page/about-us.html" class="group flex items-center gap-3.5 text-sm font-semibold text-gray-500 hover:bg-orange-50/60 hover:text-orange-700 px-3.5 py-3 rounded-xl transition-all duration-200 border border-transparent hover:border-orange-100">
-                <div class="w-9 h-9 rounded-xl bg-orange-50 group-hover:bg-white group-hover:shadow-md flex items-center justify-center text-orange-500 group-hover:text-orange-600 transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                </div>
-                <span class="flex-1">Tentang DuitJom</span>
-            </a>
-            
-            <button type="button" onclick="openEmailPopup()" class="group w-full flex items-center gap-3.5 text-sm font-semibold text-gray-500 hover:bg-rose-50/60 hover:text-rose-700 px-3.5 py-3 rounded-xl transition-all duration-200 border border-transparent hover:border-rose-100">
-                <div class="w-9 h-9 rounded-xl bg-rose-50 group-hover:bg-white group-hover:shadow-md flex items-center justify-center text-rose-500 group-hover:text-rose-600 transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                </div>
-                <span class="flex-1 text-left">EMAIL</span>
-            </button>
-        </div>
-
-        <div class="my-5 flex items-center gap-3">
-            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><path d="M12 3v18"/><path d="M3 12h18"/></svg>
-            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-        </div>
-
-        <!-- ========================================= -->
-        <!-- APPLY LOAN SECTION -->
-        <!-- ========================================= -->
-        <div class="rounded-2xl bg-gradient-to-br from-gray-900 via-gray-800 to-slate-900 border border-white/10 p-5 shadow-xl shadow-gray-900/20 relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-
-            <div class="flex justify-center mb-3 relative z-10">
-                <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                </div>
-            </div>
-
-            <div class="text-center mb-3 relative z-10">
-                <p class="text-[14px] font-black tracking-tight text-white/90">DuitJom.com</p>
-                <p class="text-[10px] text-gray-400 font-medium mt-1 leading-relaxed">Mohon DuitJom dengan pantas dan selamat melalui laman web rasmi kami.</p>
-            </div>
-
-            <button type="button" onclick="applyNowAction()" class="relative z-10 w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white text-gray-900 hover:bg-gray-100 active:scale-[0.98] text-sm font-extrabold shadow-lg shadow-white/10 transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-                Apply Now
-            </button>
-        </div>
-    </div>
-
-    <!-- FOOTER SIDEBAR -->
-    <div class="p-4 text-center border-t border-gray-100 text-[10px] text-gray-400 font-semibold bg-gray-50/50 shrink-0">
-        <div class="flex items-center justify-center gap-1.5 mb-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M14.83 14.83a4 4 0 1 1 0-5.66"/></svg>
-            <span>&copy; 2026 DuitJom. Hak cipta terpelihara.</span>
-        </div>
-    </div>
-</div>
-
 <!-- ====================================================== -->
 <!-- FIREBASE AUTHENTICATION SCRIPT (Google, OTP & Analytics) -->
 <!-- ====================================================== -->
@@ -207,15 +13,15 @@
         signOut 
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-    // 2. FIREBASE CONFIG ANDA
+    // 2. FIREBASE CONFIG ANDA (Telah dikemas kini)
     const firebaseConfig = {
         apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
         authDomain: "duitjom-sign-up-in.firebaseapp.com",
         projectId: "duitjom-sign-up-in",
         storageBucket: "duitjom-sign-up-in.firebasestorage.app",
         messagingSenderId: "246834525616",
-        appId: "1:246834525616:web:43af7e37f9a14d1d3c1275",
-        measurementId: "G-8MFF6QP391"
+        appId: "1:246834525616:web:a8429bda0166e6e03c1275",
+        measurementId: "G-T52Q57SJC4"
     };
 
     // 3. Initialize Firebase, Analytics & Auth
@@ -235,21 +41,21 @@
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // Jika sudah login, sembunyikan borang login, tunjuk akaun aktif
-            googleSection.classList.add('hidden');
-            accountSection.classList.remove('hidden');
-            userNameElement.textContent = user.displayName || user.email;
+            if(googleSection) googleSection.classList.add('hidden');
+            if(accountSection) accountSection.classList.remove('hidden');
+            if(userNameElement) userNameElement.textContent = user.displayName || user.email;
         } else {
             // Jika belum login / sudah log keluar
-            googleSection.classList.remove('hidden');
-            accountSection.classList.add('hidden');
-            userNameElement.textContent = '';
+            if(googleSection) googleSection.classList.remove('hidden');
+            if(accountSection) accountSection.classList.add('hidden');
+            if(userNameElement) userNameElement.textContent = '';
         }
     });
 
     // 5. Fungsi Log Masuk Google
     window.signInWithGoogle = async (e) => {
         e.preventDefault();
-        authMessage.textContent = ""; 
+        if(authMessage) authMessage.textContent = ""; 
         
         try {
             if(spinner) spinner.classList.remove('hidden');
@@ -263,7 +69,7 @@
         } catch (error) {
             console.error("Ralat Log Masuk Google:", error);
             if(spinner) spinner.classList.add('hidden');
-            authMessage.textContent = "Log masuk dibatalkan atau ralat berlaku.";
+            if(authMessage) authMessage.textContent = "Log masuk dibatalkan atau ralat berlaku.";
         }
     };
 
@@ -292,4 +98,3 @@
         alert(`Mengesahkan kod: ${code}`);
     };
 </script>
-
