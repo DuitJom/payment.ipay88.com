@@ -38,7 +38,7 @@ select:focus-visible {
 
 /* =========================================================
    DUITJOM PREMIUM ADMINISTRATION GLASS OVERLAY
-   ========================awawssdawwa================================= */
+========================================================= */
 
 .admin-glass-overlay {
     position: relative;
@@ -300,7 +300,7 @@ select:focus-visible {
 
 /* =========================================================
    DUITJOM NEWS — PREMIUM GLASSMORPHISM
-   ========================================================= */
+========================================================= */
 
 .duitjom-news {
     position: relative;
@@ -360,6 +360,7 @@ select:focus-visible {
     animation:
         newsGlow 6s ease-in-out infinite alternate;
 
+    will-change: transform, opacity;
     pointer-events: none;
 }
 
@@ -386,6 +387,7 @@ select:focus-visible {
     animation:
         newsGlow 5s ease-in-out infinite alternate-reverse;
 
+    will-change: transform, opacity;
     pointer-events: none;
 }
 
@@ -404,7 +406,7 @@ select:focus-visible {
 
 /* =========================================================
    NEWS HEADER
-   ========================================================= */
+========================================================= */
 
 .news-header {
     position: relative;
@@ -527,7 +529,7 @@ select:focus-visible {
 
 /* =========================================================
    SLIDER
-   ========================================================= */
+========================================================= */
 
 .news-slider {
     position: relative;
@@ -779,7 +781,7 @@ select:focus-visible {
 
 /* =========================================================
    SLIDER DOTS
-   ========================================================= */
+========================================================= */
 
 .news-slider-indicators {
     position: relative;
@@ -860,7 +862,7 @@ select:focus-visible {
 
 /* =========================================================
    DUITJOM PREMIUM PAGE LOADING PROGRESS
-   ========================================================= */
+========================================================= */
 
 #pageTransitionSpinner {
     transition: opacity .3s ease;
@@ -907,7 +909,7 @@ select:focus-visible {
 
 /* =========================================================
    DUITJOM PREMIUM STATUS BADGE
-   ========================================================= */
+========================================================= */
 
 .duitjom-status-badge {
     position: relative;
