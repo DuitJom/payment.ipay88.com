@@ -1,35 +1,20 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { 
+  getAuth, GoogleAuthProvider, signInWithPopup, 
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Gantikan semua nilai placeholder dengan konfigurasi aplikasi web Firebase anda.
 const firebaseConfig = {
-  apiKey: "PLACEHOLDER_API_KEY",
-  authDomain: "PLACEHOLDER_PROJECT_ID.firebaseapp.com",
-  projectId: "PLACEHOLDER_PROJECT_ID",
-  storageBucket: "PLACEHOLDER_PROJECT_ID.appspot.com",
-  messagingSenderId: "PLACEHOLDER_MESSAGING_SENDER_ID",
-  appId: "PLACEHOLDER_APP_ID"
+  apiKey: "AIza...", // Ganti dengan Web API Key sebenar dari Firebase Console
+  authDomain: "duitjom-sign-up-in.firebaseapp.com",
+  projectId: "duitjom-sign-up-in",
+  storageBucket: "duitjom-sign-up-in.firebasestorage.app",
+  messagingSenderId: "246834525616",
+  appId: "SILA_MASUKKAN_APP_ID_ANDA" // Salin dari Firebase Console
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-// Google OAuth Client ID dikonfigurasi melalui Firebase Console.
 const googleProvider = new GoogleAuthProvider();
 
-export {
-  app,
-  auth,
-  firebaseConfig,
-  googleProvider,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut
-};
+export { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged };
