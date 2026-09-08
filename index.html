@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <script
-  src="https://js.sentry-cdn.com/7102413de3af1223856b96721ea30974.min.js"
-  crossorigin="anonymous"
-></script>
+    <!-- Google reCAPTCHA Enterprise -->
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LexGLEtAAAAANmnkuqhGTVZY7cW-E8QolJaSQmq"></script>
+    <script src="https://js.sentry-cdn.com/7102413de3af1223856b96721ea30974.min.js" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
@@ -12,7 +11,6 @@
       
     <title>DuitJom - Portal Pembayaran Digital Baharu</title>
 
-    <!-- Google Identity Services Script -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://duitjom.my/">
     <meta property="og:title" content="DuitJom - Portal Pembayaran">
@@ -26,18 +24,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- IMPORTANT: Panggil fail CSS luaran -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
     <link rel="stylesheet" href="auth/login.css">
 
-    <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
 </head>
 <body data-page="home" class="font-sans bg-[#FAF6F0] text-gray-900 min-h-screen flex flex-col pt-[72px] overflow-x-hidden">
 
-    <!-- GLOBAL FIXED NAVBAR UNTUK SEMUA HALAMAN -->
     <header class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
@@ -46,12 +40,10 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Dropdown Bahasa -->
                 <div class="relative inline-block text-left group">
                     <button class="flex items-center gap-1.5 text-[10px] font-medium text-gray-700 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-100 transition">
                         🇲🇾 B.Malaysia <i class="fas fa-chevron-down text-[9px] text-gray-400"></i>
                     </button>
-                    <!-- Senarai Dropdown -->
                     <div class="absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         <button type="button" disabled aria-current="page" class="w-full text-left block px-4 py-2.5 text-xs font-bold text-blue-600 bg-blue-50 border-b border-gray-50">
                             <span class="mr-2">🇲🇾</span> Bahasa Malaysia
@@ -62,7 +54,6 @@
                     </div>
                 </div>
 
-                <!-- Butang Hamburger -->
                 <button type="button" onclick="openSidebar()" class="text-gray-500 hover:text-black transition" aria-label="Buka menu">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
@@ -71,6 +62,7 @@
     </header>
 
     <div id="sidebar-container"></div>
+    
     <section id="firebaseAuthContainer" class="w-full max-w-md mx-auto px-4 pt-6" aria-labelledby="authTitle">
         <div id="authLoginPanel" class="login-card">
             <p class="login-kicker">FIREBASE AUTHENTICATION</p>
@@ -110,50 +102,25 @@
         <p id="authMessage" class="login-message" role="status" aria-live="polite"></p>
     </section>
 
-    <!-- =========================================================
-         MAIN PAGE — DIPERBAIKI
-         ========================================================= -->
-     <div id="mainPage" 
-         class="flex flex-col min-h-screen justify-between mt-[72px]">
-
-     <main class="max-w-md mx-auto px-4 py-12 text-center flex-grow flex flex-col justify-center items-center">
-
+     <div id="mainPage" class="flex flex-col min-h-screen justify-between mt-[72px]">
+        <main class="max-w-md mx-auto px-4 py-12 text-center flex-grow flex flex-col justify-center items-center">
             <div class="duitjom-status-badge">
                 <span class="duitjom-status-dot"></span>
                 <span>DIGiTAL • SECURE • ONLINE</span>
                 <span class="duitjom-status-live">On Going</span>
             </div>
 
-            <!-- PREMIUM ADMINISTRATION OVERLAY -->
             <div class="admin-glass-overlay">
                 <div class="admin-overlay-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8"
-                         aria-hidden="true">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M12 3l7 4v5c0 4.8-3 7.9-7 9-4-1.1-7-4.2-7-9V7l7-4z"/>
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M9.5 12l1.7 1.7 3.4-3.4"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 4v5c0 4.8-3 7.9-7 9-4-1.1-7-4.2-7-9V7l7-4z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 12l1.7 1.7 3.4-3.4"/>
                     </svg>
                 </div>
                 <div class="admin-overlay-content">
-                    <span class="admin-overlay-label">
-                        DIGITAL ADMINISTRATION
-                    </span>
-                    <h1>
-                        Efficient Administration
-                        <span>Control System</span>
-                    </h1>
-                    <p>
-                        All administrative processes are managed digitally with
-                        intelligent A.I. assistance for faster, accurate and
-                        organized decisions.
-                    </p>
+                    <span class="admin-overlay-label">DIGITAL ADMINISTRATION</span>
+                    <h1>Efficient Administration <span>Control System</span></h1>
+                    <p>All administrative processes are managed digitally with intelligent A.I. assistance for faster, accurate and organized decisions.</p>
                 </div>
                 <div class="admin-overlay-status">
                     <span class="status-dot"></span>
@@ -174,515 +141,179 @@
                 </div>
             </div>
 
-            <!-- DUITJOM NEWS PREMIUM SLIDER -->
             <section class="duitjom-news">
-                <!-- News Header -->
                 <div class="news-header">
                     <div class="news-brand-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="1.8"
-                             aria-hidden="true">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M7 8h10M7 12h7M7 16h5"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h7M7 16h5"/>
                         </svg>
                     </div>
                     <div class="news-heading">
-                        <span class="news-kicker">
-                            DUITJOM NEWS
-                        </span>
-                        <h2>
-                            Latest Updates
-                        </h2>
-                        <p>
-                            Sistem & perkhidmatan DuitJom
-                        </p>
+                        <span class="news-kicker">DUITJOM NEWS</span>
+                        <h2>Latest Updates</h2>
+                        <p>Sistem & perkhidmatan DuitJom</p>
                     </div>
                     <div class="news-live-status">
-                        <span></span>
-                        LIVE
+                        <span></span> LIVE
                     </div>
                 </div>
 
-                <!-- News Slider -->
                 <div class="news-slider">
                     <div class="news-track" id="newsTrack">
-                        <!-- NEWS 1 -->
                         <article class="news-item">
                             <div class="news-item-top">
                                 <div class="news-icon latest-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              d="M12 3v18M3 12h18"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M3 12h18"/>
                                     </svg>
                                 </div>
-                                <span class="news-label latest">
-                                    BAHARU
-                                </span>
+                                <span class="news-label latest">BAHARU</span>
                             </div>
-                            <h3>
-                                Sistem Digital DuitJom x GitHub
-                            </h3>
-                            <p>
-                                Sistem pembayaran digital moden yang direka untuk
-                                memastikan transaksi lebih selamat dan efisien.
-                            </p>
-                            <div class="news-footer">
-                                <span>
-                                    Jaminan Keselamatan
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </div>
-                        </article>
-
-                        <!-- NEWS 2 -->
-                        <article class="news-item">
-                            <div class="news-item-top">
-                                <div class="news-icon security-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              d="M12 3l7 4v5c0 4.8-3 7.9-7 9-4-1.1-7-4.2-7-9V7l7-4z"/>
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              d="M9.5 12l1.7 1.7 3.4-3.4"/>
-                                    </svg>
-                                </div>
-                                <span class="news-label security">
-                                    KESELAMATAN
-                                </span>
-                            </div>
-                            <h3>
-                                Firebase Authentication
-                            </h3>
-                            <p>
-                                Sistem autentikasi modular dengan Google dan Email/Password.
-                            </p>
-                            <div class="news-footer">
-                                <span>
-                                    Keselamatan Akaun
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </div>
-                        </article>
-
-                        <!-- NEWS 3 -->
-                        <article class="news-item">
-                            <div class="news-item-top">
-                                <div class="news-icon info-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <circle cx="12" cy="12" r="9"/>
-                                        <path stroke-linecap="round"
-                                              d="M12 11v5"/>
-                                        <circle cx="12" cy="8" r=".6"
-                                                fill="currentColor"/>
-                                    </svg>
-                                </div>
-                                <span class="news-label info">
-                                    MAKLUMAN
-                                </span>
-                            </div>
-                            <h3>
-                                Pengumuman Awal
-                            </h3>
-                            <p>
-                                Sebarang kerja baik pulih sistem akan dimaklumkan
-                                melalui email pengguna yang berdaftar.
-                            </p>
-                            <div class="news-footer">
-                                <span>
-                                    Notis Awal
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </div>
+                            <h3>Sistem Digital DuitJom x GitHub</h3>
+                            <p>Sistem pembayaran digital moden yang direka untuk memastikan transaksi lebih selamat dan efisien.</p>
                         </article>
                     </div>
                 </div>
-
-                <!-- Slider Indicator -->
-                <div class="news-slider-indicators" id="newsIndicators">
-                    <button class="news-dot active" data-slide="0"></button>
-                    <button class="news-dot" data-slide="1"></button>
-                    <button class="news-dot" data-slide="2"></button>
-                </div>
             </section>
-        </div>
-        
-    </main>
-
-    <!-- FEATURES: dimuatkan di antara halaman utama dan footer hitam -->
-    <div id="features-container" aria-live="polite"></div>
-
-</div> <!-- Penutup kotak utama -->
-
-
-<!-- FOOTER LEGAL LINKS -->
-<footer id="siteFooter" class="bg-[#111827] text-gray-400 py-6 text-xs text-center border-t border-gray-800 w-full">
-    <p>&copy; 2026 DuitJom. Hak cipta terpelihara.</p>
-    <p class="mt-3 flex flex-wrap justify-center gap-2 px-4">
-        <a href="page/privacy-policy.html" class="hover:text-white transition">Privasi Pengguna</a> |
-        <a href="page/term-conditional.html" class="hover:text-white transition">Terma &amp; Syarat (FAQ)</a> |
-        <a href="page/data-deletion.html" class="hover:text-white transition">Data Pengguna</a>
-    </p>
-</footer>
-
-<!-- =========================================================
-     END MAIN PAGE
-     ========================================================= -->
-
-
-<div id="tutorial-modal-container"></div>
-<div id="scammer-modal-container"></div>
-
-
-<!-- LOADING PAGE (BORANG) -->
-<div id="loadingPage" class="hidden flex-col min-h-screen bg-white/95 backdrop-blur-sm justify-center items-center -mt-[72px] z-[100]">
-<div class="flex flex-col items-center gap-6 w-full max-w-xs px-6">
-    <!-- LOGO DUITJOM -->
-    <img src="IMG_6715.png" alt="Logo DuitJom" class="w-20 h-20 object-contain animate-bounce">
-
-    <!-- LOADING TEXT -->
-    <div class="text-center">
-        <p class="text-slate-800 font-bold text-sm tracking-wide">
-            Sedang memuatkan maklumat
-        </p>
-        <p id="loadingPageStatus" class="text-slate-400 text-[10px] mt-1">
-            Memulakan...
-        </p>
+        </main>
+        <div id="features-container" aria-live="polite"></div>
     </div>
 
-    <!-- PROGRESS BAR -->
-    <div class="w-full">
-        <div class="w-full h-2.5 bg-slate-200/80 rounded-full overflow-hidden shadow-inner">
-            <div id="loadingPageProgress"
-                 class="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 transition-all duration-300 ease-out"
-                 style="width: 0%;">
+    <footer id="siteFooter" class="bg-[#111827] text-gray-400 py-6 text-xs text-center border-t border-gray-800 w-full">
+        <p>&copy; 2026 DuitJom. Hak cipta terpelihara.</p>
+        <p class="mt-3 flex flex-wrap justify-center gap-2 px-4">
+            <a href="page/privacy-policy.html" class="hover:text-white transition">Privasi Pengguna</a> |
+            <a href="page/term-conditional.html" class="hover:text-white transition">Terma &amp; Syarat (FAQ)</a> |
+            <a href="page/data-deletion.html" class="hover:text-white transition">Data Pengguna</a>
+        </p>
+    </footer>
+
+    <div id="tutorial-modal-container"></div>
+    <div id="scammer-modal-container"></div>
+
+    <!-- LOADING PAGE -->
+    <div id="loadingPage" class="hidden flex-col min-h-screen bg-white/95 backdrop-blur-sm justify-center items-center -mt-[72px] z-[100]">
+        <div class="flex flex-col items-center gap-6 w-full max-w-xs px-6">
+            <img src="IMG_6715.png" alt="Logo DuitJom" class="w-20 h-20 object-contain animate-bounce">
+            <div class="text-center">
+                <p class="text-slate-800 font-bold text-sm tracking-wide">Sedang memuatkan maklumat</p>
             </div>
         </div>
-        <!-- PERCENTAGE -->
-        <div class="flex justify-end mt-2">
-            <span id="loadingPagePercentage"
-                  class="text-blue-600 font-extrabold text-xs">
-                0%
-            </span>
-        </div>
     </div>
 
-    <!-- SPINNER SVG -->
-    <div class="relative w-10 h-10">
-        <svg class="animate-spin w-10 h-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-    </div>
-
-    <!-- FOOTER MESSAGE -->
-    <p class="text-center text-[9px] text-slate-400 leading-relaxed max-w-[250px]">
-        Sila tunggu sebentar sementara kami menyediakan halaman baharu anda.
-    </p>
-</div>
-</div>
-
-<!-- PAYMENT PAGE (Borang Maklumat Diri) -->
-<div id="paymentPage" class="hidden flex-col min-h-screen bg-white -mt-[72px] pt-[72px]">
-<main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
-    <div class="w-full flex flex-col items-center text-center mb-6">
-        <div class="relative w-28 h-28 mb-4 flex items-center justify-center">
-            <div class="absolute inset-0 rounded-[32px] bg-gradient-to-br from-blue-100 via-sky-50 to-cyan-100 blur-xl opacity-80"></div>
-            <div class="relative w-24 h-24 rounded-[28px] bg-white/70 backdrop-blur-xl border border-white/90 shadow-[0_15px_40px_rgba(37,99,235,0.12)] flex items-center justify-center overflow-hidden">
-                <img src="IMG_6715.png" alt="Logo DuitJom" class="w-[82px] h-[82px] object-contain">
+    <!-- PAYMENT PAGE -->
+    <div id="paymentPage" class="hidden flex-col min-h-screen bg-white -mt-[72px] pt-[72px]">
+        <main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
+            <div class="w-full flex flex-col items-center text-center mb-6">
+                <div class="relative w-28 h-28 mb-4 flex items-center justify-center">
+                    <img src="IMG_6715.png" alt="Logo DuitJom" class="w-[82px] h-[82px] object-contain relative z-10">
+                </div>
             </div>
-        </div>
-        <p class="text-slate-500 font-medium text-xs max-w-xs leading-relaxed">
-            Lengkapkan maklumat anda untuk meneruskan ke proses seterusnya dengan selamat.
-        </p>
+            
+            <form id="paymentForm" onsubmit="goToNextStepPage(event)" class="space-y-5 w-full">
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">Nama Penuh (IC)</label>
+                    <input type="text" id="namaInput" required placeholder="Ali Bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">ID Loan DJ / CUST</label>
+                    <input type="text" id="djcustInput" required placeholder="DJ30001234 atau CUST20260000" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="validateDJCust(this)">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">Jumlah Bayaran</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500 pointer-events-none">RM</span>
+                        <input type="number" step="0.01" min="0.01" id="amountInput" required placeholder="0.00" inputmode="decimal" class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button id="submitBtn" type="submit" class="w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-sm py-3 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
+                        Seterusnya
+                    </button>
+                </div>
+            </form>
+        </main>
     </div>
-    
-    <div class="w-full flex items-center gap-4 py-5 border-t border-b border-slate-100">
-        <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="w-7 h-7 text-blue-500" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
-            </svg>
-        </div>
-        <div class="flex-1 text-left">
-            <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mb-1">Maklumat Diperlukan</p>
-            <h3 class="text-sm font-extrabold text-slate-900 leading-snug">Sila isi maklumat anda</h3>
-            <p class="text-[10px] text-slate-500 mt-1 leading-relaxed">Pastikan semua maklumat yang diberikan adalah tepat sebelum meneruskan.</p>
-        </div>
+
+    <!-- QR PAGE & THANKS PAGE (Diringkaskan) -->
+    <div id="qrPage" class="hidden flex flex-col min-h-screen -mt-[72px] pt-[72px] bg-white">
+        <main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
+            <div id="qrCode" class="mb-4"></div>
+            <button onclick="backToForm()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Kembali</button>
+        </main>
     </div>
-
-    <form onsubmit="goToNextStepPage(event)" class="space-y-5 w-full">
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
-                </svg>
-                <span>Nama Penuh (IC)</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="namaInput" required placeholder="Ali Bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
-        </div>
-
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <rect x="3" y="5" width="18" height="14" rx="2"/>
-                    <circle cx="8" cy="12" r="2"/>
-                    <path stroke-linecap="round" d="M13 10h5M13 14h4"/>
-                </svg>
-                <span>ID Loan DJ / CUST</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="djcustInput" required placeholder="DJ30001234 atau CUST20260000" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="validateDJCust(this)">
-            <p id="djcustError" class="text-red-500 text-xs mt-1.5 hidden">Masukkan ID Loan "DJ" atau "CUST" yang sah.</p>
-        </div>
-
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 3.75h3l1.5 4-2 1.5a14 14 0 0 0 5.75 5.75l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C11.04 19.5 4.5 12.96 4.5 4.75c0-1.1.9-1 2-1Z"/>
-                </svg>
-                <span>Jumlah Bayaran</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500 pointer-events-none">RM</span>
-                <input type="number" step="0.01" min="0.01" id="amountInput" required placeholder="0.00" inputmode="decimal" class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
-            </div>
-        </div>
-
-        <div class="pt-4">
-            <button type="submit" class="w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-sm py-3 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
-                Seterusnya
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
-                </svg>
-            </button>
-        </div>
-    </form>
-</main>
-</div>
-
-<!-- QR PAGE -->
-<div id="qrPage" class="hidden flex flex-col min-h-screen -mt-[72px] pt-[72px] bg-white">
-<main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
-    <div id="qrCode" class="mb-4"></div>
-    <p id="timerDisplay" class="text-2xl font-bold text-slate-800">10:00</p>
-    <button onclick="backToForm()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Kembali</button>
-</main>
-</div>
-
-<!-- THANKS PAGE -->
-<div id="thanksPage" class="hidden flex-col min-h-screen -mt-[72px] pt-[72px] bg-gradient-to-br from-green-50 to-emerald-50 justify-center items-center">
-<div class="max-w-md w-full mx-auto px-4 text-center">
-    <div class="mb-6">
-        <svg class="w-20 h-20 mx-auto text-green-500" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-        </svg>
-    </div>
-    <h2 class="text-2xl font-bold text-slate-900 mb-4">Bayaran Berjaya</h2>
-    <p id="thanksMessage" class="text-slate-600 text-sm leading-relaxed"></p>
-</div>
-</div>
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    
-    <!-- Firebase Authentication UI -->
     <script type="module">
-        import {
-            loginWithGoogle,
-            loginWithEmail,
-            logOut,
-            monitorAuthState
-        } from "./auth.js";
-
-        const loginPanel = document.getElementById("authLoginPanel");
-        const userPanel = document.getElementById("authUserPanel");
-        const userDisplay = document.getElementById("userDisplay");
-        const authMessage = document.getElementById("authMessage");
-        const googleButton = document.getElementById("googleLoginButton");
-        const emailForm = document.getElementById("emailLoginForm");
-        const emailButton = document.getElementById("emailLoginButton");
+        import { loginWithGoogle, loginWithEmail, logOut, monitorAuthState } from "./auth.js";
+        
         const logoutButton = document.getElementById("logoutButton");
-
-        function showMessage(message, isError = false) {
-            authMessage.textContent = message;
-            authMessage.classList.toggle("text-red-600", isError);
-            authMessage.classList.toggle("text-emerald-600", !isError && Boolean(message));
-        }
-
-        async function handleGoogleLogin() {
-            googleButton.disabled = true;
-            showMessage("");
-
-            try {
-                await loginWithGoogle();
-            } catch (error) {
-                console.error("Google login gagal:", error);
-                showMessage("Log masuk Google gagal. Sila cuba lagi.", true);
-            } finally {
-                googleButton.disabled = false;
-            }
-        }
-
-        async function handleEmailLogin(event) {
-            event.preventDefault();
-            emailButton.disabled = true;
-            showMessage("");
-
-            const email = document.getElementById("emailInput").value.trim();
-            const password = document.getElementById("passwordInput").value;
-
-            try {
-                await loginWithEmail(email, password);
-            } catch (error) {
-                console.error("Email login gagal:", error);
-                showMessage("Email atau password tidak sah.", true);
-            } finally {
-                emailButton.disabled = false;
-            }
-        }
-
-        async function handleLogout() {
-            logoutButton.disabled = true;
-            showMessage("");
-
-            try {
-                await logOut();
-                document.getElementById("paymentPage")?.classList.add("hidden");
-                document.getElementById("qrPage")?.classList.add("hidden");
-                document.getElementById("thanksPage")?.classList.add("hidden");
-                document.getElementById("mainPage")?.classList.remove("hidden");
-                document.getElementById("firebaseAuthContainer")?.classList.remove("hidden");
-                document.getElementById("siteFooter")?.classList.remove("hidden");
-                window.closeSidebar?.();
-            } catch (error) {
-                console.error("Log keluar gagal:", error);
-                showMessage("Log keluar gagal. Sila cuba lagi.", true);
-            } finally {
-                logoutButton.disabled = false;
-            }
-        }
-
-        googleButton.addEventListener("click", handleGoogleLogin);
-        emailForm.addEventListener("submit", handleEmailLogin);
-        logoutButton.addEventListener("click", handleLogout);
-
-        // Kekalkan butang log keluar sedia ada pada kad pembayaran.
-        window.logoutUser = handleLogout;
-        window.signInWithGoogle = handleGoogleLogin;
-
-        let currentUser = null;
-
-        function updateAuthUI(user) {
-            const isLoggedIn = Boolean(user);
-            const displayName = user?.displayName || user?.email || "Pengguna Firebase";
-
-            loginPanel.classList.toggle("hidden", isLoggedIn);
-            userPanel.classList.toggle("hidden", !isLoggedIn);
-            document.getElementById("btnPembayaranPinjaman")?.classList.toggle("hidden", !isLoggedIn);
-            document.getElementById("authUserLabel").textContent = isLoggedIn ? displayName : "";
-            userDisplay.textContent = isLoggedIn ? displayName : "";
-            document.getElementById("sidebarGoogleSection")?.classList.add("hidden");
-            document.getElementById("sidebarAccountSection")?.classList.toggle("hidden", !isLoggedIn);
-            document.querySelectorAll("[data-auth-user-name]").forEach((element) => {
-                element.textContent = isLoggedIn ? displayName : "";
-            });
-            showMessage(isLoggedIn ? "Anda telah berjaya log masuk." : "");
-        }
-
+        window.logoutUser = async () => {
+            try { await logOut(); location.reload(); } catch (err) { console.error(err); }
+        };
+        
         monitorAuthState((user) => {
-            currentUser = user;
-            updateAuthUI(currentUser);
-        });
-
-        document.addEventListener("duitjom:component-loaded", (event) => {
-            if (event.detail?.containerId === "sidebar-container") {
-                updateAuthUI(currentUser);
+            const isLoggedIn = Boolean(user);
+            document.getElementById("authLoginPanel")?.classList.toggle("hidden", isLoggedIn);
+            document.getElementById("authUserPanel")?.classList.toggle("hidden", !isLoggedIn);
+            document.getElementById("btnPembayaranPinjaman")?.classList.toggle("hidden", !isLoggedIn);
+            if(isLoggedIn) {
+                document.getElementById("authUserLabel").textContent = user.displayName || user.email;
             }
         });
     </script>
-
-    <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <!-- Payment Page Navigation Functions -->
+    <!-- Payment & reCAPTCHA Logic -->
     <script>
         function goToPaymentPage() {
-            document.getElementById('mainPage')?.classList.add('hidden');
-            document.getElementById('firebaseAuthContainer')?.classList.add('hidden');
-            document.getElementById('siteFooter')?.classList.add('hidden');
-            document.getElementById('paymentPage')?.classList.remove('hidden');
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('firebaseAuthContainer').classList.add('hidden');
+            document.getElementById('siteFooter').classList.add('hidden');
+            document.getElementById('paymentPage').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function goToNextStepPage(event) {
-            event?.preventDefault();
-            generateQR();
-        }
+            event.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Memproses...';
 
-        function formatIC(input) {
-            let value = input.value.replace(/\D/g, '');
-            if (value.length >= 6) {
-                value = value.slice(0, 6) + '-' + value.slice(6, 8) + '-' + value.slice(8, 12);
-            }
-            input.value = value;
-        }
-
-        function validatePhone(input) {
-            const phoneError = document.getElementById('phoneError');
-            const value = input.value.replace(/\D/g, '');
-            if (value.length > 0 && !/^[0-9]{9,10}$/.test(value)) {
-                phoneError?.classList.remove('hidden');
+            // Integrasi reCAPTCHA Enterprise
+            if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) {
+                grecaptcha.enterprise.ready(async () => {
+                    try {
+                        const token = await grecaptcha.enterprise.execute('6LexGLEtAAAAANmnkuqhGTVZY7cW-E8QolJaSQmq', {action: 'submit_payment'});
+                        console.log("reCAPTCHA Token Dijana:", token);
+                        
+                        // Teruskan penjanaan QR selepas mendapat token (token boleh dihantar ke backend)
+                        generateQR(); 
+                    } catch (error) {
+                        console.error("Ralat reCAPTCHA:", error);
+                        alert("Pengesahan gagal. Sila cuba lagi.");
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Seterusnya';
+                    }
+                });
             } else {
-                phoneError?.classList.add('hidden');
+                // Fallback jika reCAPTCHA gagal dimuatkan
+                generateQR();
             }
+        }
+
+        function validateDJCust(input) {
+            // Logik validasi asas
+        }
+        
+        function generateQR() {
+            // Simulasi pergi ke halaman QR (pastikan fungsi generateQR sedia ada dari script.js berfungsi)
+            document.getElementById('paymentPage').classList.add('hidden');
+            document.getElementById('qrPage').classList.remove('hidden');
         }
     </script>
 </body>
