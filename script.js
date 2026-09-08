@@ -1,5 +1,5 @@
 // =====================================================
-// CODE ASAL AWAK — KEKALKAN
+// PEMBUATAN & KAWALAN PEMUATAN GLOBAL
 // =====================================================
 let timerInstance = null;
 let namaPelangganGlobal = "";
@@ -35,7 +35,6 @@ function closeSidebar() {
    DUITJOM NEWS AUTOMATIC SLIDER
    AUTO SLIDE: 2.6 SECONDS
 ========================================================= */
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const newsTrack = document.getElementById("newsTrack");
@@ -51,11 +50,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const NEWS_INTERVAL = 2600;
 
     function updateNewsSlider(index) {
-
         currentNewsSlide = index;
 
-        newsTrack.style.transform =
-            `translateX(-${currentNewsSlide * 100}%)`;
+        newsTrack.style.transform = `translateX(-${currentNewsSlide * 100}%)`;
 
         newsDots.forEach((dot, i) => {
             if (i === currentNewsSlide) {
@@ -105,8 +102,7 @@ function startTimer(durationInSeconds) {
     function updateDisplay() {
         const minutes = Math.floor(remainingSeconds / 60);
         const seconds = remainingSeconds % 60;
-        const timeString =
-            `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        const timeString = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
         if (timerDisplay) {
             timerDisplay.textContent = timeString;
@@ -152,6 +148,7 @@ function generateQR() {
 
     if (!qrCodeElement) {
         console.error("QR code element not found");
+        qrGenerated = false;
         return;
     }
 
@@ -170,7 +167,8 @@ function generateQR() {
         if (paymentPage) paymentPage.classList.add("hidden");
         var qrPage = document.getElementById("qrPage");
         if (qrPage) qrPage.classList.remove("hidden");
-        startTimer(600);
+        
+        startTimer(600); // 10 Minit Masa Tamat
     } catch (err) {
         console.error("QR Code generation error:", err);
         alert("Ralat semasa menjana kod QR.");
@@ -198,25 +196,31 @@ function handleFileSelected() {
     const fileNameDisplay = document.getElementById("fileNameDisplay");
     const btnSubmitForm = document.getElementById("btnSubmitForm");
 
-    if (fileInput.files.length > 0) {
+    if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0];
-        placeholder.classList.add('hidden');
-        successDiv.classList.remove('hidden');
-        fileNameDisplay.innerText = "Fail dipilih: " + file.name;
+        if (placeholder) placeholder.classList.add('hidden');
+        if (successDiv) successDiv.classList.remove('hidden');
+        if (fileNameDisplay) fileNameDisplay.innerText = "Fail dipilih: " + file.name;
         
-        btnSubmitForm.disabled = false;
-        btnSubmitForm.className = "flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold py-3.5 rounded-xl text-xs text-center shadow-md cursor-pointer transition duration-200 hover:from-blue-500 hover:to-blue-700";
+        if (btnSubmitForm) {
+            btnSubmitForm.disabled = false;
+            btnSubmitForm.className = "flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold py-3.5 rounded-xl text-xs text-center shadow-md cursor-pointer transition duration-200 hover:from-blue-500 hover:to-blue-700";
+        }
     }
 }
 
 function finalSubmission() {
-    clearInterval(timerInstance);
-    
-    const susunanAyat = "Terima kasih <span class='font-extrabold text-slate-900'>" + namaPelangganGlobal + "</span> kerana telah berjaya membuat bayaran balik pinjaman anda di <span class='text-blue-400 font-bold'>DuitJom</span>. Pembayaran anda sedang diproses dan akan disemak dalam masa <span class='font-bold'>24 jam</span>. Anda akan menerima notifikasi melalui SMS atau email apabila pembayaran telah disahkan.";
-    document.getElementById('thanksMessage').innerHTML = susunanAyat;
+    if (timerInstance) clearInterval(timerInstance);
+
+    const thanksMessage = document.getElementById('thanksMessage');
+    if (thanksMessage) {
+        const susunanAyat = "Terima kasih <span class='font-extrabold text-slate-900'>" + namaPelangganGlobal + "</span> kerana telah berjaya membuat bayaran balik pinjaman anda di <span class='text-blue-400 font-bold'>DuitJom</span>. Pembayaran anda sedang diproses dan akan disemak dalam masa <span class='font-bold'>24 jam</span>. Anda akan menerima notifikasi melalui SMS atau email apabila pembayaran telah disahkan.";
+        thanksMessage.innerHTML = susunanAyat;
+    }
 
     var qrPageFinal = document.getElementById('qrPage');
     if (qrPageFinal) { qrPageFinal.classList.add('hidden'); }
+    
     var thanksPage = document.getElementById('thanksPage');
     if (thanksPage) {
         thanksPage.classList.remove('hidden');
@@ -278,10 +282,10 @@ function validateDJCust(input) {
     const isValid = /^(?:DJ|CUST)[0-9/]+$/.test(value);
 
     if (value.length > 0 && !isValid) {
-        errorElement.classList.remove('hidden');
+        if (errorElement) errorElement.classList.remove('hidden');
         input.classList.add('border-red-500');
     } else {
-        errorElement.classList.add('hidden');
+        if (errorElement) errorElement.classList.add('hidden');
         input.classList.remove('border-red-500');
     }
 }
