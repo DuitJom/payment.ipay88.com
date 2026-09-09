@@ -1,170 +1,199 @@
 <!-- ====================================================== -->
-<!-- 1. SCRIPT API RECAPTCHA (Penting: Wajib diletakkan)    -->
+<!-- 1. SCRIPT API RECAPTCHA                               -->
 <!-- ====================================================== -->
 <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 
 <!-- ====================================================== -->
-<!-- 2. STRUKTUR UI SIDEBAR (Mengandungi Butang reCAPTCHA)  -->
+<!-- 2. SIDEBAR LOGIN                                      -->
 <!-- ====================================================== -->
 <div id="sidebarGoogleSection">
-    <!-- Input Form -->
-    <input type="email" id="userEmail" placeholder="Masukkan Email">
-    <input type="password" id="userPassword" placeholder="Masukkan Kata Laluan">
-    <p id="sidebarAuthMessage" style="color: red;"></p>
 
-    <!-- BUTANG RECAPTCHA YANG TELAH DIGABUNGKAN -->
-    <!-- Butang ini akan memanggil fungsi 'onSubmit' setelah pengesahan berjaya -->
-    <button class="g-recaptcha"
+    <input
+        type="email"
+        id="userEmail"
+        placeholder="Masukkan Email">
+
+    <input
+        type="password"
+        id="userPassword"
+        placeholder="Masukkan Kata Laluan">
+
+    <p id="sidebarAuthMessage" style="color:red;"></p>
+
+    <button
+        class="g-recaptcha"
         data-sitekey="6LexGLEtAAAAANmnkuqhGTVZY7cW-E8QolJaSQmq"
         data-callback="onSubmit"
         data-action="submit">
-      Submit (Log Masuk)
+
+        Submit (Log Masuk)
+
     </button>
-    
-    <button onclick="signInWithGoogle()">Log Masuk Google</button>
-    <button onclick="signUpWithEmail()">Daftar Akaun Baru</button>
+
+    <button
+        type="button"
+        onclick="signInWithGoogle()">
+
+        Log Masuk Google
+
+    </button>
+
 </div>
 
 <div id="sidebarAccountSection" class="hidden">
-    <p>Selamat kembali, <span data-auth-user-name></span></p>
-    <button onclick="logoutUser()">Log Keluar</button>
+
+    <p>
+        Selamat kembali,
+        <span data-auth-user-name></span>
+    </p>
+
+    <button onclick="logoutUser()">
+
+        Log Keluar
+
+    </button>
+
 </div>
 
-<div id="loginSpinnerOverlay" class="hidden">Sila tunggu...</div>
+<div id="loginSpinnerOverlay" class="hidden">
+
+    Sila tunggu...
+
+</div>
 
 <!-- ====================================================== -->
-<!-- 3. FIREBASE AUTHENTICATION SCRIPT                      -->
+<!-- 3. GUNA AUTH.JS SAHAJA (TIADA FIREBASE KE-2)          -->
 <!-- ====================================================== -->
 <script type="module">
-    // 1. Import fungsi Firebase 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-    import { 
-        getAuth, 
-        signInWithPopup, 
-        GoogleAuthProvider, 
-        onAuthStateChanged, 
-        signOut,
-        createUserWithEmailAndPassword,
-        signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-    // 2. FIREBASE CONFIG ANDA
-    const firebaseConfig = {
-        apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
-        authDomain: "duitjom-sign-up-in.firebaseapp.com",
-        projectId: "duitjom-sign-up-in",
-        storageBucket: "duitjom-sign-up-in.firebasestorage.app",
-        messagingSenderId: "246834525616",
-        appId: "1:246834525616:web:a8429bda0166e6e03c1275",
-        measurementId: "G-T52Q57SJC4"
-    };
+import {
+    loginWithGoogle,
+    loginWithEmail,
+    logOut,
+    monitorAuthState
+} from "../auth.js";
 
-    // 3. Initialize Firebase, Analytics & Auth
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const googleProvider = new GoogleAuthProvider();
+const googleSection =
+document.getElementById("sidebarGoogleSection");
 
-    // DOM Elements
-    const googleSection = document.getElementById('sidebarGoogleSection');
-    const accountSection = document.getElementById('sidebarAccountSection');
-    const userNameElement = document.querySelector('[data-auth-user-name]');
-    const authMessage = document.getElementById('sidebarAuthMessage');
-    const spinner = document.getElementById('loginSpinnerOverlay');
+const accountSection =
+document.getElementById("sidebarAccountSection");
 
-    // 4. Pantau Status Log Masuk Pengguna
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // Jika sudah login
-            if(googleSection) googleSection.classList.add('hidden');
-            if(accountSection) accountSection.classList.remove('hidden');
-            if(userNameElement) userNameElement.textContent = user.displayName || user.email;
-        } else {
-            // Jika belum login / sudah log keluar
-            if(googleSection) googleSection.classList.remove('hidden');
-            if(accountSection) accountSection.classList.add('hidden');
-            if(userNameElement) userNameElement.textContent = '';
-        }
-    });
+const userNameElement =
+document.querySelector("[data-auth-user-name]");
 
-    // 5. CALLBACK RECAPTCHA (Penting: Letak pada 'window' supaya boleh dibaca dari HTML)
-    window.onSubmit = async (token) => {
-        console.log("Token reCAPTCHA berjaya dijana:", token);
-        
-        // Pilih fungsi yang nak dicetuskan. 
-        // Contoh di sini: kita terus panggil fungsi Log Masuk Email/Password (Sign In)
-        await window.loginWithEmail();
-        
-        // Pilihan: Boleh juga tukar ke window.signUpWithEmail() jika anda mahu butang tersebut berfungsi sebagai pendaftaran.
-    };
+const authMessage =
+document.getElementById("sidebarAuthMessage");
 
-    // 6. Fungsi Log Masuk Google
-    window.signInWithGoogle = async (e) => {
-        if(e) e.preventDefault();
-        if(authMessage) authMessage.textContent = ""; 
-        
-        try {
-            if(spinner) spinner.classList.remove('hidden');
-            await signInWithPopup(auth, googleProvider);
-            setTimeout(() => { if(spinner) spinner.classList.add('hidden'); }, 1000);
-        } catch (error) {
-            console.error("Ralat Log Masuk Google:", error);
-            if(spinner) spinner.classList.add('hidden');
-            if(authMessage) authMessage.textContent = "Log masuk dibatalkan atau ralat berlaku.";
-        }
-    };
+const spinner =
+document.getElementById("loginSpinnerOverlay");
 
-    // 7. Fungsi Log Keluar
-    window.logoutUser = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.error("Ralat Log Keluar:", error);
-        }
-    };
+/* Pantau status login */
+monitorAuthState((user) => {
 
-    // 8. Fungsi Daftar Akaun Baru (Sign Up Email & Password)
-    window.signUpWithEmail = async () => {
-        const email = document.getElementById('userEmail').value;
-        const password = document.getElementById('userPassword').value;
-        if(authMessage) authMessage.textContent = "";
+    if (user) {
 
-        if(password.length < 6) {
-            alert("Kata laluan mesti melebihi 6 aksara.");
-            return;
+        googleSection?.classList.add("hidden");
+        accountSection?.classList.remove("hidden");
+
+        if (userNameElement) {
+            userNameElement.textContent =
+                user.displayName || user.email;
         }
 
-        try {
-            if(spinner) spinner.classList.remove('hidden');
-            await createUserWithEmailAndPassword(auth, email, password);
-            setTimeout(() => { if(spinner) spinner.classList.add('hidden'); }, 1000);
-        } catch (error) {
-            console.error("Ralat Daftar:", error);
-            if(spinner) spinner.classList.add('hidden');
-            
-            if(error.code === 'auth/email-already-in-use') {
-                if(authMessage) authMessage.textContent = "Email ini telah didaftarkan. Sila log masuk.";
-            } else {
-                if(authMessage) authMessage.textContent = "Gagal mendaftar. Pastikan format email betul.";
-            }
-        }
-    };
+    } else {
 
-    // 9. Fungsi Log Masuk Email/Password (Sign In)
-    window.loginWithEmail = async () => {
-        const email = document.getElementById('userEmail').value;
-        const password = document.getElementById('userPassword').value;
-        if(authMessage) authMessage.textContent = "";
+        googleSection?.classList.remove("hidden");
+        accountSection?.classList.add("hidden");
 
-        try {
-            if(spinner) spinner.classList.remove('hidden');
-            await signInWithEmailAndPassword(auth, email, password);
-            setTimeout(() => { if(spinner) spinner.classList.add('hidden'); }, 1000);
-        } catch (error) {
-            console.error("Ralat Log Masuk:", error);
-            if(spinner) spinner.classList.add('hidden');
-            if(authMessage) authMessage.textContent = "Email atau kata laluan salah.";
+        if (userNameElement) {
+            userNameElement.textContent = "";
         }
-    };
+    }
+
+});
+
+/* Login Google */
+window.signInWithGoogle = async () => {
+
+    authMessage.textContent = "";
+
+    try {
+
+        spinner?.classList.remove("hidden");
+
+        await loginWithGoogle();
+
+    } catch (error) {
+
+        console.error(error);
+
+        authMessage.textContent =
+        error.message;
+
+    } finally {
+
+        spinner?.classList.add("hidden");
+
+    }
+
+};
+
+/* Login Email */
+window.loginWithEmail = async () => {
+
+    const email =
+    document.getElementById("userEmail").value;
+
+    const password =
+    document.getElementById("userPassword").value;
+
+    authMessage.textContent = "";
+
+    try {
+
+        spinner?.classList.remove("hidden");
+
+        await loginWithEmail(
+            email,
+            password
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        authMessage.textContent =
+        error.message;
+
+    } finally {
+
+        spinner?.classList.add("hidden");
+
+    }
+
+};
+
+/* Logout */
+window.logoutUser = async () => {
+
+    try {
+
+        await logOut();
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+};
+
+/* Callback reCAPTCHA */
+window.onSubmit = async () => {
+
+    await window.loginWithEmail();
+
+};
+
 </script>
