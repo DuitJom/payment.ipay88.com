@@ -80,6 +80,24 @@
             </button>
 
             <div class="login-divider">atau</div>
+            
+        <div class="auth-tabs">
+
+            <button
+                type="button"
+                id="signInTab"
+                class="active">
+                Sign In
+             </button>
+
+             <button
+                 type="button"
+                 id="signUpTab">
+                 Sign Up
+              </button>
+
+         </div>
+
 
             <form id="emailLoginForm" class="login-panel">
                 <label for="emailInput">Email</label>
@@ -90,6 +108,16 @@
 
                 <button id="emailLoginButton" type="submit" class="login-primary-button mt-4">Log Masuk Email</button>
             </form>
+            
+            <button
+                 id="resetPasswordLink"
+                 type="button"
+                 class="forgot-password-link">
+
+                 Lupa Kata Laluan?
+
+            </button>
+            
         </div>
 
         <div id="authUserPanel" class="login-card hidden">
@@ -248,8 +276,171 @@
     <!-- Main Scripts -->
     <script src="script.js"></script>
     <script type="module">
-        import { loginWithGoogle, loginWithEmail, logOut, monitorAuthState } from "./auth.js";
-        
+    
+   import {
+      loginWithGoogle,
+      loginWithEmail,
+      signUpWithEmail,
+      resetPassword,
+      logOut,
+      monitorAuthState
+    } from "./auth.js";
+    
+    const googleBtn =
+document.getElementById("googleLoginButton");
+
+const authMessage =
+document.getElementById("authMessage");
+
+googleBtn.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      await loginWithGoogle();
+
+      authMessage.textContent =
+      "Log masuk berjaya";
+
+    } catch (error) {
+
+      authMessage.textContent =
+      error.message;
+
+    }
+
+});
+
+const form =
+document.getElementById("emailLoginForm");
+
+const emailInput =
+document.getElementById("emailInput");
+
+const passwordInput =
+document.getElementById("passwordInput");
+
+form.addEventListener(
+ "submit",
+ async (e) => {
+
+   e.preventDefault();
+
+   try {
+
+      try {
+
+    if(authMode === "signin") {
+
+        await loginWithEmail(
+            emailInput.value,
+            passwordInput.value
+        );
+
+        authMessage.textContent =
+        "Log masuk berjaya";
+
+    } else {
+
+        await signUpWithEmail(
+            emailInput.value,
+            passwordInput.value
+        );
+
+        authMessage.textContent =
+        "Akaun berjaya didaftarkan";
+
+    }
+
+}
+catch(error){
+
+    authMessage.textContent =
+    error.message;
+
+}
+
+const resetBtn =
+document.getElementById(
+"resetPasswordLink"
+);
+
+resetBtn.addEventListener(
+"click",
+async () => {
+
+ try {
+
+   await resetPassword(
+      emailInput.value
+   );
+
+   authMessage.textContent =
+   "Email reset dihantar";
+
+ } catch(error){
+
+   authMessage.textContent =
+   error.message;
+
+ }
+
+});
+
+
+      authMessage.textContent =
+      "Log masuk berjaya";
+
+   } catch(error){
+
+      authMessage.textContent =
+      error.message;
+
+   }
+
+});
+
+let authMode = "signin";
+
+const signInTab =
+document.getElementById("signInTab");
+
+const signUpTab =
+document.getElementById("signUpTab");
+
+const actionButton =
+document.getElementById("emailActionButton");
+
+signInTab.addEventListener(
+"click",
+() => {
+
+ authMode = "signin";
+
+ signInTab.classList.add("active");
+ signUpTab.classList.remove("active");
+
+ actionButton.textContent =
+ "Sign In";
+
+});
+
+signUpTab.addEventListener(
+"click",
+() => {
+
+ authMode = "signup";
+
+ signUpTab.classList.add("active");
+ signInTab.classList.remove("active");
+
+ actionButton.textContent =
+ "Sign Up";
+
+});
+
+  
         const logoutButton = document.getElementById("logoutButton");
         window.logoutUser = async () => {
             try { await logOut(); location.reload(); } catch (err) { console.error(err); }
