@@ -213,10 +213,15 @@
 }
 
 #features-container .live-icon svg {
-    width: 23px;
-    height: 23px;
+    width: 32px;
+    height: 32px;
     stroke-width: 1.8;
+
+    animation:
+        iconFloat 3s ease-in-out infinite,
+        iconGlow 2.5s ease-in-out infinite;
 }
+
 
 #features-container .feature-card h3 {
     position: relative;
@@ -476,3 +481,28 @@
     #features-container .featured-content { padding: 1.6rem; }
     #features-container .section-title h2 { font-size: 1.8rem; }
 }
+
+@keyframes iconFloat {
+
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-4px);
+  }
+
+}
+
+@keyframes iconGlow {
+
+  0%,100%{
+      filter:drop-shadow(0 0 0 rgba(59,130,246,.2));
+  }
+
+  50%{
+      filter:drop-shadow(0 0 12px rgba(59,130,246,.6));
+  }
+
+}
+
