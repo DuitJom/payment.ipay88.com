@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ms">
+
 <head>
 
     <meta charset="UTF-8">
@@ -9,14 +10,17 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Blog &amp; News - DuitJom</title>
+    <title>Blog & News - DuitJom</title>
 
     <meta
         name="description"
-        content="Dapatkan berita, kemas kini dan informasi terkini daripada DuitJom."
+        content="Dapatkan berita, kemas kini, panduan dan informasi terkini daripada DuitJom."
     >
 
-    <!-- GOOGLE FONT -->
+    <!-- =====================================================
+         GOOGLE FONT
+    ====================================================== -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link
@@ -30,7 +34,11 @@
         rel="stylesheet"
     >
 
-    <!-- FONT AWESOME -->
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -39,9 +47,9 @@
 
 <style>
 
-/* =====================================================
+/* =========================================================
    RESET
-===================================================== */
+========================================================= */
 
 * {
     margin: 0;
@@ -86,15 +94,23 @@ body {
     overflow-x: hidden;
 }
 
+body.menu-open {
+    overflow: hidden;
+}
+
 a {
     text-decoration: none;
     color: inherit;
 }
 
+button {
+    font-family: inherit;
+}
 
-/* =====================================================
+
+/* =========================================================
    BACKGROUND ORBS
-===================================================== */
+========================================================= */
 
 .background-orb {
 
@@ -121,7 +137,8 @@ a {
     width: 230px;
     height: 230px;
 
-    background: rgba(56,189,248,0.24);
+    background:
+        rgba(56,189,248,0.24);
 
     top: 10%;
     left: -90px;
@@ -132,7 +149,8 @@ a {
     width: 270px;
     height: 270px;
 
-    background: rgba(99,102,241,0.20);
+    background:
+        rgba(99,102,241,0.20);
 
     top: 50%;
     right: -110px;
@@ -145,7 +163,8 @@ a {
     width: 180px;
     height: 180px;
 
-    background: rgba(14,165,233,0.18);
+    background:
+        rgba(14,165,233,0.18);
 
     bottom: 5%;
     left: 30%;
@@ -166,13 +185,12 @@ a {
             translateY(20px)
             scale(1.08);
     }
-
 }
 
 
-/* =====================================================
+/* =========================================================
    NAVBAR
-===================================================== */
+========================================================= */
 
 .navbar {
 
@@ -180,18 +198,20 @@ a {
 
     top: 0;
 
-    z-index: 100;
+    z-index: 500;
 
     background:
-        rgba(255,255,255,0.72);
+        rgba(255,255,255,0.80);
 
-    backdrop-filter: blur(18px);
+    backdrop-filter:
+        blur(20px);
 
-    -webkit-backdrop-filter: blur(18px);
+    -webkit-backdrop-filter:
+        blur(20px);
 
     border-bottom:
         1px solid
-        rgba(255,255,255,0.8);
+        rgba(255,255,255,0.85);
 
     box-shadow:
         0 8px 30px
@@ -206,7 +226,9 @@ a {
 
     margin: auto;
 
-    padding: 0 20px;
+    padding:
+        0
+        20px;
 
     display: flex;
 
@@ -214,6 +236,11 @@ a {
 
     justify-content: space-between;
 }
+
+
+/* =========================================================
+   BRAND
+========================================================= */
 
 .brand {
 
@@ -226,7 +253,7 @@ a {
 
 .brand img {
 
-    height: 38px;
+    height: 40px;
 
     width: auto;
 
@@ -235,10 +262,33 @@ a {
 
 .brand-name {
 
+    font-size: 18px;
+
     font-weight: 800;
+
+    letter-spacing: -0.5px;
 
     color: #0f172a;
 }
+
+
+/* =========================================================
+   NAV ACTIONS
+========================================================= */
+
+.nav-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
 
 .back-button {
 
@@ -246,14 +296,18 @@ a {
 
     align-items: center;
 
+    justify-content: center;
+
     gap: 8px;
 
-    padding: 10px 15px;
+    padding:
+        10px
+        15px;
 
     border-radius: 999px;
 
     background:
-        rgba(255,255,255,0.75);
+        rgba(255,255,255,0.80);
 
     border:
         1px solid
@@ -261,11 +315,12 @@ a {
 
     color: #0369a1;
 
-    font-size: 13px;
+    font-size: 12px;
 
     font-weight: 700;
 
-    transition: 0.25s ease;
+    transition:
+        0.25s ease;
 }
 
 .back-button:hover {
@@ -273,7 +328,8 @@ a {
     transform:
         translateY(-2px);
 
-    background: white;
+    background:
+        white;
 
     box-shadow:
         0 8px 20px
@@ -281,9 +337,425 @@ a {
 }
 
 
-/* =====================================================
+/* =========================================================
+   HAMBURGER BUTTON
+========================================================= */
+
+.menu-button {
+
+    width: 43px;
+
+    height: 43px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(14,165,233,0.15);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,0.85);
+
+    color: #0369a1;
+
+    cursor: pointer;
+
+    font-size: 17px;
+
+    transition:
+        0.25s ease;
+}
+
+.menu-button:hover {
+
+    transform:
+        translateY(-2px);
+
+    background:
+        white;
+
+    box-shadow:
+        0 10px 25px
+        rgba(14,165,233,0.14);
+}
+
+
+/* =========================================================
+   MENU OVERLAY
+========================================================= */
+
+.menu-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 800;
+
+    background:
+        rgba(15,23,42,0.38);
+
+    backdrop-filter:
+        blur(4px);
+
+    -webkit-backdrop-filter:
+        blur(4px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+}
+
+.menu-overlay.active {
+
+    opacity: 1;
+
+    visibility: visible;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+
+    position: fixed;
+
+    top: 0;
+
+    right: 0;
+
+    z-index: 900;
+
+    width:
+        min(350px, 88vw);
+
+    height: 100vh;
+
+    padding: 25px;
+
+    background:
+        rgba(255,255,255,0.96);
+
+    backdrop-filter:
+        blur(25px);
+
+    -webkit-backdrop-filter:
+        blur(25px);
+
+    border-left:
+        1px solid
+        rgba(255,255,255,0.9);
+
+    box-shadow:
+        -20px 0 60px
+        rgba(15,23,42,0.16);
+
+    transform:
+        translateX(100%);
+
+    transition:
+        transform 0.35s
+        cubic-bezier(.4,0,.2,1);
+
+    overflow-y: auto;
+}
+
+.sidebar.active {
+
+    transform:
+        translateX(0);
+}
+
+
+/* =========================================================
+   SIDEBAR HEADER
+========================================================= */
+
+.sidebar-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding-bottom: 22px;
+
+    border-bottom:
+        1px solid
+        rgba(148,163,184,0.16);
+}
+
+.sidebar-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.sidebar-brand img {
+
+    height: 35px;
+
+    width: auto;
+}
+
+.sidebar-brand span {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    color: #0f172a;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
+
+.close-menu {
+
+    width: 39px;
+
+    height: 39px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background:
+        #f1f5f9;
+
+    color: #475569;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition:
+        0.25s ease;
+}
+
+.close-menu:hover {
+
+    background:
+        #e2e8f0;
+
+    transform:
+        rotate(90deg);
+}
+
+
+/* =========================================================
+   SIDEBAR INTRO
+========================================================= */
+
+.sidebar-intro {
+
+    padding:
+        25px
+        4px
+        18px;
+}
+
+.sidebar-intro small {
+
+    display: block;
+
+    color: #0284c7;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 7px;
+}
+
+.sidebar-intro h3 {
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 25px;
+
+    line-height: 1.2;
+
+    margin-bottom: 8px;
+}
+
+.sidebar-intro p {
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+========================================================= */
+
+.sidebar-nav {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.sidebar-link {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding:
+        13px
+        14px;
+
+    border-radius: 15px;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        color 0.2s ease;
+}
+
+.sidebar-link i {
+
+    width: 20px;
+
+    text-align: center;
+
+    color: #0284c7;
+
+    font-size: 15px;
+}
+
+.sidebar-link:hover {
+
+    background:
+        rgba(14,165,233,0.08);
+
+    color: #0369a1;
+
+    transform:
+        translateX(3px);
+}
+
+
+/* =========================================================
+   APPLY LOAN
+========================================================= */
+
+.sidebar-link.apply-loan {
+
+    margin-top: 8px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0284c7,
+            #2563eb,
+            #4f46e5
+        );
+
+    box-shadow:
+        0 12px 25px
+        rgba(37,99,235,0.18);
+}
+
+.sidebar-link.apply-loan i {
+
+    color: white;
+}
+
+.sidebar-link.apply-loan:hover {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0369a1,
+            #1d4ed8,
+            #4338ca
+        );
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.sidebar-footer {
+
+    margin-top: 28px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid
+        rgba(148,163,184,0.16);
+}
+
+.sidebar-footer p {
+
+    color: #94a3b8;
+
+    font-size: 9px;
+
+    line-height: 1.7;
+
+    text-align: center;
+}
+
+
+/* =========================================================
    HERO
-===================================================== */
+========================================================= */
 
 .hero {
 
@@ -298,6 +770,11 @@ a {
 
     text-align: center;
 }
+
+
+/* =========================================================
+   LABEL
+========================================================= */
 
 .luxury-label {
 
@@ -314,7 +791,7 @@ a {
     border-radius: 999px;
 
     background:
-        rgba(255,255,255,0.68);
+        rgba(255,255,255,0.70);
 
     border:
         1px solid
@@ -322,7 +799,7 @@ a {
 
     color: #0369a1;
 
-    font-size: 11px;
+    font-size: 10px;
 
     font-weight: 800;
 
@@ -337,8 +814,13 @@ a {
 
 .luxury-label i {
 
-    color: #d4a017;
+    color: #0284c7;
 }
+
+
+/* =========================================================
+   HERO TITLE
+========================================================= */
 
 .hero h1 {
 
@@ -380,7 +862,7 @@ a {
 
 .hero-description {
 
-    max-width: 650px;
+    max-width: 690px;
 
     margin:
         22px
@@ -391,13 +873,97 @@ a {
 
     font-size: 14px;
 
-    line-height: 1.8;
+    line-height: 1.9;
 }
 
 
-/* =====================================================
-   FEATURED ARTICLE
-===================================================== */
+/* =========================================================
+   LIVE STATUS
+========================================================= */
+
+.live-indicator {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 18px;
+
+    padding:
+        7px
+        13px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(239,68,68,0.07);
+
+    border:
+        1px solid
+        rgba(239,68,68,0.16);
+
+    color: #dc2626;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+}
+
+.live-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #ef4444;
+
+    box-shadow:
+        0 0 0 0
+        rgba(239,68,68,0.55);
+
+    animation:
+        livePulse
+        1.7s
+        infinite;
+}
+
+@keyframes livePulse {
+
+    0% {
+
+        box-shadow:
+            0 0 0 0
+            rgba(239,68,68,0.55);
+    }
+
+    70% {
+
+        box-shadow:
+            0 0 0 7px
+            rgba(239,68,68,0);
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 0 0
+            rgba(239,68,68,0);
+    }
+}
+
+
+/* =========================================================
+   FEATURED
+========================================================= */
 
 .featured {
 
@@ -419,7 +985,7 @@ a {
 
     overflow: hidden;
 
-    min-height: 300px;
+    min-height: 335px;
 
     border-radius: 30px;
 
@@ -445,8 +1011,9 @@ a {
 
     position: absolute;
 
-    width: 250px;
-    height: 250px;
+    width: 300px;
+
+    height: 300px;
 
     border-radius: 50%;
 
@@ -455,8 +1022,29 @@ a {
 
     filter: blur(15px);
 
-    right: -70px;
-    top: -80px;
+    right: -80px;
+
+    top: -100px;
+}
+
+.featured-glow-two {
+
+    position: absolute;
+
+    width: 190px;
+
+    height: 190px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    filter: blur(10px);
+
+    left: 40%;
+
+    bottom: -100px;
 }
 
 .featured-content {
@@ -465,19 +1053,28 @@ a {
 
     z-index: 2;
 
-    padding: 35px;
+    padding: 38px;
 
-    max-width: 700px;
+    max-width: 780px;
 
     color: white;
 }
 
+
+/* =========================================================
+   FEATURED BADGE
+========================================================= */
+
 .featured-badge {
 
-    display: inline-block;
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
 
     padding:
-        6px
+        7px
         12px;
 
     border-radius: 999px;
@@ -489,7 +1086,7 @@ a {
         1px solid
         rgba(255,255,255,0.25);
 
-    font-size: 10px;
+    font-size: 9px;
 
     font-weight: 800;
 
@@ -497,8 +1094,18 @@ a {
 
     text-transform: uppercase;
 
-    margin-bottom: 14px;
+    margin-bottom: 15px;
 }
+
+.featured-badge i {
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   FEATURED CONTENT
+========================================================= */
 
 .featured-content h2 {
 
@@ -508,25 +1115,32 @@ a {
 
     font-size:
         clamp(
-            27px,
+            28px,
             5vw,
-            42px
+            43px
         );
 
     line-height: 1.15;
 
-    margin-bottom: 12px;
+    margin-bottom: 13px;
 }
 
 .featured-content p {
 
     color:
-        rgba(255,255,255,0.85);
+        rgba(255,255,255,0.87);
 
     font-size: 13px;
 
-    line-height: 1.8;
+    line-height: 1.85;
+
+    max-width: 700px;
 }
+
+
+/* =========================================================
+   FEATURED BUTTON
+========================================================= */
 
 .read-featured {
 
@@ -544,15 +1158,17 @@ a {
 
     border-radius: 999px;
 
-    background: white;
+    background:
+        white;
 
     color: #0369a1;
 
-    font-size: 12px;
+    font-size: 11px;
 
     font-weight: 800;
 
-    transition: 0.25s ease;
+    transition:
+        0.25s ease;
 }
 
 .read-featured:hover {
@@ -566,18 +1182,18 @@ a {
 }
 
 
-/* =====================================================
+/* =========================================================
    SECTION TITLE
-===================================================== */
+========================================================= */
 
 .section-title {
 
     text-align: center;
 
     margin:
-        55px
+        65px
         auto
-        25px;
+        28px;
 
     padding:
         0
@@ -590,7 +1206,7 @@ a {
 
     color: #0284c7;
 
-    font-size: 11px;
+    font-size: 10px;
 
     font-weight: 800;
 
@@ -608,12 +1224,30 @@ a {
         serif;
 
     font-size: 34px;
+
+    line-height: 1.2;
+}
+
+.section-description {
+
+    max-width: 640px;
+
+    margin:
+        10px
+        auto
+        0;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    line-height: 1.8;
 }
 
 
-/* =====================================================
+/* =========================================================
    BLOG GRID
-===================================================== */
+========================================================= */
 
 .blog-grid {
 
@@ -637,9 +1271,9 @@ a {
 }
 
 
-/* =====================================================
+/* =========================================================
    BLOG CARD
-===================================================== */
+========================================================= */
 
 .blog-card {
 
@@ -648,11 +1282,11 @@ a {
     border-radius: 23px;
 
     background:
-        rgba(255,255,255,0.67);
+        rgba(255,255,255,0.69);
 
     border:
         1px solid
-        rgba(255,255,255,0.9);
+        rgba(255,255,255,0.90);
 
     backdrop-filter:
         blur(18px);
@@ -665,10 +1299,8 @@ a {
         rgba(15,23,42,0.07);
 
     transition:
-        transform
-        0.25s ease,
-        box-shadow
-        0.25s ease;
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .blog-card:hover {
@@ -682,13 +1314,13 @@ a {
 }
 
 
-/* =====================================================
-   BLOG IMAGE PLACEHOLDER
-===================================================== */
+/* =========================================================
+   BLOG IMAGE
+========================================================= */
 
 .blog-image {
 
-    height: 170px;
+    height: 175px;
 
     display: flex;
 
@@ -716,8 +1348,9 @@ a {
 
     position: absolute;
 
-    width: 130px;
-    height: 130px;
+    width: 140px;
+
+    height: 140px;
 
     border-radius: 50%;
 
@@ -726,8 +1359,31 @@ a {
 
     filter: blur(5px);
 
-    right: -30px;
-    top: -30px;
+    right: -35px;
+
+    top: -35px;
+}
+
+.blog-image::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 80px;
+
+    height: 80px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.35);
+
+    left: -25px;
+
+    bottom: -30px;
+
+    filter: blur(3px);
 }
 
 .blog-image i {
@@ -736,21 +1392,21 @@ a {
 
     z-index: 2;
 
-    font-size: 45px;
+    font-size: 43px;
 
     color: #0284c7;
 
-    opacity: 0.8;
+    opacity: 0.82;
 }
 
 
-/* =====================================================
+/* =========================================================
    BLOG CONTENT
-===================================================== */
+========================================================= */
 
 .blog-content {
 
-    padding: 22px;
+    padding: 23px;
 }
 
 .blog-category {
@@ -770,12 +1426,12 @@ a {
 
     font-size: 17px;
 
-    line-height: 1.35;
+    line-height: 1.4;
 
     margin:
         8px
         0
-        9px;
+        10px;
 }
 
 .blog-content p {
@@ -784,8 +1440,13 @@ a {
 
     font-size: 12px;
 
-    line-height: 1.7;
+    line-height: 1.78;
 }
+
+
+/* =========================================================
+   BLOG META
+========================================================= */
 
 .blog-meta {
 
@@ -824,19 +1485,56 @@ a {
     font-size: 10px;
 
     font-weight: 800;
+
+    transition:
+        0.2s ease;
+}
+
+.read-more:hover {
+
+    color: #1d4ed8;
+
+    transform:
+        translateX(2px);
 }
 
 
-/* =====================================================
-   NEWSLETTER
-===================================================== */
+/* =========================================================
+   SECTION DIVIDER
+========================================================= */
+
+.section-divider {
+
+    max-width: 920px;
+
+    height: 1px;
+
+    margin:
+        70px
+        auto
+        0;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(148,163,184,0.25),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   CTA
+========================================================= */
 
 .newsletter {
 
     max-width: 1000px;
 
     margin:
-        70px
+        75px
         auto;
 
     padding:
@@ -847,7 +1545,7 @@ a {
 .newsletter-card {
 
     padding:
-        40px
+        45px
         25px;
 
     text-align: center;
@@ -858,8 +1556,8 @@ a {
 
         linear-gradient(
             135deg,
-            rgba(255,255,255,0.88),
-            rgba(240,249,255,0.75)
+            rgba(255,255,255,0.90),
+            rgba(240,249,255,0.76)
         );
 
     border:
@@ -885,12 +1583,15 @@ a {
 
     font-size: 31px;
 
-    margin-bottom: 10px;
+    margin:
+        18px
+        0
+        10px;
 }
 
 .newsletter-card p {
 
-    max-width: 570px;
+    max-width: 620px;
 
     margin: auto;
 
@@ -898,13 +1599,13 @@ a {
 
     font-size: 13px;
 
-    line-height: 1.8;
+    line-height: 1.85;
 }
 
 
-/* =====================================================
-   CTA BUTTON
-===================================================== */
+/* =========================================================
+   WEBSITE BUTTON
+========================================================= */
 
 .website-button {
 
@@ -935,7 +1636,7 @@ a {
             #4f46e5
         );
 
-    font-size: 12px;
+    font-size: 11px;
 
     font-weight: 800;
 
@@ -943,7 +1644,8 @@ a {
         0 15px 30px
         rgba(37,99,235,0.22);
 
-    transition: 0.25s ease;
+    transition:
+        0.25s ease;
 }
 
 .website-button:hover {
@@ -957,14 +1659,14 @@ a {
 }
 
 
-/* =====================================================
+/* =========================================================
    FOOTER
-===================================================== */
+========================================================= */
 
 footer {
 
     padding:
-        30px
+        35px
         20px;
 
     text-align: center;
@@ -985,7 +1687,7 @@ footer {
 
 footer img {
 
-    height: 30px;
+    height: 32px;
 
     margin-bottom: 10px;
 }
@@ -994,46 +1696,68 @@ footer p {
 
     color: #64748b;
 
-    font-size: 11px;
+    font-size: 10px;
 
     font-weight: 600;
 }
 
 
-/* =====================================================
+/* =========================================================
    MOBILE
-===================================================== */
+========================================================= */
 
 @media (max-width: 750px) {
 
     .navbar-inner {
 
         min-height: 64px;
+
+        padding:
+            0
+            15px;
     }
+
 
     .brand img {
 
-        height: 32px;
+        height: 34px;
     }
+
 
     .brand-name {
 
         display: none;
     }
 
+
     .back-button {
 
-        font-size: 11px;
+        font-size: 10px;
 
         padding:
             8px
-            12px;
+            11px;
     }
+
+
+    .menu-button {
+
+        width: 40px;
+
+        height: 40px;
+
+        border-radius: 12px;
+    }
+
 
     .hero {
 
-        padding-top: 50px;
+        padding:
+            50px
+            18px
+            30px;
     }
+
 
     .hero h1 {
 
@@ -1042,56 +1766,120 @@ footer p {
         letter-spacing: -1.5px;
     }
 
+
     .hero-description {
 
-        font-size: 13px;
+        font-size: 12px;
+
+        line-height: 1.8;
     }
+
 
     .featured {
 
         margin-top: 15px;
+
+        padding:
+            0
+            15px;
     }
+
 
     .featured-card {
 
-        min-height: 330px;
+        min-height: 385px;
 
         border-radius: 24px;
     }
 
+
     .featured-content {
 
-        padding: 25px;
+        padding: 26px;
     }
+
 
     .featured-content h2 {
 
         font-size: 30px;
     }
 
+
+    .featured-content p {
+
+        font-size: 12px;
+    }
+
+
     .blog-grid {
 
         grid-template-columns: 1fr;
 
         gap: 18px;
+
+        padding:
+            0
+            15px;
     }
+
 
     .blog-image {
 
         height: 190px;
     }
 
+
+    .section-title {
+
+        margin-top: 55px;
+
+        padding:
+            0
+            18px;
+    }
+
+
+    .section-title h2 {
+
+        font-size: 30px;
+    }
+
+
+    .section-description {
+
+        font-size: 11px;
+    }
+
+
     .newsletter {
 
         margin-top: 55px;
+
+        padding:
+            0
+            15px;
+    }
+
+
+    .newsletter-card {
+
+        padding:
+            38px
+            20px;
+    }
+
+
+    .newsletter-card h2 {
+
+        font-size: 27px;
     }
 
 }
 
 
-/* =====================================================
+/* =========================================================
    VERY SMALL SCREEN
-===================================================== */
+========================================================= */
 
 @media (max-width: 380px) {
 
@@ -1100,9 +1888,26 @@ footer p {
         font-size: 42px;
     }
 
+
     .featured-content h2 {
 
         font-size: 27px;
+    }
+
+
+    .back-button span {
+
+        display: none;
+    }
+
+
+    .sidebar {
+
+        width:
+            90vw;
+
+        padding:
+            22px;
     }
 
 }
@@ -1127,13 +1932,199 @@ footer p {
 
 
 <!-- =====================================================
+     MENU OVERLAY
+===================================================== -->
+
+<div
+    class="menu-overlay"
+    id="menuOverlay"
+    onclick="closeMenu()"
+></div>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside
+    class="sidebar"
+    id="sidebar"
+>
+
+
+    <!-- SIDEBAR HEADER -->
+
+    <div class="sidebar-header">
+
+
+        <a
+            href="../index.html"
+            class="sidebar-brand"
+        >
+
+            <img
+                src="../IMG_6715.png"
+                alt="DuitJom Logo"
+            >
+
+            <span>
+                DuitJom
+            </span>
+
+        </a>
+
+
+        <button
+            type="button"
+            class="close-menu"
+            onclick="closeMenu()"
+            aria-label="Tutup menu"
+        >
+
+            <i class="fas fa-xmark"></i>
+
+        </button>
+
+
+    </div>
+
+
+    <!-- SIDEBAR INTRO -->
+
+    <div class="sidebar-intro">
+
+        <small>
+            Navigation
+        </small>
+
+        <h3>
+            Menu Utama
+        </h3>
+
+        <p>
+            Gunakan menu ini untuk mengakses halaman utama
+            dan maklumat penting DuitJom dengan lebih mudah.
+        </p>
+
+    </div>
+
+
+    <!-- SIDEBAR NAV -->
+
+    <nav class="sidebar-nav">
+
+
+        <!-- ABOUT US -->
+
+        <a
+            href="about-us.html"
+            class="sidebar-link"
+        >
+
+            <i class="fas fa-building"></i>
+
+            <span>
+                About Us
+            </span>
+
+        </a>
+
+
+        <!-- PRIVACY -->
+
+        <a
+            href="privacy-policy.html"
+            class="sidebar-link"
+        >
+
+            <i class="fas fa-shield-halved"></i>
+
+            <span>
+                Privacy
+            </span>
+
+        </a>
+
+
+        <!-- CONTACT -->
+
+        <a
+            href="contact-us.html"
+            class="sidebar-link"
+        >
+
+            <i class="fas fa-headset"></i>
+
+            <span>
+                Contact Us
+            </span>
+
+        </a>
+
+
+        <!-- TERMS -->
+
+        <a
+            href="terms-and-conditions.html"
+            class="sidebar-link"
+        >
+
+            <i class="fas fa-file-contract"></i>
+
+            <span>
+                Term &amp; Conditions
+            </span>
+
+        </a>
+
+
+        <!-- APPLY LOAN -->
+
+        <a
+            href="../index.html"
+            class="sidebar-link apply-loan"
+        >
+
+            <i class="fas fa-file-signature"></i>
+
+            <span>
+                Apply Loan
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- SIDEBAR FOOTER -->
+
+    <div class="sidebar-footer">
+
+        <p>
+
+            DuitJom menyediakan pengalaman digital yang
+            ringkas, mudah dan tersusun untuk pengguna.
+
+        </p>
+
+    </div>
+
+
+</aside>
+
+
+<!-- =====================================================
      NAVBAR
 ===================================================== -->
 
 <header class="navbar">
 
+
     <div class="navbar-inner">
 
+
+        <!-- BRAND -->
 
         <a
             href="../index.html"
@@ -1152,16 +2143,44 @@ footer p {
         </a>
 
 
-        <a
-            href="../index.html"
-            class="back-button"
-        >
+        <!-- NAV ACTIONS -->
 
-            <i class="fas fa-arrow-left"></i>
+        <div class="nav-actions">
 
-            Kembali
 
-        </a>
+            <!-- BACK -->
+
+            <a
+                href="../index.html"
+                class="back-button"
+            >
+
+                <i class="fas fa-arrow-left"></i>
+
+                <span>
+                    Kembali
+                </span>
+
+            </a>
+
+
+            <!-- HAMBURGER -->
+
+            <button
+                type="button"
+                class="menu-button"
+                id="menuButton"
+                onclick="openMenu()"
+                aria-label="Buka menu"
+                aria-expanded="false"
+            >
+
+                <i class="fas fa-bars"></i>
+
+            </button>
+
+
+        </div>
 
 
     </div>
@@ -1195,10 +2214,26 @@ footer p {
 
     <p class="hero-description">
 
-        Dapatkan informasi, berita, panduan dan kemas kini
-        terkini daripada DuitJom dalam satu tempat.
+        Selamat datang ke ruang berita dan informasi DuitJom.
+        Dapatkan kemas kini berkaitan platform, panduan
+        penggunaan, keselamatan digital serta informasi
+        kewangan yang disusun untuk membantu pengguna
+        mendapatkan maklumat dengan lebih jelas dan teratur.
 
     </p>
+
+
+    <!-- LIVE -->
+
+    <div class="live-indicator">
+
+        <span class="live-dot"></span>
+
+        <span>
+            LIVE
+        </span>
+
+    </div>
 
 
 </section>
@@ -1216,11 +2251,15 @@ footer p {
 
         <div class="featured-glow"></div>
 
+        <div class="featured-glow-two"></div>
+
 
         <div class="featured-content">
 
 
             <div class="featured-badge">
+
+                <i class="fas fa-circle"></i>
 
                 Featured Update
 
@@ -1237,19 +2276,22 @@ footer p {
 
             <p>
 
-                Ikuti perkembangan terkini, informasi penting
-                dan kemas kini berkaitan pengalaman digital
-                DuitJom.
+                Ikuti perkembangan terkini daripada DuitJom
+                melalui ruang berita dan informasi kami.
+                Bahagian ini menyediakan kemas kini mengenai
+                perkembangan platform, informasi penting,
+                panduan penggunaan serta perkara berkaitan
+                pengalaman digital DuitJom.
 
             </p>
 
 
             <a
-                href="#latest"
+                href="#latest-news"
                 class="read-featured"
             >
 
-                Baca Sekarang
+                Lihat Artikel
 
                 <i class="fas fa-arrow-down"></i>
 
@@ -1258,29 +2300,40 @@ footer p {
 
         </div>
 
+
     </div>
 
 </section>
 
 
 <!-- =====================================================
-     LATEST ARTICLES
+     SENARAI 1
+     BERITA & KEMAS KINI
 ===================================================== -->
 
-<section id="latest">
+<section id="latest-news">
 
 
     <div class="section-title">
 
 
         <small>
-            Latest Updates
+            Latest News
         </small>
 
 
         <h2>
-            Artikel Terkini
+            Berita &amp; Kemas Kini
         </h2>
+
+
+        <p class="section-description">
+
+            Dapatkan perkembangan terbaru berkaitan DuitJom,
+            perubahan platform, ciri digital dan informasi
+            yang penting untuk diketahui oleh pengguna.
+
+        </p>
 
 
     </div>
@@ -1307,24 +2360,23 @@ footer p {
 
 
                 <div class="blog-category">
-
                     NEWS
-
                 </div>
 
 
                 <h3>
-
                     Kemas Kini Terkini DuitJom
-
                 </h3>
 
 
                 <p>
 
-                    Ketahui perkembangan dan kemas kini
-                    terbaru yang diperkenalkan oleh DuitJom
-                    untuk meningkatkan pengalaman pengguna.
+                    Ketahui perkembangan dan kemas kini terbaru
+                    yang diperkenalkan oleh DuitJom. Setiap
+                    perubahan dan penambahbaikan bertujuan
+                    membantu menjadikan pengalaman pengguna
+                    lebih tersusun serta memudahkan akses
+                    kepada informasi yang diperlukan.
 
                 </p>
 
@@ -1333,14 +2385,14 @@ footer p {
 
 
                     <span class="blog-date">
-
                         2026
-
                     </span>
 
 
                     <a
-                        href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
+                        href="https://www.duitjom.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="read-more"
                     >
 
@@ -1378,24 +2430,24 @@ footer p {
 
 
                 <div class="blog-category">
-
                     SECURITY
-
                 </div>
 
 
                 <h3>
-
                     Keselamatan Dalam Dunia Digital
-
                 </h3>
 
 
                 <p>
 
-                    Beberapa perkara penting yang perlu
-                    diketahui pengguna ketika menggunakan
-                    perkhidmatan dalam talian.
+                    Keselamatan maklumat merupakan perkara
+                    penting ketika menggunakan perkhidmatan
+                    dalam talian. Pengguna digalakkan untuk
+                    menjaga maklumat akaun, tidak berkongsi
+                    maklumat sulit dengan pihak yang tidak
+                    dikenali dan sentiasa menyemak maklumat
+                    sebelum membuat sebarang tindakan.
 
                 </p>
 
@@ -1404,14 +2456,14 @@ footer p {
 
 
                     <span class="blog-date">
-
                         2026
-
                     </span>
 
 
                     <a
-                        href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
+                        href="https://www.duitjom.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="read-more"
                     >
 
@@ -1440,7 +2492,7 @@ footer p {
 
             <div class="blog-image">
 
-                <i class="fas fa-lightbulb"></i>
+                <i class="fas fa-mobile-screen"></i>
 
             </div>
 
@@ -1449,24 +2501,24 @@ footer p {
 
 
                 <div class="blog-category">
-
-                    TIPS
-
+                    DIGITAL
                 </div>
 
 
                 <h3>
-
-                    Tips Menguruskan Kewangan
-
+                    Pengalaman Digital DuitJom
                 </h3>
 
 
                 <p>
 
-                    Panduan ringkas untuk membantu anda
-                    memahami dan menguruskan keperluan
-                    kewangan dengan lebih teratur.
+                    DuitJom memberi perhatian kepada pengalaman
+                    digital pengguna melalui susunan halaman,
+                    navigasi dan informasi yang lebih teratur.
+                    Matlamatnya adalah untuk membantu pengguna
+                    memahami setiap bahagian platform dengan
+                    lebih mudah ketika mendapatkan informasi
+                    yang diperlukan.
 
                 </p>
 
@@ -1475,14 +2527,14 @@ footer p {
 
 
                     <span class="blog-date">
-
                         2026
-
                     </span>
 
 
                     <a
-                        href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
+                        href="https://www.duitjom.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="read-more"
                     >
 
@@ -1502,6 +2554,56 @@ footer p {
         </article>
 
 
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     DIVIDER
+===================================================== -->
+
+<div class="section-divider"></div>
+
+
+<!-- =====================================================
+     SENARAI 2
+     PANDUAN & INFORMASI
+===================================================== -->
+
+<section id="guides">
+
+
+    <div class="section-title">
+
+
+        <small>
+            Knowledge Centre
+        </small>
+
+
+        <h2>
+            Panduan &amp; Informasi
+        </h2>
+
+
+        <p class="section-description">
+
+            Koleksi panduan ringkas dan informasi berguna
+            untuk membantu pengguna memahami perkara
+            berkaitan kewangan, penggunaan platform dan
+            keselamatan dalam persekitaran digital.
+
+        </p>
+
+
+    </div>
+
+
+    <div class="blog-grid">
+
+
         <!-- =================================================
              ARTICLE 4
         ================================================== -->
@@ -1511,7 +2613,7 @@ footer p {
 
             <div class="blog-image">
 
-                <i class="fas fa-mobile-screen"></i>
+                <i class="fas fa-lightbulb"></i>
 
             </div>
 
@@ -1520,24 +2622,24 @@ footer p {
 
 
                 <div class="blog-category">
-
-                    DIGITAL
-
+                    TIPS
                 </div>
 
 
                 <h3>
-
-                    Pengalaman Digital DuitJom
-
+                    Tips Menguruskan Kewangan
                 </h3>
 
 
                 <p>
 
-                    Kenali ciri-ciri digital yang direka
-                    untuk menjadikan pengalaman pengguna
-                    lebih mudah dan tersusun.
+                    Pengurusan kewangan yang teratur boleh
+                    membantu seseorang membuat keputusan
+                    dengan lebih baik. Antara perkara yang
+                    boleh diberi perhatian termasuk menyusun
+                    komitmen, memahami kemampuan bayaran,
+                    merancang perbelanjaan dan menilai
+                    keperluan sebelum membuat keputusan.
 
                 </p>
 
@@ -1546,14 +2648,14 @@ footer p {
 
 
                     <span class="blog-date">
-
                         2026
-
                     </span>
 
 
                     <a
-                        href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
+                        href="https://www.duitjom.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="read-more"
                     >
 
@@ -1591,24 +2693,24 @@ footer p {
 
 
                 <div class="blog-category">
-
                     INFORMATION
-
                 </div>
 
 
                 <h3>
-
                     Perkara Penting Untuk Pengguna
-
                 </h3>
 
 
                 <p>
 
-                    Maklumat dan panduan yang boleh membantu
-                    pengguna memahami penggunaan platform
-                    digital dengan lebih baik.
+                    Sebelum menggunakan mana-mana perkhidmatan
+                    digital, pengguna digalakkan membaca
+                    informasi yang disediakan, memahami terma
+                    yang ditetapkan dan memastikan maklumat
+                    yang diberikan adalah tepat. Memahami
+                    maklumat terlebih dahulu dapat membantu
+                    mengurangkan kekeliruan sepanjang proses.
 
                 </p>
 
@@ -1617,14 +2719,14 @@ footer p {
 
 
                     <span class="blog-date">
-
                         2026
-
                     </span>
 
 
                     <a
-                        href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
+                        href="https://www.duitjom.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         class="read-more"
                     >
 
@@ -1653,7 +2755,7 @@ footer p {
 
             <div class="blog-image">
 
-                <i class="fas fa-star"></i>
+                <i class="fas fa-building"></i>
 
             </div>
 
@@ -1662,24 +2764,23 @@ footer p {
 
 
                 <div class="blog-category">
-
                     DUITJOM
-
                 </div>
 
 
                 <h3>
-
                     Kenali DuitJom Dengan Lebih Dekat
-
                 </h3>
 
 
                 <p>
 
                     Ketahui lebih lanjut mengenai DuitJom,
-                    visi kami dan bagaimana kami membina
-                    pengalaman digital untuk pengguna.
+                    pendekatan kami terhadap pengalaman digital
+                    dan bagaimana informasi disusun untuk
+                    membantu pengguna mendapatkan akses kepada
+                    halaman, informasi dan perkhidmatan yang
+                    berkaitan dengan lebih mudah dan teratur.
 
                 </p>
 
@@ -1688,9 +2789,7 @@ footer p {
 
 
                     <span class="blog-date">
-
                         2026
-
                     </span>
 
 
@@ -1717,11 +2816,12 @@ footer p {
 
     </div>
 
+
 </section>
 
 
 <!-- =====================================================
-     VISIT WEBSITE
+     CTA
 ===================================================== -->
 
 <section class="newsletter">
@@ -1732,7 +2832,7 @@ footer p {
 
         <div class="luxury-label">
 
-            <i class="fas fa-gem"></i>
+            <i class="fas fa-globe"></i>
 
             DUITJOM
 
@@ -1740,17 +2840,18 @@ footer p {
 
 
         <h2>
-
             Mahu Ketahui Lebih Lanjut?
-
         </h2>
 
 
         <p>
 
             Untuk mendapatkan maklumat lanjut mengenai
-            DuitJom dan perkhidmatan yang tersedia,
-            sila kunjungi laman web rasmi kami.
+            DuitJom, ciri-ciri platform serta informasi yang
+            tersedia, sila kunjungi laman web rasmi kami.
+            Anda juga boleh menggunakan menu navigasi di
+            bahagian atas untuk mendapatkan akses kepada
+            halaman penting DuitJom.
 
         </p>
 
@@ -1770,6 +2871,7 @@ footer p {
 
 
     </div>
+
 
 </section>
 
@@ -1796,6 +2898,125 @@ footer p {
 
 
 </footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const menuOverlay =
+    document.getElementById("menuOverlay");
+
+const menuButton =
+    document.getElementById("menuButton");
+
+
+/* =========================================================
+   OPEN MENU
+========================================================= */
+
+function openMenu() {
+
+    sidebar.classList.add("active");
+
+    menuOverlay.classList.add("active");
+
+    document.body.classList.add("menu-open");
+
+    menuButton.setAttribute(
+        "aria-expanded",
+        "true"
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE MENU
+========================================================= */
+
+function closeMenu() {
+
+    sidebar.classList.remove("active");
+
+    menuOverlay.classList.remove("active");
+
+    document.body.classList.remove("menu-open");
+
+    menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+    );
+
+}
+
+
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape" &&
+            sidebar.classList.contains("active")
+        ) {
+
+            closeMenu();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CLOSE AFTER NAVIGATION
+========================================================= */
+
+document
+    .querySelectorAll(".sidebar-link")
+    .forEach(
+        function(link) {
+
+            link.addEventListener(
+                "click",
+                function() {
+
+                    closeMenu();
+
+                }
+            );
+
+        }
+    );
+
+
+/* =========================================================
+   PREVENT OVERLAY CLICK FROM AFFECTING SIDEBAR
+========================================================= */
+
+sidebar.addEventListener(
+    "click",
+    function(event) {
+
+        event.stopPropagation();
+
+    }
+);
+
+</script>
 
 
 </body>
