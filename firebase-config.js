@@ -5,6 +5,7 @@ import {
   signInWithPopup, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
+  sendPasswordResetEmail,
   signOut, 
   onAuthStateChanged,
   sendSignInLinkToEmail,
@@ -17,13 +18,15 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIza...", // Masukkan API Key sebenar
+  apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
   authDomain: "duitjom-sign-up-in.firebaseapp.com",
   projectId: "duitjom-sign-up-in",
   storageBucket: "duitjom-sign-up-in.firebasestorage.app",
   messagingSenderId: "246834525616",
-  appId: "SILA_MASUKKAN_APP_ID_ANDA" // Masukkan App ID dari Console
+  appId: "1:246834525616:web:a8429bda0166e6e03c1275",
+  measurementId: "G-T52Q57SJC4"
 };
+
 
 // Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
@@ -50,12 +53,14 @@ window.firebaseAuth = {
 };
 
 // Kekalkan export jika ada bahagian skrip berasaskan ES module lain yang memerlukannya
-export { 
-  auth, 
-  googleProvider, 
-  signInWithPopup, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged 
+export {
+  auth,
+  googleProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+  onAuthStateChanged
 };
+
