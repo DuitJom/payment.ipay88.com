@@ -24,7 +24,7 @@ const friendly = (error) => getFriendlyAuthError(error);
 
 function createPanels() {
   if (!container || document.getElementById("authRegisterPanel")) return;
-  container.insertAdjacentHTML("beforeend", \`<div id="authRegisterPanel" class="login-card hidden">
+  container.insertAdjacentHTML("beforeend", `<div id="authRegisterPanel" class="login-card hidden">
     <p class="login-kicker">AKAUN BAHARU</p><h2 class="login-title">Daftar Akaun</h2>
     <form id="registerForm" class="login-panel">
       <label for="registerNameInput">Nama</label><input id="registerNameInput" type="text" autocomplete="name" required>
@@ -49,8 +49,8 @@ function createPanels() {
     <button id="resendVerificationButton" type="button" class="login-primary-button mt-4">Hantar Semula Email</button>
     <button id="refreshVerificationButton" type="button" class="login-secondary-button mt-2 w-full">Saya Sudah Sahkan Email</button>
     <button id="logoutVerificationButton" type="button" class="login-secondary-button mt-2 w-full">Log Keluar</button>
-  </div>\`);
-  emailForm?.insertAdjacentHTML("afterend", \`<div class="mt-3 grid grid-cols-2 gap-2"><button id="forgotPasswordButton" type="button" class="login-secondary-button">Lupa Kata Laluan?</button><button id="openRegisterButton" type="button" class="login-secondary-button">Daftar Akaun</button></div><button id="openMagicLinkButton" type="button" class="login-secondary-button mt-2 w-full">Log Masuk Tanpa Kata Laluan</button>\`);
+  </div>`);
+  emailForm?.insertAdjacentHTML("afterend", `<div class="mt-3 grid grid-cols-2 gap-2"><button id="forgotPasswordButton" type="button" class="login-secondary-button">Lupa Kata Laluan?</button><button id="openRegisterButton" type="button" class="login-secondary-button">Daftar Akaun</button></div><button id="openMagicLinkButton" type="button" class="login-secondary-button mt-2 w-full">Log Masuk Tanpa Kata Laluan</button>`);
 }
 
 function showPanel(panel) {
