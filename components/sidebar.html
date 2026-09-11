@@ -1,199 +1,46 @@
-<!-- ====================================================== -->
-<!-- 1. SCRIPT API RECAPTCHA                               -->
-<!-- ====================================================== -->
-<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
-
-<!-- ====================================================== -->
-<!-- 2. SIDEBAR LOGIN                                      -->
-<!-- ====================================================== -->
+<!-- Login sidebar dikawal oleh modul auth utama dalam index.html. -->
 <div id="sidebarGoogleSection">
+    <form id="sidebarEmailLoginForm">
+        <input
+            type="email"
+            id="userEmail"
+            autocomplete="email"
+            placeholder="Masukkan Email"
+            required>
 
-    <input
-        type="email"
-        id="userEmail"
-        placeholder="Masukkan Email">
+        <input
+            type="password"
+            id="userPassword"
+            autocomplete="current-password"
+            placeholder="Masukkan Kata Laluan"
+            required>
 
-    <input
-        type="password"
-        id="userPassword"
-        placeholder="Masukkan Kata Laluan">
+        <p id="sidebarAuthMessage" style="color:red;" role="status" aria-live="polite"></p>
 
-    <p id="sidebarAuthMessage" style="color:red;"></p>
-
-    <button
-        class="g-recaptcha"
-        data-sitekey="6LexGLEtAAAAANmnkuqhGTVZY7cW-E8QolJaSQmq"
-        data-callback="onSubmit"
-        data-action="submit">
-
-        Submit (Log Masuk)
-
-    </button>
+        <button type="submit" id="sidebarEmailLoginButton">
+            Log Masuk
+        </button>
+    </form>
 
     <button
         type="button"
-        onclick="signInWithGoogle()">
-
+        id="sidebarGoogleLoginButton"
+        onclick="window.signInWithGoogle?.(event)">
         Log Masuk Google
-
     </button>
-
 </div>
 
 <div id="sidebarAccountSection" class="hidden">
-
     <p>
         Selamat kembali,
         <span data-auth-user-name></span>
     </p>
 
-    <button onclick="logoutUser()">
-
+    <button type="button" onclick="window.logoutUser?.(event)">
         Log Keluar
-
     </button>
-
 </div>
 
 <div id="loginSpinnerOverlay" class="hidden">
-
     Sila tunggu...
-
 </div>
-
-<!-- ====================================================== -->
-<!-- 3. GUNA AUTH.JS SAHAJA (TIADA FIREBASE KE-2)          -->
-<!-- ====================================================== -->
-<script type="module">
-
-import {
-    loginWithGoogle,
-    loginWithEmail,
-    logOut,
-    monitorAuthState
-} from "../auth.js";
-
-const googleSection =
-document.getElementById("sidebarGoogleSection");
-
-const accountSection =
-document.getElementById("sidebarAccountSection");
-
-const userNameElement =
-document.querySelector("[data-auth-user-name]");
-
-const authMessage =
-document.getElementById("sidebarAuthMessage");
-
-const spinner =
-document.getElementById("loginSpinnerOverlay");
-
-/* Pantau status login */
-monitorAuthState((user) => {
-
-    if (user) {
-
-        googleSection?.classList.add("hidden");
-        accountSection?.classList.remove("hidden");
-
-        if (userNameElement) {
-            userNameElement.textContent =
-                user.displayName || user.email;
-        }
-
-    } else {
-
-        googleSection?.classList.remove("hidden");
-        accountSection?.classList.add("hidden");
-
-        if (userNameElement) {
-            userNameElement.textContent = "";
-        }
-    }
-
-});
-
-/* Login Google */
-window.signInWithGoogle = async () => {
-
-    authMessage.textContent = "";
-
-    try {
-
-        spinner?.classList.remove("hidden");
-
-        await loginWithGoogle();
-
-    } catch (error) {
-
-        console.error(error);
-
-        authMessage.textContent =
-        error.message;
-
-    } finally {
-
-        spinner?.classList.add("hidden");
-
-    }
-
-};
-
-/* Login Email */
-window.loginWithEmail = async () => {
-
-    const email =
-    document.getElementById("userEmail").value;
-
-    const password =
-    document.getElementById("userPassword").value;
-
-    authMessage.textContent = "";
-
-    try {
-
-        spinner?.classList.remove("hidden");
-
-        await loginWithEmail(
-            email,
-            password
-        );
-
-    } catch (error) {
-
-        console.error(error);
-
-        authMessage.textContent =
-        error.message;
-
-    } finally {
-
-        spinner?.classList.add("hidden");
-
-    }
-
-};
-
-/* Logout */
-window.logoutUser = async () => {
-
-    try {
-
-        await logOut();
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-};
-
-/* Callback reCAPTCHA */
-window.onSubmit = async () => {
-
-    await window.loginWithEmail();
-
-};
-
-</script>
