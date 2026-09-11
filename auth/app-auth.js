@@ -131,7 +131,6 @@ function bindSidebar() {
 }
 
 createPanels();
-emailForm?.addEventListener("submit", login);
 document.getElementById("registerForm")?.addEventListener("submit", register);
 document.getElementById("resetForm")?.addEventListener("submit", reset);
 document.getElementById("magicLinkForm")?.addEventListener("submit", magicLink);
@@ -145,7 +144,6 @@ document.getElementById("resendVerificationButton")?.addEventListener("click", r
 document.getElementById("refreshVerificationButton")?.addEventListener("click", refreshVerification);
 document.getElementById("logoutVerificationButton")?.addEventListener("click", () => logOut());
 window.duitjomAuthState = { user: null, isVerified: false };
-window.logoutUser = () => logOut();
 window.requireVerifiedUser = () => isVerified;
 const originalPayment = window.goToPaymentPage;
 if (typeof originalPayment === "function") window.goToPaymentPage = () => isVerified ? originalPayment() : message("Sila log masuk dan sahkan email sebelum membuat bayaran.", "error");
