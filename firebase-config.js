@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import {
   getAuth,
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -37,6 +38,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
 // API global ini digunakan oleh partial auth lama (telefon/TOTP/magic link).
 window.duitjomFirebaseAuth = auth;
@@ -44,6 +46,7 @@ window.duitjomFirebaseDb = db;
 window.firebaseAuth = {
   GoogleAuthProvider,
   googleProvider,
+  githubProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -67,6 +70,7 @@ export {
   auth,
   db,
   firebaseConfig,
+  githubProvider,
   googleProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
