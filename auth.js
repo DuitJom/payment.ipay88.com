@@ -2,6 +2,7 @@ import {
   auth,
   db,
   googleProvider,
+  githubProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -24,6 +25,10 @@ import {
 
 export function loginWithGoogle() {
   return signInWithPopup(auth, googleProvider);
+}
+
+export function loginWithGithub() {
+  return signInWithPopup(auth, githubProvider);
 }
 
 export function loginWithEmail(email, password) {
