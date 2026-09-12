@@ -75,13 +75,14 @@ export async function ensureUserProfile(user = auth.currentUser) {
   const profileRef = doc(db, "users", user.uid);
   const existingProfile = await getDoc(profileRef);
   const provider = user.providerData.map((item) => item.providerId).join(",") || "password";
+  const providerVerified = user.providerData.some(({ providerId }) => providerId === "google.com" || providerId === "github.com");
   const profile = {
     uid: user.uid,
     displayName: user.displayName || "",
     email: user.email || "",
     photoURL: user.photoURL || "",
     provider,
-    emailVerified: Boolean(user.emailVerified),
+    emailVerified: Boolean(user.emailVerified || providerVerified),
     updatedAt: serverTimestamp(),
     lastLoginAt: serverTimestamp()
   };
@@ -107,6 +108,9 @@ export function getFriendlyAuthError(error) {
     "auth/weak-password": "Kata laluan perlu sekurang-kurangnya 6 aksara.",
     "auth/invalid-email": "Sila masukkan alamat email yang sah.",
     "auth/too-many-requests": "Terlalu banyak percubaan. Sila cuba lagi kemudian.",
+    "auth/quota-exceeded": "Had penghantaran email Firebase telah dicapai. Sila cuba lagi kemudian.",
+    "auth/unauthorized-continue-uri": "Domain pautan belum dibenarkan dalam Firebase Console.",
+    "auth/invalid-continue-uri": "URL pautan tidak sah atau belum dibenarkan.",
     "auth/popup-closed-by-user": "Tetingkap Google ditutup sebelum log masuk selesai.",
     "auth/popup-blocked": "Browser menyekat popup Google. Benarkan popup dan cuba lagi.",
     "auth/operation-not-allowed": "Kaedah log masuk ini belum diaktifkan dalam Firebase Console.",
