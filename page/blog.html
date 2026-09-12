@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 
 <head>
 
@@ -1993,17 +1993,17 @@ footer p {
 
     <div class="sidebar-intro">
 
-        <small>
+        <small data-i18n="sidebar.navKicker">
             Navigation
         </small>
 
-        <h3>
-            Menu Utama
+        <h3 data-i18n="sidebar.navTitle">
+            Main Menu
         </h3>
 
-        <p>
-            Gunakan menu ini untuk mengakses halaman utama
-            dan maklumat penting DuitJom dengan lebih mudah.
+        <p data-i18n="sidebar.navIntro">
+            Use this menu to access DuitJom's main pages
+            and important information more easily.
         </p>
 
     </div>
@@ -2023,7 +2023,7 @@ footer p {
 
             <i class="fas fa-building"></i>
 
-            <span>
+            <span data-i18n="sidebar.aboutUs">
                 About Us
             </span>
 
@@ -2039,7 +2039,7 @@ footer p {
 
             <i class="fas fa-shield-halved"></i>
 
-            <span>
+            <span data-i18n="sidebar.privacy">
                 Privacy
             </span>
 
@@ -2055,7 +2055,7 @@ footer p {
 
             <i class="fas fa-headset"></i>
 
-            <span>
+            <span data-i18n="sidebar.contactUs">
                 Contact Us
             </span>
 
@@ -2071,7 +2071,7 @@ footer p {
 
             <i class="fas fa-file-contract"></i>
 
-            <span>
+            <span data-i18n="sidebar.terms">
                 Term &amp; Conditions
             </span>
 
@@ -2087,7 +2087,7 @@ footer p {
 
             <i class="fas fa-file-signature"></i>
 
-            <span>
+            <span data-i18n="sidebar.applyLoan">
                 Apply Loan
             </span>
 
@@ -2101,10 +2101,10 @@ footer p {
 
     <div class="sidebar-footer">
 
-        <p>
+        <p data-i18n="sidebar.footer">
 
-            DuitJom menyediakan pengalaman digital yang
-            ringkas, mudah dan tersusun untuk pengguna.
+            DuitJom provides a simple, easy and organized
+            digital experience for users.
 
         </p>
 
@@ -2148,6 +2148,14 @@ footer p {
         <div class="nav-actions">
 
 
+            <!-- LANGUAGE SWITCHER -->
+
+            <div class="lang-switch" role="group" aria-label="Language">
+                <button type="button" data-locale-option="en" onclick="DJ_I18N.setLocale('en')" class="lang-btn">EN</button>
+                <button type="button" data-locale-option="zh" onclick="DJ_I18N.setLocale('zh')" class="lang-btn">中文</button>
+            </div>
+
+
             <!-- BACK -->
 
             <a
@@ -2157,8 +2165,8 @@ footer p {
 
                 <i class="fas fa-arrow-left"></i>
 
-                <span>
-                    Kembali
+                <span data-i18n="common.back">
+                    Back
                 </span>
 
             </a>
@@ -2199,26 +2207,25 @@ footer p {
 
         <i class="fas fa-newspaper"></i>
 
-        DUITJOM BLOG
+        <span data-i18n="blogPage.heroLabel">DUITJOM BLOG</span>
 
     </div>
 
 
     <h1>
 
-        News &amp;
-        <span>Updates</span>
+        <span data-i18n="blogPage.heroTitle1">News &amp;</span>
+        <span data-i18n="blogPage.heroTitle2">Updates</span>
 
     </h1>
 
 
-    <p class="hero-description">
+    <p class="hero-description" data-i18n="blogPage.heroDescription">
 
-        Selamat datang ke ruang berita dan informasi DuitJom.
-        Dapatkan kemas kini berkaitan platform, panduan
-        penggunaan, keselamatan digital serta informasi
-        kewangan yang disusun untuk membantu pengguna
-        mendapatkan maklumat dengan lebih jelas dan teratur.
+        Welcome to the DuitJom news and information space.
+        Get updates about the platform, usage guides, digital
+        security and financial information, organized to help
+        users find information more clearly and in an orderly way.
 
     </p>
 
@@ -2229,7 +2236,7 @@ footer p {
 
         <span class="live-dot"></span>
 
-        <span>
+        <span data-i18n="blogPage.live">
             LIVE
         </span>
 
@@ -2261,27 +2268,25 @@ footer p {
 
                 <i class="fas fa-circle"></i>
 
-                Featured Update
+                <span data-i18n="blogPage.featuredBadge">Featured Update</span>
 
             </div>
 
 
-            <h2>
+            <h2 data-i18n="blogPage.featuredTitle">
 
-                Selamat Datang ke
-                DuitJom News
+                Welcome to DuitJom News
 
             </h2>
 
 
-            <p>
+            <p data-i18n="blogPage.featuredBody">
 
-                Ikuti perkembangan terkini daripada DuitJom
-                melalui ruang berita dan informasi kami.
-                Bahagian ini menyediakan kemas kini mengenai
-                perkembangan platform, informasi penting,
-                panduan penggunaan serta perkara berkaitan
-                pengalaman digital DuitJom.
+                Follow the latest developments from DuitJom through
+                our news and information space. This section provides
+                updates on platform developments, important information,
+                usage guides and matters related to the DuitJom digital
+                experience.
 
             </p>
 
@@ -2291,7 +2296,7 @@ footer p {
                 class="read-featured"
             >
 
-                Lihat Artikel
+                <span data-i18n="blogPage.featuredCta">View Articles</span>
 
                 <i class="fas fa-arrow-down"></i>
 
@@ -2317,21 +2322,21 @@ footer p {
     <div class="section-title">
 
 
-        <small>
+        <small data-i18n="blogPage.newsKicker">
             Latest News
         </small>
 
 
-        <h2>
-            Berita &amp; Kemas Kini
+        <h2 data-i18n="blogPage.newsTitle">
+            News &amp; Updates
         </h2>
 
 
-        <p class="section-description">
+        <p class="section-description" data-i18n="blogPage.newsDesc">
 
-            Dapatkan perkembangan terbaru berkaitan DuitJom,
-            perubahan platform, ciri digital dan informasi
-            yang penting untuk diketahui oleh pengguna.
+            Get the latest developments about DuitJom, platform
+            changes, digital features and information important
+            for users to know.
 
         </p>
 
@@ -2359,24 +2364,23 @@ footer p {
             <div class="blog-content">
 
 
-                <div class="blog-category">
+                <div class="blog-category" data-i18n="blogPage.a1cat">
                     NEWS
                 </div>
 
 
-                <h3>
-                    Kemas Kini Terkini DuitJom
+                <h3 data-i18n="blogPage.a1title">
+                    DuitJom Latest Updates
                 </h3>
 
 
-                <p>
+                <p data-i18n="blogPage.a1body">
 
-                    Ketahui perkembangan dan kemas kini terbaru
-                    yang diperkenalkan oleh DuitJom. Setiap
-                    perubahan dan penambahbaikan bertujuan
-                    membantu menjadikan pengalaman pengguna
-                    lebih tersusun serta memudahkan akses
-                    kepada informasi yang diperlukan.
+                    Find out about the latest developments and updates
+                    introduced by DuitJom. Every change and improvement
+                    is intended to make the user experience more
+                    organized and to make it easier to access the
+                    information you need.
 
                 </p>
 
@@ -2384,7 +2388,7 @@ footer p {
                 <div class="blog-meta">
 
 
-                    <span class="blog-date">
+                    <span class="blog-date" data-i18n="blogPage.year">
                         2026
                     </span>
 
@@ -2396,7 +2400,7 @@ footer p {
                         class="read-more"
                     >
 
-                        Read More
+                        <span data-i18n="blogPage.readMore">Read More</span>
 
                         <i class="fas fa-arrow-right"></i>
 
@@ -2429,25 +2433,23 @@ footer p {
             <div class="blog-content">
 
 
-                <div class="blog-category">
+                <div class="blog-category" data-i18n="blogPage.a2cat">
                     SECURITY
                 </div>
 
 
-                <h3>
-                    Keselamatan Dalam Dunia Digital
+                <h3 data-i18n="blogPage.a2title">
+                    Security in the Digital World
                 </h3>
 
 
-                <p>
+                <p data-i18n="blogPage.a2body">
 
-                    Keselamatan maklumat merupakan perkara
-                    penting ketika menggunakan perkhidmatan
-                    dalam talian. Pengguna digalakkan untuk
-                    menjaga maklumat akaun, tidak berkongsi
-                    maklumat sulit dengan pihak yang tidak
-                    dikenali dan sentiasa menyemak maklumat
-                    sebelum membuat sebarang tindakan.
+                    Information security is important when using online
+                    services. Users are encouraged to protect their
+                    account information, not share confidential
+                    information with unknown parties, and always verify
+                    information before taking any action.
 
                 </p>
 
@@ -2455,7 +2457,7 @@ footer p {
                 <div class="blog-meta">
 
 
-                    <span class="blog-date">
+                    <span class="blog-date" data-i18n="blogPage.year">
                         2026
                     </span>
 
@@ -2467,7 +2469,7 @@ footer p {
                         class="read-more"
                     >
 
-                        Read More
+                        <span data-i18n="blogPage.readMore">Read More</span>
 
                         <i class="fas fa-arrow-right"></i>
 
@@ -2500,25 +2502,23 @@ footer p {
             <div class="blog-content">
 
 
-                <div class="blog-category">
+                <div class="blog-category" data-i18n="blogPage.a3cat">
                     DIGITAL
                 </div>
 
 
-                <h3>
-                    Pengalaman Digital DuitJom
+                <h3 data-i18n="blogPage.a3title">
+                    The DuitJom Digital Experience
                 </h3>
 
 
-                <p>
+                <p data-i18n="blogPage.a3body">
 
-                    DuitJom memberi perhatian kepada pengalaman
-                    digital pengguna melalui susunan halaman,
-                    navigasi dan informasi yang lebih teratur.
-                    Matlamatnya adalah untuk membantu pengguna
-                    memahami setiap bahagian platform dengan
-                    lebih mudah ketika mendapatkan informasi
-                    yang diperlukan.
+                    DuitJom pays attention to the user's digital
+                    experience through more organized page layouts,
+                    navigation and information. The goal is to help
+                    users understand each part of the platform more
+                    easily when getting the information they need.
 
                 </p>
 
@@ -2526,7 +2526,7 @@ footer p {
                 <div class="blog-meta">
 
 
-                    <span class="blog-date">
+                    <span class="blog-date" data-i18n="blogPage.year">
                         2026
                     </span>
 
@@ -2538,7 +2538,7 @@ footer p {
                         class="read-more"
                     >
 
-                        Read More
+                        <span data-i18n="blogPage.readMore">Read More</span>
 
                         <i class="fas fa-arrow-right"></i>
 
@@ -2578,22 +2578,21 @@ footer p {
     <div class="section-title">
 
 
-        <small>
+        <small data-i18n="blogPage.guidesKicker">
             Knowledge Centre
         </small>
 
 
-        <h2>
-            Panduan &amp; Informasi
+        <h2 data-i18n="blogPage.guidesTitle">
+            Guides &amp; Information
         </h2>
 
 
-        <p class="section-description">
+        <p class="section-description" data-i18n="blogPage.guidesDesc">
 
-            Koleksi panduan ringkas dan informasi berguna
-            untuk membantu pengguna memahami perkara
-            berkaitan kewangan, penggunaan platform dan
-            keselamatan dalam persekitaran digital.
+            A collection of short guides and useful information
+            to help users understand matters related to finance,
+            platform usage and safety in the digital environment.
 
         </p>
 
@@ -2621,25 +2620,23 @@ footer p {
             <div class="blog-content">
 
 
-                <div class="blog-category">
+                <div class="blog-category" data-i18n="blogPage.a4cat">
                     TIPS
                 </div>
 
 
-                <h3>
-                    Tips Menguruskan Kewangan
+                <h3 data-i18n="blogPage.a4title">
+                    Tips for Managing Your Finances
                 </h3>
 
 
-                <p>
+                <p data-i18n="blogPage.a4body">
 
-                    Pengurusan kewangan yang teratur boleh
-                    membantu seseorang membuat keputusan
-                    dengan lebih baik. Antara perkara yang
-                    boleh diberi perhatian termasuk menyusun
-                    komitmen, memahami kemampuan bayaran,
-                    merancang perbelanjaan dan menilai
-                    keperluan sebelum membuat keputusan.
+                    Organized financial management can help a person
+                    make better decisions. Things worth paying
+                    attention to include arranging commitments,
+                    understanding repayment ability, planning spending
+                    and assessing needs before making a decision.
 
                 </p>
 
@@ -2647,7 +2644,7 @@ footer p {
                 <div class="blog-meta">
 
 
-                    <span class="blog-date">
+                    <span class="blog-date" data-i18n="blogPage.year">
                         2026
                     </span>
 
@@ -2659,7 +2656,7 @@ footer p {
                         class="read-more"
                     >
 
-                        Read More
+                        <span data-i18n="blogPage.readMore">Read More</span>
 
                         <i class="fas fa-arrow-right"></i>
 
@@ -2692,25 +2689,24 @@ footer p {
             <div class="blog-content">
 
 
-                <div class="blog-category">
+                <div class="blog-category" data-i18n="blogPage.a5cat">
                     INFORMATION
                 </div>
 
 
-                <h3>
-                    Perkara Penting Untuk Pengguna
+                <h3 data-i18n="blogPage.a5title">
+                    Important Things for Users
                 </h3>
 
 
-                <p>
+                <p data-i18n="blogPage.a5body">
 
-                    Sebelum menggunakan mana-mana perkhidmatan
-                    digital, pengguna digalakkan membaca
-                    informasi yang disediakan, memahami terma
-                    yang ditetapkan dan memastikan maklumat
-                    yang diberikan adalah tepat. Memahami
-                    maklumat terlebih dahulu dapat membantu
-                    mengurangkan kekeliruan sepanjang proses.
+                    Before using any digital service, users are
+                    encouraged to read the provided information,
+                    understand the stated terms and ensure the
+                    information given is accurate. Understanding the
+                    information first helps reduce confusion throughout
+                    the process.
 
                 </p>
 
@@ -2718,7 +2714,7 @@ footer p {
                 <div class="blog-meta">
 
 
-                    <span class="blog-date">
+                    <span class="blog-date" data-i18n="blogPage.year">
                         2026
                     </span>
 
@@ -2730,7 +2726,7 @@ footer p {
                         class="read-more"
                     >
 
-                        Read More
+                        <span data-i18n="blogPage.readMore">Read More</span>
 
                         <i class="fas fa-arrow-right"></i>
 
@@ -2763,24 +2759,22 @@ footer p {
             <div class="blog-content">
 
 
-                <div class="blog-category">
+                <div class="blog-category" data-i18n="blogPage.a6cat">
                     DUITJOM
                 </div>
 
 
-                <h3>
-                    Kenali DuitJom Dengan Lebih Dekat
+                <h3 data-i18n="blogPage.a6title">
+                    Get to Know DuitJom Better
                 </h3>
 
 
-                <p>
+                <p data-i18n="blogPage.a6body">
 
-                    Ketahui lebih lanjut mengenai DuitJom,
-                    pendekatan kami terhadap pengalaman digital
-                    dan bagaimana informasi disusun untuk
-                    membantu pengguna mendapatkan akses kepada
-                    halaman, informasi dan perkhidmatan yang
-                    berkaitan dengan lebih mudah dan teratur.
+                    Learn more about DuitJom, our approach to the
+                    digital experience and how information is organized
+                    to help users access related pages, information and
+                    services more easily and in an orderly way.
 
                 </p>
 
@@ -2788,7 +2782,7 @@ footer p {
                 <div class="blog-meta">
 
 
-                    <span class="blog-date">
+                    <span class="blog-date" data-i18n="blogPage.year">
                         2026
                     </span>
 
@@ -2798,7 +2792,7 @@ footer p {
                         class="read-more"
                     >
 
-                        About Us
+                        <span data-i18n="blogPage.aboutUs">About Us</span>
 
                         <i class="fas fa-arrow-right"></i>
 
@@ -2834,24 +2828,22 @@ footer p {
 
             <i class="fas fa-globe"></i>
 
-            DUITJOM
+            <span data-i18n="blogPage.ctaLabel">DUITJOM</span>
 
         </div>
 
 
-        <h2>
-            Mahu Ketahui Lebih Lanjut?
+        <h2 data-i18n="blogPage.ctaTitle">
+            Want to Know More?
         </h2>
 
 
-        <p>
+        <p data-i18n="blogPage.ctaBody">
 
-            Untuk mendapatkan maklumat lanjut mengenai
-            DuitJom, ciri-ciri platform serta informasi yang
-            tersedia, sila kunjungi laman web rasmi kami.
-            Anda juga boleh menggunakan menu navigasi di
-            bahagian atas untuk mendapatkan akses kepada
-            halaman penting DuitJom.
+            For more information about DuitJom, platform features
+            and available information, please visit our official
+            website. You can also use the navigation menu at the
+            top to access DuitJom's important pages.
 
         </p>
 
@@ -2863,7 +2855,7 @@ footer p {
             class="website-button"
         >
 
-            Visit Official Website
+            <span data-i18n="blogPage.ctaButton">Visit Official Website</span>
 
             <i class="fas fa-arrow-up-right-from-square"></i>
 
@@ -2889,10 +2881,9 @@ footer p {
     >
 
 
-    <p>
+    <p data-i18n="blogPage.copyright">
 
-        &copy; 2026 DuitJom.
-        Hak cipta terpelihara.
+        &copy; 2026 DuitJom. All rights reserved.
 
     </p>
 
@@ -3017,6 +3008,43 @@ sidebar.addEventListener(
 );
 
 </script>
+
+
+<!-- Language switcher styles -->
+<style>
+    .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(14, 165, 233, 0.15);
+    }
+    .lang-btn {
+        border: 0;
+        cursor: pointer;
+        padding: 6px 11px;
+        border-radius: 999px;
+        background: transparent;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+    .lang-btn:hover {
+        color: #0369a1;
+    }
+    .lang-btn.lang-option-active {
+        background: linear-gradient(135deg, #0284c7, #2563eb);
+        color: #ffffff;
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.22);
+    }
+</style>
+
+<!-- Centralized i18n (English default, Chinese) -->
+<script src="../i18n/translations.js"></script>
+<script src="../i18n/i18n.js"></script>
 
 
 </body>

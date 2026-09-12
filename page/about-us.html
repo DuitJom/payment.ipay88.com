@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -812,16 +812,19 @@
         </a>
 
 
-        <a
-            href="../index.html"
-            class="back-button"
-        >
+        <div style="display:flex;align-items:center;gap:10px;">
 
-            <i class="fas fa-arrow-left"></i>
+            <div class="lang-switch" role="group" aria-label="Language">
+                <button type="button" data-locale-option="en" onclick="DJ_I18N.setLocale('en')" class="lang-btn">EN</button>
+                <button type="button" data-locale-option="zh" onclick="DJ_I18N.setLocale('zh')" class="lang-btn">中文</button>
+            </div>
 
-            Kembali
+            <a href="../index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span data-i18n="common.back">Back</span>
+            </a>
 
-        </a>
+        </div>
 
     </div>
 
@@ -838,25 +841,24 @@
 
         <i class="fas fa-gem"></i>
 
-        ABOUT DUITJOM
+        <span data-i18n="aboutPage.heroLabel">ABOUT DUITJOM</span>
 
     </div>
 
 
     <h1>
 
-        Mengenali
-        <span>DuitJom</span>
+        <span data-i18n="aboutPage.heroTitle1">Getting to Know</span>
+        <span data-i18n="aboutPage.heroTitleAccent">DuitJom</span>
 
     </h1>
 
 
-    <p class="hero-description">
+    <p class="hero-description" data-i18n="aboutPage.heroDescription">
 
-        DuitJom dibangunkan dengan matlamat untuk memberikan
-        pengalaman digital yang lebih mudah, moden dan mesra
-        pengguna dalam menguruskan keperluan perkhidmatan
-        kewangan secara dalam talian.
+        DuitJom is built to deliver a simpler, more modern and
+        user-friendly digital experience for managing your online
+        financial service needs.
 
     </p>
 
@@ -882,17 +884,16 @@
 
             </div>
 
-            <h2>
-                Siapa Kami?
+            <h2 data-i18n="aboutPage.box1Title">
+                Who We Are
             </h2>
 
-            <p>
+            <p data-i18n="aboutPage.box1Body">
 
-                DuitJom ialah platform digital yang direka untuk
-                memudahkan pengguna mendapatkan maklumat,
-                menguruskan proses dan berinteraksi dengan
-                perkhidmatan yang tersedia melalui pengalaman
-                dalam talian yang ringkas dan intuitif.
+                DuitJom is a digital platform designed to make it easy
+                for users to get information, manage processes, and
+                interact with available services through a simple,
+                intuitive online experience.
 
             </p>
 
@@ -909,16 +910,15 @@
 
             </div>
 
-            <h2>
-                Pengalaman Digital
+            <h2 data-i18n="aboutPage.box2Title">
+                Digital Experience
             </h2>
 
-            <p>
+            <p data-i18n="aboutPage.box2Body">
 
-                Kami memberikan keutamaan kepada reka bentuk
-                yang mudah digunakan, pantas dan responsif supaya
-                pengguna boleh mengakses platform DuitJom melalui
-                telefon pintar, tablet atau komputer.
+                We prioritize a design that is easy to use, fast and
+                responsive so users can access the DuitJom platform via
+                smartphone, tablet or computer.
 
             </p>
 
@@ -934,16 +934,15 @@
 
     <div class="mission">
 
-        <h2>
-            Misi Kami
+        <h2 data-i18n="aboutPage.missionTitle">
+            Our Mission
         </h2>
 
-        <p>
+        <p data-i18n="aboutPage.missionBody">
 
-            Membina pengalaman digital yang lebih mudah,
-            telus dan mesra pengguna dengan menggabungkan
-            teknologi moden, reka bentuk premium dan proses
-            digital yang tersusun.
+            To build a simpler, more transparent and user-friendly
+            digital experience by combining modern technology, premium
+            design and an organized digital process.
 
         </p>
 
@@ -958,12 +957,12 @@
 
 <div class="section-title">
 
-    <small>
+    <small data-i18n="aboutPage.principlesKicker">
         Our Principles
     </small>
 
-    <h2>
-        Nilai Kami
+    <h2 data-i18n="aboutPage.valuesTitle">
+        Our Values
     </h2>
 
 </div>
@@ -982,14 +981,13 @@
 
         </div>
 
-        <h3>
-            Keselamatan
+        <h3 data-i18n="aboutPage.value1Title">
+            Security
         </h3>
 
-        <p>
+        <p data-i18n="aboutPage.value1Body">
 
-            Mengutamakan pengalaman digital yang
-            selamat dan bertanggungjawab.
+            Prioritizing a safe and responsible digital experience.
 
         </p>
 
@@ -1006,14 +1004,13 @@
 
         </div>
 
-        <h3>
-            Mudah &amp; Pantas
+        <h3 data-i18n="aboutPage.value2Title">
+            Simple &amp; Fast
         </h3>
 
-        <p>
+        <p data-i18n="aboutPage.value2Body">
 
-            Proses digital direka supaya lebih
-            ringkas dan mudah difahami.
+            Digital processes are designed to be simpler and easier to understand.
 
         </p>
 
@@ -1030,14 +1027,13 @@
 
         </div>
 
-        <h3>
-            Pengguna Diutamakan
+        <h3 data-i18n="aboutPage.value3Title">
+            User First
         </h3>
 
-        <p>
+        <p data-i18n="aboutPage.value3Body">
 
-            Setiap pengalaman direka dengan
-            keperluan pengguna sebagai keutamaan.
+            Every experience is designed with the user's needs as the priority.
 
         </p>
 
@@ -1059,22 +1055,22 @@
 
             <i class="fas fa-star"></i>
 
-            DUITJOM
+            <span data-i18n="aboutPage.ctaLabel">DUITJOM</span>
 
         </div>
 
 
-        <h2>
+        <h2 data-i18n="aboutPage.ctaTitle">
 
-            Bersedia Untuk Bermula?
+            Ready to Get Started?
 
         </h2>
 
 
-        <p>
+        <p data-i18n="aboutPage.ctaBody">
 
-            Untuk maklumat lanjut mengenai perkhidmatan
-            DuitJom, sila kunjungi laman web rasmi kami.
+            For more information about DuitJom services,
+            please visit our official website.
 
         </p>
 
@@ -1086,7 +1082,7 @@
             class="apply-button"
         >
 
-            Lawati DuitJom
+            <span data-i18n="aboutPage.ctaButton">Visit DuitJom</span>
 
             <i class="fas fa-arrow-up-right-from-square"></i>
 
@@ -1108,13 +1104,50 @@
         alt="DuitJom"
     >
 
-    <p>
+    <p data-i18n="aboutPage.copyright">
 
-        &copy; 2026 DuitJom. Hak cipta terpelihara.
+        &copy; 2026 DuitJom. All rights reserved.
 
     </p>
 
 </footer>
+
+
+<!-- Language switcher styles -->
+<style>
+    .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(14, 165, 233, 0.15);
+    }
+    .lang-btn {
+        border: 0;
+        cursor: pointer;
+        padding: 6px 11px;
+        border-radius: 999px;
+        background: transparent;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+    .lang-btn:hover {
+        color: #0369a1;
+    }
+    .lang-btn.lang-option-active {
+        background: linear-gradient(135deg, #0284c7, #2563eb);
+        color: #ffffff;
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.22);
+    }
+</style>
+
+<!-- Centralized i18n (English default, Chinese) -->
+<script src="../i18n/translations.js"></script>
+<script src="../i18n/i18n.js"></script>
 
 
 </body>
