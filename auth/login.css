@@ -1,39 +1,122 @@
-.login-card { padding: 1.25rem; border: 1px solid #e2e8f0; border-radius: 1.25rem; background: rgba(255,255,255,.9); box-shadow: 0 16px 35px rgba(15,23,42,.08); }
-.login-kicker { margin: 0; color: #2563eb; font-size: .63rem; font-weight: 800; letter-spacing: .13em; }
-.login-title { margin: .35rem 0; color: #0f172a; font-size: 1.2rem; font-weight: 800; }.login-subtitle,.login-help { color: #64748b; font-size: .72rem; line-height: 1.5; }.login-subtitle { margin: 0; }
-.login-provider-button,.login-primary-button,.login-secondary-button { display:block; width:100%; border-radius:.7rem; padding:.72rem 1rem; font-size:.78rem; font-weight:700; transition:.2s; }.login-provider-button { display:flex; align-items:center; justify-content:center; gap:.65rem; margin-top:1rem; border:1px solid #cbd5e1; color:#334155; background:#fff; }.login-provider-button:hover { background:#f8fafc; }.google-provider-icon { flex:0 0 auto; }.login-primary-button { border:0; color:#fff; background:#2563eb; }.login-primary-button:hover { background:#1d4ed8; }.login-primary-button:disabled { opacity:.6; cursor:wait; }.login-secondary-button { border:1px solid #bfdbfe; color:#1d4ed8; background:#eff6ff; }
-.login-divider { display:flex; align-items:center; gap:.75rem; margin:1rem 0; color:#94a3b8; font-size:.65rem; text-transform:uppercase; }.login-divider::before,.login-divider::after { content:""; flex:1; height:1px; background:#e2e8f0; }
-.login-methods { display:grid; grid-template-columns:repeat(3,1fr); gap:.35rem; margin-bottom:1rem; padding:.25rem; border-radius:.75rem; background:#f1f5f9; }.login-method { border:0; border-radius:.55rem; padding:.5rem .2rem; color:#64748b; font-size:.65rem; font-weight:700; background:transparent; }.login-method.active { color:#0f172a; background:#fff; box-shadow:0 1px 3px rgba(15,23,42,.12); }
-.login-panel label { display:block; margin-bottom:.32rem; color:#334155; font-size:.68rem; font-weight:700; }.login-panel input { width:100%; border:1px solid #cbd5e1; border-radius:.65rem; padding:.7rem .8rem; color:#0f172a; font-size:.8rem; outline:none; }.login-panel input:focus { border-color:#2563eb; box-shadow:0 0 0 3px #dbeafe; }.phone-field { display:flex; align-items:center; border:1px solid #cbd5e1; border-radius:.65rem; background:#fff; }.phone-field span { padding:0 .75rem; color:#475569; font-size:.8rem; font-weight:700; }.phone-field input { border:0; box-shadow:none!important; }.login-help { margin:.75rem 0 0; }.login-message { min-height:1.25rem; margin:.85rem 0 0; text-align:center; font-size:.7rem; font-weight:700; }.totp-setup { margin-top:.85rem; padding:.85rem; border-radius:.75rem; background:#f8fafc; text-align:center; }.totp-setup img { width:130px; height:130px; margin:0 auto .5rem; }.totp-setup p { overflow-wrap:anywhere; color:#475569; font-size:.65rem; }.totp-setup code { font-size:.6rem; }
+/* =========================================================
+   DUITJOM AUTH SURFACE — restrained fintech design
+   Light, high-contrast, single accent color, hairline borders.
+   ========================================================= */
+.login-card {
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+.login-kicker {
+  margin: 0;
+  color: #1d4ed8;
+  font-size: .625rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.login-title {
+  margin: .4rem 0 .3rem;
+  color: #0f172a;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.login-subtitle, .login-help {
+  color: #64748b;
+  font-size: .75rem;
+  line-height: 1.55;
+}
+.login-subtitle { margin: 0; }
 
+.login-provider-button, .login-primary-button, .login-secondary-button {
+  display: block;
+  width: 100%;
+  border-radius: .625rem;
+  padding: .68rem 1rem;
+  font-size: .8rem;
+  font-weight: 600;
+  transition: background-color .15s ease, border-color .15s ease, transform .1s ease;
+}
+.login-provider-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  margin-top: 1.1rem;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  background: #ffffff;
+}
+.login-provider-button:hover { background: #f8fafc; border-color: #cbd5e1; }
+.login-provider-button:active { transform: scale(.99); }
+.login-provider-button:disabled { opacity: .6; cursor: wait; }
+.google-provider-icon, .github-provider-icon { flex: 0 0 auto; }
+.github-provider-icon { color: #0f172a; }
 
-/* Premium DUiTjOM fintech auth surface */
+.login-primary-button {
+  border: 0;
+  color: #ffffff;
+  background: #1d4ed8;
+}
+.login-primary-button:hover { background: #1e40af; }
+.login-primary-button:disabled { opacity: .6; cursor: wait; }
+
+.login-secondary-button {
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  background: #f8fafc;
+}
+.login-secondary-button:hover { background: #f1f5f9; border-color: #cbd5e1; }
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin: 1.1rem 0;
+  color: #94a3b8;
+  font-size: .65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.login-divider::before, .login-divider::after { content: ""; flex: 1; height: 1px; background: #e5e7eb; }
+
+.login-panel label {
+  display: block;
+  margin-bottom: .35rem;
+  color: #334155;
+  font-size: .7rem;
+  font-weight: 600;
+}
+.login-panel input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: .625rem;
+  padding: .68rem .85rem;
+  color: #0f172a;
+  font-size: .82rem;
+  background: #ffffff;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.login-panel input::placeholder { color: #9ca3af; }
+.login-panel input:focus { border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, .12); }
+
+.login-help { margin: .8rem 0 0; }
+.login-message {
+  min-height: 1.25rem;
+  margin: .9rem 0 0;
+  text-align: center;
+  font-size: .72rem;
+  font-weight: 600;
+}
+
+/* Auth surface wrapper — plain section, no glass/gradient chrome */
 #firebaseAuthContainer {
   position: relative;
-  overflow: hidden;
-  margin-top: 1rem;
+  margin-top: .5rem;
   margin-bottom: 2rem;
-  padding-bottom: 1.25rem;
-  border-radius: 1.6rem;
-  background: radial-gradient(circle at 12% 0%, rgba(59,130,246,.28), transparent 34%), radial-gradient(circle at 100% 100%, rgba(14,165,233,.16), transparent 35%), #0b1220;
-  box-shadow: 0 24px 60px rgba(15,23,42,.22);
-}
-#firebaseAuthContainer > .login-card { margin: 0; border: 1px solid rgba(148,163,184,.18); border-radius: 1.25rem; background: rgba(15,23,42,.9); box-shadow: none; color: #f8fafc; }
-#firebaseAuthContainer .login-kicker { color: #7dd3fc; }
-#firebaseAuthContainer .login-title { color: #f8fafc; }
-#firebaseAuthContainer .login-subtitle { color: #cbd5e1; }
-#firebaseAuthContainer .login-provider-button { border-color: rgba(148,163,184,.35); color: #f8fafc; background: rgba(30,41,59,.8); }
-#firebaseAuthContainer .login-provider-button:hover { border-color: rgba(125,211,252,.75); background: rgba(51,65,85,.95); }
-#firebaseAuthContainer .github-provider-icon { color: #f8fafc; }
-#firebaseAuthContainer .login-divider { color: #94a3b8; }
-#firebaseAuthContainer .login-divider::before, #firebaseAuthContainer .login-divider::after { background: rgba(148,163,184,.25); }
-#firebaseAuthContainer .login-panel label { color: #cbd5e1; }
-#firebaseAuthContainer .login-panel input { border-color: rgba(148,163,184,.35); color: #f8fafc; background: rgba(15,23,42,.72); }
-#firebaseAuthContainer .login-panel input::placeholder { color: #94a3b8; }
-#firebaseAuthContainer .login-panel input:focus { border-color: #7dd3fc; box-shadow: 0 0 0 3px rgba(56,189,248,.18); }
-#firebaseAuthContainer .login-primary-button { background: linear-gradient(135deg, #38bdf8, #2563eb); }
-#firebaseAuthContainer .login-secondary-button { border-color: rgba(125,211,252,.35); color: #bae6fd; background: rgba(30,41,59,.72); }
-#firebaseAuthContainer .login-message { color: #bae6fd; }
-@media (max-width: 420px) {
-  #firebaseAuthContainer { margin-left: .75rem; margin-right: .75rem; padding-left: 1rem; padding-right: 1rem; }
 }

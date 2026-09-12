@@ -22,36 +22,38 @@ function message(text, type = "info") {
 }
 window.setAuthMessage = message;
 const friendly = (error) => getFriendlyAuthError(error);
+const t = (key, vars) => (window.DJ_I18N ? window.DJ_I18N.t(key, vars) : key);
 
 function createPanels() {
   if (!container || document.getElementById("authRegisterPanel")) return;
   container.insertAdjacentHTML("beforeend", `<div id="authRegisterPanel" class="login-card hidden">
-    <p class="login-kicker">AKAUN BAHARU</p><h2 class="login-title">Daftar Akaun</h2>
+    <p class="login-kicker" data-i18n="auth.kickerRegister">NEW ACCOUNT</p><h2 class="login-title" data-i18n="auth.registerTitle">Create Account</h2>
     <form id="registerForm" class="login-panel">
-      <label for="registerNameInput">Nama</label><input id="registerNameInput" type="text" autocomplete="name" required>
-      <label for="registerEmailInput" class="mt-3">Email</label><input id="registerEmailInput" type="email" autocomplete="email" required>
-      <label for="registerPasswordInput" class="mt-3">Password</label><input id="registerPasswordInput" type="password" minlength="6" autocomplete="new-password" required>
-      <label for="registerConfirmInput" class="mt-3">Confirm Password</label><input id="registerConfirmInput" type="password" minlength="6" autocomplete="new-password" required>
-      <button id="registerButton" type="submit" class="login-primary-button mt-4">Daftar</button>
-    </form><button id="backToLoginFromRegister" type="button" class="login-secondary-button mt-3 w-full">Kembali ke Log Masuk</button>
+      <label for="registerNameInput" data-i18n="auth.name">Name</label><input id="registerNameInput" type="text" autocomplete="name" required>
+      <label for="registerEmailInput" class="mt-3" data-i18n="auth.email">Email</label><input id="registerEmailInput" type="email" autocomplete="email" required>
+      <label for="registerPasswordInput" class="mt-3" data-i18n="auth.password">Password</label><input id="registerPasswordInput" type="password" minlength="6" autocomplete="new-password" required>
+      <label for="registerConfirmInput" class="mt-3" data-i18n="auth.confirmPassword">Confirm Password</label><input id="registerConfirmInput" type="password" minlength="6" autocomplete="new-password" required>
+      <button id="registerButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.registerButton">Register</button>
+    </form><button id="backToLoginFromRegister" type="button" class="login-secondary-button mt-3 w-full" data-i18n="auth.backToLogin">Back to Sign In</button>
   </div>
-  <div id="authResetPanel" class="login-card hidden"><p class="login-kicker">PEMULIHAN AKAUN</p><h2 class="login-title">Lupa Kata Laluan?</h2>
-    <form id="resetForm" class="login-panel"><label for="resetEmailInput">Email</label><input id="resetEmailInput" type="email" autocomplete="email" required>
-      <button id="resetButton" type="submit" class="login-primary-button mt-4">Hantar Email Reset</button>
-    </form><button id="backToLoginFromReset" type="button" class="login-secondary-button mt-3 w-full">Kembali ke Log Masuk</button>
+  <div id="authResetPanel" class="login-card hidden"><p class="login-kicker" data-i18n="auth.kickerReset">ACCOUNT RECOVERY</p><h2 class="login-title" data-i18n="auth.resetTitle">Forgot Your Password?</h2>
+    <form id="resetForm" class="login-panel"><label for="resetEmailInput" data-i18n="auth.email">Email</label><input id="resetEmailInput" type="email" autocomplete="email" required>
+      <button id="resetButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.resetButton">Send Reset Email</button>
+    </form><button id="backToLoginFromReset" type="button" class="login-secondary-button mt-3 w-full" data-i18n="auth.backToLogin">Back to Sign In</button>
   </div>
-  <div id="authMagicPanel" class="login-card hidden"><p class="login-kicker">MAGIC LINK</p><h2 class="login-title">Log Masuk Tanpa Password</h2>
-    <form id="magicLinkForm" class="login-panel"><label for="magicLinkEmailInput">Email</label><input id="magicLinkEmailInput" type="email" autocomplete="email" required>
-      <button id="magicLinkButton" type="submit" class="login-primary-button mt-4">Hantar Pautan</button>
-    </form><button id="backToLoginFromMagic" type="button" class="login-secondary-button mt-3 w-full">Kembali ke Log Masuk</button>
+  <div id="authMagicPanel" class="login-card hidden"><p class="login-kicker" data-i18n="auth.kickerMagic">MAGIC LINK</p><h2 class="login-title" data-i18n="auth.magicTitle">Sign In Without a Password</h2>
+    <form id="magicLinkForm" class="login-panel"><label for="magicLinkEmailInput" data-i18n="auth.email">Email</label><input id="magicLinkEmailInput" type="email" autocomplete="email" required>
+      <button id="magicLinkButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.magicButton">Send Link</button>
+    </form><button id="backToLoginFromMagic" type="button" class="login-secondary-button mt-3 w-full" data-i18n="auth.backToLogin">Back to Sign In</button>
   </div>
-  <div id="authVerificationPanel" class="login-card hidden"><p class="login-kicker">PENGESAHAN EMAIL</p><h2 class="login-title">Sahkan Email Anda</h2>
-    <p class="login-subtitle">Sila semak inbox dan tekan pautan pengesahan sebelum meneruskan.</p>
-    <button id="resendVerificationButton" type="button" class="login-primary-button mt-4">Hantar Semula Email</button>
-    <button id="refreshVerificationButton" type="button" class="login-secondary-button mt-2 w-full">Saya Sudah Sahkan Email</button>
-    <button id="logoutVerificationButton" type="button" class="login-secondary-button mt-2 w-full">Log Keluar</button>
+  <div id="authVerificationPanel" class="login-card hidden"><p class="login-kicker" data-i18n="auth.kickerVerify">EMAIL VERIFICATION</p><h2 class="login-title" data-i18n="auth.verifyTitle">Verify Your Email</h2>
+    <p class="login-subtitle" data-i18n="auth.verifySubtitle">Please check your inbox and click the verification link before continuing.</p>
+    <button id="resendVerificationButton" type="button" class="login-primary-button mt-4" data-i18n="auth.resendVerification">Resend Email</button>
+    <button id="refreshVerificationButton" type="button" class="login-secondary-button mt-2 w-full" data-i18n="auth.refreshVerification">I've Verified My Email</button>
+    <button id="logoutVerificationButton" type="button" class="login-secondary-button mt-2 w-full" data-i18n="auth.logoutButton">Log Out</button>
   </div>`);
-  emailForm?.insertAdjacentHTML("afterend", `<div class="mt-3 grid grid-cols-2 gap-2"><button id="forgotPasswordButton" type="button" class="login-secondary-button">Lupa Kata Laluan?</button><button id="openRegisterButton" type="button" class="login-secondary-button">Daftar Akaun</button></div><button id="openMagicLinkButton" type="button" class="login-secondary-button mt-2 w-full">Log Masuk Tanpa Kata Laluan</button>`);
+  emailForm?.insertAdjacentHTML("afterend", `<div class="mt-3 grid grid-cols-2 gap-2"><button id="forgotPasswordButton" type="button" class="login-secondary-button" data-i18n="auth.forgotPassword">Forgot Password?</button><button id="openRegisterButton" type="button" class="login-secondary-button" data-i18n="auth.registerAccount">Create Account</button></div><button id="openMagicLinkButton" type="button" class="login-secondary-button mt-2 w-full" data-i18n="auth.magicLinkOpen">Sign In Without Password</button>`);
+  window.DJ_I18N?.applyTranslations(container);
 }
 
 function showPanel(panel) {
@@ -77,27 +79,27 @@ function updateAuthState(user) {
   document.querySelectorAll("[data-auth-user-name]").forEach((el) => { el.textContent = name; });
   document.getElementById("authUserLabel")?.replaceChildren(document.createTextNode(name));
   document.getElementById("userDisplay")?.replaceChildren(document.createTextNode(name));
-  if (user && !isVerified) message("Sila sahkan email anda dahulu sebelum menggunakan fungsi pembayaran.");
+  if (user && !isVerified) message(t("auth.needVerification"));
   else if (!user) message("");
-  if (isVerified) ensureUserProfile(user).catch((error) => console.warn("Profil Firestore belum disimpan:", error));
+  if (isVerified) ensureUserProfile(user).catch((error) => console.warn("Firestore profile not saved:", error));
 }
 
 async function googleLogin(event) {
   event?.preventDefault();
   const button = googleButton;
-  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = "Connecting to Google…"; }
-  try { await loginWithGoogle(); }
-  catch (error) { console.error("Google login gagal:", error); message(friendly(error), "error"); }
-  finally { if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Continue with Google"; } }
+  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = t("auth.googleConnecting"); }
+  try { await window.showPageTransition(() => loginWithGoogle()); }
+  catch (error) { console.error("Google login failed:", error); message(friendly(error), "error"); }
+  finally { if (button) { button.disabled = false; button.textContent = button.dataset.originalText || t("auth.googleContinue"); } }
 }
 
 async function githubLogin(event) {
   event?.preventDefault();
   const button = document.getElementById("githubLoginButton");
-  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = "Connecting to GitHub…"; }
-  try { await loginWithGithub(); }
-  catch (error) { console.error("GitHub login gagal:", error); message(friendly(error), "error"); }
-  finally { if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Continue with GitHub"; } }
+  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = t("auth.githubConnecting"); }
+  try { await window.showPageTransition(() => loginWithGithub()); }
+  catch (error) { console.error("GitHub login failed:", error); message(friendly(error), "error"); }
+  finally { if (button) { button.disabled = false; button.textContent = button.dataset.originalText || t("auth.githubContinue"); } }
 }
 
 async function login(event) {
@@ -116,46 +118,49 @@ function getVerificationActionSettings() {
 async function register(event) {
   event.preventDefault();
   const password = document.getElementById("registerPasswordInput").value;
-  if (password !== document.getElementById("registerConfirmInput").value) return message("Password dan confirm password tidak sepadan.", "error");
+  if (password !== document.getElementById("registerConfirmInput").value) return message(t("auth.passwordMismatch"), "error");
   const button = document.getElementById("registerButton"); button.disabled = true;
   try {
     const result = await registerWithEmail(document.getElementById("registerNameInput").value.trim(), document.getElementById("registerEmailInput").value.trim().toLowerCase(), password);
-    await sendVerificationEmail(result.user, getVerificationActionSettings()); updateAuthState(result.user); message("Akaun berjaya dibuat. Sila semak email untuk pengesahan.");
+    await sendVerificationEmail(result.user, getVerificationActionSettings()); updateAuthState(result.user); message(t("auth.registerSuccess"));
   } catch (error) { message(friendly(error), "error"); } finally { button.disabled = false; }
 }
 async function reset(event) {
   event.preventDefault(); const button = document.getElementById("resetButton"); button.disabled = true;
-  try { await resetPassword(document.getElementById("resetEmailInput").value.trim().toLowerCase()); showPanel(loginPanel); message("Email reset kata laluan telah dihantar. Sila semak inbox anda."); }
+  try { await resetPassword(document.getElementById("resetEmailInput").value.trim().toLowerCase()); showPanel(loginPanel); message(t("auth.resetSuccess")); }
   catch (error) { message(friendly(error), "error"); } finally { button.disabled = false; }
 }
 async function magicLink(event) {
   event.preventDefault(); const button = document.getElementById("magicLinkButton"); button.disabled = true;
   const email = document.getElementById("magicLinkEmailInput").value.trim().toLowerCase();
-  try { await sendMagicLink(email, { url: window.DUITJOM_AUTH_REDIRECT_URL || window.location.href, handleCodeInApp: true }); window.localStorage.setItem("emailForSignIn", email); message("Magic Link telah dihantar. Sila semak inbox anda."); }
+  try { await sendMagicLink(email, { url: window.DUITJOM_AUTH_REDIRECT_URL || window.location.href, handleCodeInApp: true }); window.localStorage.setItem("emailForSignIn", email); message(t("auth.magicLinkSent")); }
   catch (error) { message(friendly(error), "error"); } finally { button.disabled = false; }
 }
 async function finishMagicLink() {
   if (!isMagicLink(window.location.href)) return;
-  const email = window.localStorage.getItem("emailForSignIn") || window.prompt("Masukkan email yang menerima Magic Link:");
-  if (!email) return message("Email diperlukan untuk melengkapkan Magic Link.", "error");
-  try { await completeMagicLink(email.trim().toLowerCase(), window.location.href); window.localStorage.removeItem("emailForSignIn"); window.history.replaceState({}, document.title, window.location.pathname); }
-  catch (error) { message(friendly(error), "error"); }
+  const email = window.localStorage.getItem("emailForSignIn") || window.prompt(t("auth.magicLinkEmailRequired"));
+  if (!email) return message(t("auth.magicLinkEmailRequired"), "error");
+  try {
+    await window.showPageTransition(() => completeMagicLink(email.trim().toLowerCase(), window.location.href));
+    window.localStorage.removeItem("emailForSignIn");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } catch (error) { message(friendly(error), "error"); }
 }
 async function refreshVerification(event) {
   event?.preventDefault();
   const button = document.getElementById("refreshVerificationButton");
-  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = "Menyemak status…"; }
-  message("Menyemak status pengesahan…");
+  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = t("auth.checkingStatus"); }
+  message(t("auth.checkingStatus"));
   try {
     const user = await refreshCurrentUser();
     updateAuthState(user);
     const verified = isTrustedProvider(user);
-    message(verified ? "Email berjaya disahkan. Anda boleh meneruskan." : "Status belum berubah. Sila klik pautan pengesahan dalam email dahulu.", verified ? "info" : "error");
+    message(verified ? t("auth.verifiedSuccess") : t("auth.verifiedPending"), verified ? "info" : "error");
   } catch (error) {
-    console.error("Semakan verification gagal:", error);
+    console.error("Verification check failed:", error);
     message(friendly(error), "error");
   } finally {
-    if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Saya Sudah Sahkan Email"; }
+    if (button) { button.disabled = false; button.textContent = button.dataset.originalText || t("auth.refreshVerification"); }
   }
 }
 async function syncVerificationStatus() {
@@ -164,24 +169,26 @@ async function syncVerificationStatus() {
     const user = await refreshCurrentUser(currentUser);
     updateAuthState(user);
   } catch (error) {
-    console.warn("Auto refresh verification gagal:", error);
+    console.warn("Auto refresh verification failed:", error);
   }
 }
 
 async function resendVerification() {
-  try { await sendVerificationEmail(currentUser, getVerificationActionSettings()); message("Email pengesahan telah dihantar semula. Pautan akan kembali ke website secara automatik."); }
+  try { await sendVerificationEmail(currentUser, getVerificationActionSettings()); message(t("auth.verificationResent")); }
   catch (error) { message(friendly(error), "error"); }
 }
 async function logout() {
   try {
     await logOut();
-    document.getElementById("paymentPage")?.classList.add("hidden");
-    document.getElementById("qrPage")?.classList.add("hidden");
-    document.getElementById("thanksPage")?.classList.add("hidden");
-    document.getElementById("mainPage")?.classList.remove("hidden");
-    document.getElementById("firebaseAuthContainer")?.classList.remove("hidden");
-    document.getElementById("siteFooter")?.classList.remove("hidden");
-    window.closeSidebar?.();
+    window.showPageTransition(() => {
+      document.getElementById("paymentPage")?.classList.add("hidden");
+      document.getElementById("qrPage")?.classList.add("hidden");
+      document.getElementById("thanksPage")?.classList.add("hidden");
+      document.getElementById("mainPage")?.classList.remove("hidden");
+      document.getElementById("firebaseAuthContainer")?.classList.remove("hidden");
+      document.getElementById("siteFooter")?.classList.remove("hidden");
+      window.closeSidebar?.();
+    });
   } catch (error) { message(friendly(error), "error"); }
 }
 
@@ -218,7 +225,7 @@ window.signInWithGoogle = googleLogin;
 window.logoutUser = logout;
 window.requireVerifiedUser = () => isVerified;
 const originalPayment = window.goToPaymentPage;
-if (typeof originalPayment === "function") window.goToPaymentPage = () => isVerified ? originalPayment() : message("Sila log masuk dan sahkan email sebelum membuat bayaran.", "error");
+if (typeof originalPayment === "function") window.goToPaymentPage = () => isVerified ? originalPayment() : message(t("auth.needLoginToPay"), "error");
 monitorAuthState(updateAuthState);
 document.addEventListener("duitjom:component-loaded", (event) => { if (event.detail?.containerId === "sidebar-container") bindSidebar(); });
 finishMagicLink().finally(() => {
