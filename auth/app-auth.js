@@ -1,5 +1,5 @@
 import {
-  loginWithEmail, registerWithEmail, sendVerificationEmail, refreshCurrentUser,
+  loginWithGoogle, loginWithGithub, loginWithEmail, registerWithEmail, sendVerificationEmail, refreshCurrentUser,
   resetPassword, sendMagicLink, isMagicLink, completeMagicLink,
   ensureUserProfile, logOut, monitorAuthState, getFriendlyAuthError
 } from "../auth.js";
@@ -10,6 +10,7 @@ const userPanel = document.getElementById("authUserPanel");
 const messageEl = document.getElementById("authMessage");
 const emailForm = document.getElementById("emailLoginForm");
 const emailButton = document.getElementById("emailLoginButton");
+const googleButton = document.getElementById("googleLoginButton");
 let currentUser = null;
 let isVerified = false;
 
@@ -77,6 +78,24 @@ function updateAuthState(user) {
   if (isVerified) ensureUserProfile(user).catch((error) => console.warn("Profil Firestore belum disimpan:", error));
 }
 
+async function googleLogin(event) {
+  event?.preventDefault();
+  const button = googleButton;
+  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = "Connecting to Google…"; }
+  try { await loginWithGoogle(); }
+  catch (error) { console.error("Google login gagal:", error); message(friendly(error), "error"); }
+  finally { if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Continue with Google"; } }
+}
+
+async function githubLogin(event) {
+  event?.preventDefault();
+  const button = document.getElementById("githubLoginButton");
+  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = "Connecting to GitHub…"; }
+  try { await loginWithGithub(); }
+  catch (error) { console.error("GitHub login gagal:", error); message(friendly(error), "error"); }
+  finally { if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Continue with GitHub"; } }
+}
+
 async function login(event) {
   event.preventDefault(); emailButton.disabled = true;
   try { await loginWithEmail(document.getElementById("emailInput").value.trim(), document.getElementById("passwordInput").value); }
@@ -119,6 +138,19 @@ async function resendVerification() {
   try { await sendVerificationEmail(currentUser); message("Email pengesahan telah dihantar semula."); }
   catch (error) { message(friendly(error), "error"); }
 }
+async function logout() {
+  try {
+    await logOut();
+    document.getElementById("paymentPage")?.classList.add("hidden");
+    document.getElementById("qrPage")?.classList.add("hidden");
+    document.getElementById("thanksPage")?.classList.add("hidden");
+    document.getElementById("mainPage")?.classList.remove("hidden");
+    document.getElementById("firebaseAuthContainer")?.classList.remove("hidden");
+    document.getElementById("siteFooter")?.classList.remove("hidden");
+    window.closeSidebar?.();
+  } catch (error) { message(friendly(error), "error"); }
+}
+
 async function sidebarLogin(event) {
   event.preventDefault();
   try { await loginWithEmail(document.getElementById("userEmail").value.trim(), document.getElementById("userPassword").value); }
@@ -131,6 +163,10 @@ function bindSidebar() {
 }
 
 createPanels();
+document.getElementById("googleLoginButton")?.insertAdjacentHTML("afterend", "<button id=\"githubLoginButton\" type=\"button\" class=\"login-provider-button github-provider-button\"><svg class=\"github-provider-icon\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 .7a11.3 11.3 0 0 0-3.57 22.02c.57.1.78-.25.78-.55v-2.16c-3.18.69-3.85-1.53-3.85-1.53-.52-1.33-1.27-1.69-1.27-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.24 3.32.95.1-.74.4-1.24.72-1.53-2.54-.29-5.21-1.27-5.21-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.03 0 0 .96-.31 3.12 1.17a10.8 10.8 0 0 1 5.68 0c2.16-1.48 3.12-1.17 3.12-1.17.62 1.58.23 2.74.11 3.03.73.8 1.18 1.82 1.18 3.07 0 4.4-2.68 5.36-5.23 5.65.41.36.77 1.07.77 2.16v3.2c0 .3.2.66.79.55A11.3 11.3 0 0 0 12 .7Z\"/></svg> Continue with GitHub</button>");
+document.getElementById("githubLoginButton")?.addEventListener("click", githubLogin);
+googleButton?.addEventListener("click", googleLogin);
+emailForm?.addEventListener("submit", login);
 document.getElementById("registerForm")?.addEventListener("submit", register);
 document.getElementById("resetForm")?.addEventListener("submit", reset);
 document.getElementById("magicLinkForm")?.addEventListener("submit", magicLink);
@@ -142,8 +178,10 @@ document.getElementById("openMagicLinkButton")?.addEventListener("click", () => 
 document.getElementById("backToLoginFromMagic")?.addEventListener("click", () => showPanel(loginPanel));
 document.getElementById("resendVerificationButton")?.addEventListener("click", resendVerification);
 document.getElementById("refreshVerificationButton")?.addEventListener("click", refreshVerification);
-document.getElementById("logoutVerificationButton")?.addEventListener("click", () => logOut());
+document.getElementById("logoutVerificationButton")?.addEventListener("click", logout);
 window.duitjomAuthState = { user: null, isVerified: false };
+window.signInWithGoogle = googleLogin;
+window.logoutUser = logout;
 window.requireVerifiedUser = () => isVerified;
 const originalPayment = window.goToPaymentPage;
 if (typeof originalPayment === "function") window.goToPaymentPage = () => isVerified ? originalPayment() : message("Sila log masuk dan sahkan email sebelum membuat bayaran.", "error");
