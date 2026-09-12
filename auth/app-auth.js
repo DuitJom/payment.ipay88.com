@@ -2,7 +2,7 @@ import {
   loginWithGoogle, loginWithGithub, loginWithEmail, registerWithEmail, sendVerificationEmail, refreshCurrentUser,
   resetPassword, sendMagicLink, isMagicLink, completeMagicLink,
   ensureUserProfile, logOut, monitorAuthState, getFriendlyAuthError
-} from "../auth.js?v=20260912";
+} from "../auth.js?v=20260913";
 
 const container = document.getElementById("firebaseAuthContainer");
 const loginPanel = document.getElementById("authLoginPanel");
