@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getAuth,
+  setPersistence,
+  browserLocalPersistence,
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
@@ -38,6 +40,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.warn("Firebase browser persistence tidak tersedia:", error);
+});
 const db = getFirestore(app);
 
 // 2. INISIALISASI MESSAGING & VAPID KEY
@@ -99,6 +104,7 @@ window.firebaseAuth = {
 export {
   app,
   auth,
+  authPersistenceReady,
   db,
   messaging,
   VAPID_KEY,
