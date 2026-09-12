@@ -106,6 +106,13 @@ async function login(event) {
   catch (error) { message(friendly(error), "error"); }
   finally { emailButton.disabled = false; }
 }
+function getVerificationActionSettings() {
+  const returnUrl = new URL(window.location.href);
+  returnUrl.search = "";
+  returnUrl.hash = "";
+  return { url: returnUrl.toString(), handleCodeInApp: false };
+}
+
 async function register(event) {
   event.preventDefault();
   const password = document.getElementById("registerPasswordInput").value;
@@ -113,7 +120,7 @@ async function register(event) {
   const button = document.getElementById("registerButton"); button.disabled = true;
   try {
     const result = await registerWithEmail(document.getElementById("registerNameInput").value.trim(), document.getElementById("registerEmailInput").value.trim().toLowerCase(), password);
-    await sendVerificationEmail(result.user); updateAuthState(result.user); message("Akaun berjaya dibuat. Sila semak email untuk pengesahan.");
+    await sendVerificationEmail(result.user, getVerificationActionSettings()); updateAuthState(result.user); message("Akaun berjaya dibuat. Sila semak email untuk pengesahan.");
   } catch (error) { message(friendly(error), "error"); } finally { button.disabled = false; }
 }
 async function reset(event) {
@@ -151,8 +158,18 @@ async function refreshVerification(event) {
     if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Saya Sudah Sahkan Email"; }
   }
 }
+async function syncVerificationStatus() {
+  if (!currentUser || isTrustedProvider(currentUser)) return;
+  try {
+    const user = await refreshCurrentUser(currentUser);
+    updateAuthState(user);
+  } catch (error) {
+    console.warn("Auto refresh verification gagal:", error);
+  }
+}
+
 async function resendVerification() {
-  try { await sendVerificationEmail(currentUser); message("Email pengesahan telah dihantar semula."); }
+  try { await sendVerificationEmail(currentUser, getVerificationActionSettings()); message("Email pengesahan telah dihantar semula. Pautan akan kembali ke website secara automatik."); }
   catch (error) { message(friendly(error), "error"); }
 }
 async function logout() {
@@ -204,4 +221,10 @@ const originalPayment = window.goToPaymentPage;
 if (typeof originalPayment === "function") window.goToPaymentPage = () => isVerified ? originalPayment() : message("Sila log masuk dan sahkan email sebelum membuat bayaran.", "error");
 monitorAuthState(updateAuthState);
 document.addEventListener("duitjom:component-loaded", (event) => { if (event.detail?.containerId === "sidebar-container") bindSidebar(); });
-finishMagicLink();
+finishMagicLink().finally(() => {
+  window.setTimeout(syncVerificationStatus, 700);
+});
+window.addEventListener("focus", syncVerificationStatus);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) syncVerificationStatus();
+});
