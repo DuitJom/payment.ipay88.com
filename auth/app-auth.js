@@ -61,9 +61,13 @@ function showPanel(panel) {
   });
 }
 
+function isTrustedProvider(user) {
+  return Boolean(user?.emailVerified || user?.providerData?.some(({ providerId }) => providerId === "google.com" || providerId === "github.com"));
+}
+
 function updateAuthState(user) {
   currentUser = user || null;
-  isVerified = Boolean(user?.emailVerified);
+  isVerified = isTrustedProvider(user);
   window.duitjomAuthState = { user: currentUser, isVerified };
   const name = user?.displayName || user?.email || "";
   showPanel(!user ? loginPanel : isVerified ? userPanel : document.getElementById("authVerificationPanel"));
@@ -130,9 +134,22 @@ async function finishMagicLink() {
   try { await completeMagicLink(email.trim().toLowerCase(), window.location.href); window.localStorage.removeItem("emailForSignIn"); window.history.replaceState({}, document.title, window.location.pathname); }
   catch (error) { message(friendly(error), "error"); }
 }
-async function refreshVerification() {
-  try { const user = await refreshCurrentUser(); updateAuthState(user); message(user?.emailVerified ? "Email berjaya disahkan. Anda boleh meneruskan." : "Status belum berubah. Sila tekan pautan dalam email dahulu.", user?.emailVerified ? "info" : "error"); }
-  catch (error) { message(friendly(error), "error"); }
+async function refreshVerification(event) {
+  event?.preventDefault();
+  const button = document.getElementById("refreshVerificationButton");
+  if (button) { button.disabled = true; button.dataset.originalText = button.textContent; button.textContent = "Menyemak status…"; }
+  message("Menyemak status pengesahan…");
+  try {
+    const user = await refreshCurrentUser();
+    updateAuthState(user);
+    const verified = isTrustedProvider(user);
+    message(verified ? "Email berjaya disahkan. Anda boleh meneruskan." : "Status belum berubah. Sila klik pautan pengesahan dalam email dahulu.", verified ? "info" : "error");
+  } catch (error) {
+    console.error("Semakan verification gagal:", error);
+    message(friendly(error), "error");
+  } finally {
+    if (button) { button.disabled = false; button.textContent = button.dataset.originalText || "Saya Sudah Sahkan Email"; }
+  }
 }
 async function resendVerification() {
   try { await sendVerificationEmail(currentUser); message("Email pengesahan telah dihantar semula."); }
