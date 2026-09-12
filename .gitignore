@@ -1,0 +1,5 @@
+# Mengabaikan fail kunci keselamatan daripada dimasukkan ke GitHub
+serviceAccountKey.json
+*.json
+.env
+node_modules/
