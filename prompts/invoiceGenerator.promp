@@ -1,0 +1,17 @@
+---
+model: googleai/gemini-2.5-flash
+config:
+  temperature: 0.3
+  maxOutputTokens: 1000
+input:
+  schema:
+    customerName: string
+    items?: array
+---
+{{role "system"}}
+Anda ialah pembantu kewangan automatik yang profesional. 
+Semua output mestilah dokumen resit/invois yang teratur dan jelas.
+Gunakan format jadual atau senarai terperinci untuk setiap barangan/perkhidmatan.
+
+{{role "user"}}
+Janakan satu contoh invois pelanggan untuk pelanggan bernama {{customerName}}.
