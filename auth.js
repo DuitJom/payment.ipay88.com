@@ -1,5 +1,6 @@
 import {
   auth,
+  authPersistenceReady,
   db,
   googleProvider,
   githubProvider,
@@ -23,19 +24,23 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-export function loginWithGoogle() {
+export async function loginWithGoogle() {
+  await authPersistenceReady;
   return signInWithPopup(auth, googleProvider);
 }
 
-export function loginWithGithub() {
+export async function loginWithGithub() {
+  await authPersistenceReady;
   return signInWithPopup(auth, githubProvider);
 }
 
-export function loginWithEmail(email, password) {
+export async function loginWithEmail(email, password) {
+  await authPersistenceReady;
   return signInWithEmailAndPassword(auth, email, password);
 }
 
 export async function registerWithEmail(displayName, email, password) {
+  await authPersistenceReady;
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   const cleanName = displayName.trim();
   if (cleanName) await updateProfile(credential.user, { displayName: cleanName });
@@ -57,7 +62,8 @@ export function resetPassword(email) {
   return sendPasswordResetEmail(auth, email);
 }
 
-export function sendMagicLink(email, actionCodeSettings) {
+export async function sendMagicLink(email, actionCodeSettings) {
+  await authPersistenceReady;
   return sendSignInLinkToEmail(auth, email, actionCodeSettings);
 }
 
@@ -65,7 +71,8 @@ export function isMagicLink(url = window.location.href) {
   return isSignInWithEmailLink(auth, url);
 }
 
-export function completeMagicLink(email, url = window.location.href) {
+export async function completeMagicLink(email, url = window.location.href) {
+  await authPersistenceReady;
   return signInWithEmailLink(auth, email, url);
 }
 
