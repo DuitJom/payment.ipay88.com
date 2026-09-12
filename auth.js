@@ -48,7 +48,7 @@ export async function registerWithEmail(displayName, email, password) {
 }
 
 export function sendVerificationEmail(user = auth.currentUser, actionCodeSettings) {
-  if (!user) return Promise.reject(new Error("Tiada pengguna yang sedang log masuk."));
+  if (!user) return Promise.reject(new Error("No user is currently signed in."));
   return sendEmailVerification(user, actionCodeSettings);
 }
 
@@ -108,23 +108,10 @@ export function monitorAuthState(callback) {
 }
 
 export function getFriendlyAuthError(error) {
-  const messages = {
-    "auth/invalid-credential": "Email atau kata laluan tidak betul.",
-    "auth/invalid-login-credentials": "Email atau kata laluan tidak betul.",
-    "auth/email-already-in-use": "Email ini sudah mempunyai akaun.",
-    "auth/weak-password": "Kata laluan perlu sekurang-kurangnya 6 aksara.",
-    "auth/invalid-email": "Sila masukkan alamat email yang sah.",
-    "auth/too-many-requests": "Terlalu banyak percubaan. Sila cuba lagi kemudian.",
-    "auth/quota-exceeded": "Had penghantaran email Firebase telah dicapai. Sila cuba lagi kemudian.",
-    "auth/unauthorized-continue-uri": "Domain pautan belum dibenarkan dalam Firebase Console.",
-    "auth/invalid-continue-uri": "URL pautan tidak sah atau belum dibenarkan.",
-    "auth/popup-closed-by-user": "Tetingkap Google ditutup sebelum log masuk selesai.",
-    "auth/popup-blocked": "Browser menyekat popup Google. Benarkan popup dan cuba lagi.",
-    "auth/operation-not-allowed": "Kaedah log masuk ini belum diaktifkan dalam Firebase Console.",
-    "auth/user-not-found": "Akaun dengan email ini tidak ditemui.",
-    "auth/missing-email": "Sila masukkan alamat email.",
-    "auth/network-request-failed": "Sambungan internet terganggu. Sila cuba lagi.",
-    "auth/invalid-action-code": "Pautan ini tidak sah atau telah tamat tempoh."
-  };
-  return messages[error?.code] || "Operasi auth tidak berjaya. Sila cuba lagi.";
+  const key = error?.code ? `auth.errors.${error.code}` : null;
+  if (window.DJ_I18N && key) {
+    const translated = window.DJ_I18N.t(key);
+    if (translated !== key) return translated;
+  }
+  return window.DJ_I18N ? window.DJ_I18N.t("auth.genericError") : "The auth operation failed. Please try again.";
 }

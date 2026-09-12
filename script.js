@@ -1,8 +1,14 @@
 // =====================================================
-// PEMBUATAN & KAWALAN PEMUATAN GLOBAL
+// GLOBAL STATE
 // =====================================================
 let timerInstance = null;
 let namaPelangganGlobal = "";
+let djCustomerIdGlobal = "";
+let amountGlobal = 0;
+
+function t(key, vars) {
+  return window.DJ_I18N ? window.DJ_I18N.t(key, vars) : key;
+}
 
 // ---- KAWALAN SIDEBAR ----
 function openSidebar() {
@@ -135,10 +141,12 @@ function generateQR() {
     const amountInput = amountEl ? amountEl.value : "";
     const amount = parseFloat(amountInput);
     const namaEl = document.getElementById("namaInput");
-    namaPelangganGlobal = namaEl ? namaEl.value : "Pelanggan";
+    namaPelangganGlobal = namaEl ? namaEl.value : "Customer";
+    djCustomerIdGlobal = djCustomerID;
+    amountGlobal = amount;
 
     if (!djCustomerID || !amount || amount <= 0) {
-        alert("Sila isi semua medan dengan betul.");
+        alert(t("home.alertFillAll"));
         qrGenerated = false;
         return;
     }
@@ -154,7 +162,7 @@ function generateQR() {
 
     try {
         qrCodeElement.innerHTML = "";
-        if (typeof QRCode !== "function") throw new Error("Pustaka QRCode tidak tersedia");
+        if (typeof QRCode !== "function") throw new Error("QRCode library unavailable");
 
         new QRCode(qrCodeElement, {
             text: qrData,
@@ -164,14 +172,16 @@ function generateQR() {
         });
 
         var paymentPage = document.getElementById("paymentPage");
-        if (paymentPage) paymentPage.classList.add("hidden");
         var qrPage = document.getElementById("qrPage");
-        if (qrPage) qrPage.classList.remove("hidden");
-        
-        startTimer(600); // 10 Minit Masa Tamat
+        window.showPageTransition(() => {
+            if (paymentPage) paymentPage.classList.add("hidden");
+            if (qrPage) qrPage.classList.remove("hidden");
+        });
+
+        startTimer(600); // 10 minute expiry
     } catch (err) {
         console.error("QR Code generation error:", err);
-        alert("Ralat semasa menjana kod QR.");
+        alert(t("home.alertQrError"));
         qrGenerated = false;
     }
 }
@@ -200,7 +210,7 @@ function handleFileSelected() {
         const file = fileInput.files[0];
         if (placeholder) placeholder.classList.add('hidden');
         if (successDiv) successDiv.classList.remove('hidden');
-        if (fileNameDisplay) fileNameDisplay.innerText = "Fail dipilih: " + file.name;
+        if (fileNameDisplay) fileNameDisplay.innerText = t("home.fileSelected", { name: file.name });
         
         if (btnSubmitForm) {
             btnSubmitForm.disabled = false;
@@ -214,19 +224,31 @@ function finalSubmission() {
 
     const thanksMessage = document.getElementById('thanksMessage');
     if (thanksMessage) {
-        const susunanAyat = "Terima kasih <span class='font-extrabold text-slate-900'>" + namaPelangganGlobal + "</span> kerana telah berjaya membuat bayaran balik pinjaman anda di <span class='text-blue-400 font-bold'>DuitJom</span>. Pembayaran anda sedang diproses dan akan disemak dalam masa <span class='font-bold'>24 jam</span>. Anda akan menerima notifikasi melalui SMS atau email apabila pembayaran telah disahkan.";
-        thanksMessage.innerHTML = susunanAyat;
+        thanksMessage.innerHTML = t("confirmation.message", { name: namaPelangganGlobal });
+    }
+
+    const summary = document.getElementById('confirmationSummary');
+    if (summary) {
+        const rows = [
+            [t("confirmation.summaryName"), namaPelangganGlobal],
+            [t("confirmation.summaryId"), djCustomerIdGlobal],
+            [t("confirmation.summaryAmount"), "RM " + amountGlobal.toFixed(2)]
+        ];
+        summary.innerHTML = rows.map(([label, value]) =>
+            `<div class="confirmation-summary-row"><span>${label}</span><span>${value}</span></div>`
+        ).join("");
     }
 
     var qrPageFinal = document.getElementById('qrPage');
-    if (qrPageFinal) { qrPageFinal.classList.add('hidden'); }
-    
     var thanksPage = document.getElementById('thanksPage');
-    if (thanksPage) {
-        thanksPage.classList.remove('hidden');
-        thanksPage.classList.add('flex');
-    }
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    window.showPageTransition(() => {
+        if (qrPageFinal) { qrPageFinal.classList.add('hidden'); }
+        if (thanksPage) {
+            thanksPage.classList.remove('hidden');
+            thanksPage.classList.add('flex');
+        }
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    });
 }
 
 /* =========================================================
@@ -238,18 +260,19 @@ function loadComponent(containerId, filePath) {
 
   return fetch(filePath, { cache: "no-store" })
     .then(response => {
-      if (!response.ok) throw new Error('Gagal memuatkan fail: ' + filePath);
+      if (!response.ok) throw new Error('Failed to load file: ' + filePath);
       return response.text();
     })
     .then(data => {
       container.innerHTML = data;
+      window.DJ_I18N?.applyTranslations(container);
       document.dispatchEvent(new CustomEvent("duitjom:component-loaded", { detail: { containerId } }));
       return true;
     })
     .catch(error => {
-      console.error('Ralat Component:', error);
+      console.error('Component error:', error);
       if (containerId === "features-container") {
-        container.innerHTML = '<p class="features-load-error">Bahagian ciri-ciri tidak dapat dimuatkan. Sila muat semula halaman.</p>';
+        container.innerHTML = '<p class="features-load-error">This section could not be loaded. Please reload the page.</p>';
       }
       return false;
     });
@@ -377,7 +400,7 @@ async function copyDuitjomEmail() {
         document.getElementById('copiedIcon')?.classList.remove('hidden');
         document.getElementById('copiedStatus')?.classList.remove('hidden');
     } catch (error) {
-        console.error('Copy email gagal:', error);
+        console.error('Copy email failed:', error);
     }
 }
 
