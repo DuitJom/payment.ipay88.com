@@ -16,7 +16,7 @@ import {
   sendSignInLinkToEmail,
   isSignInWithEmailLink,
   signInWithEmailLink
-} from "./firebase-config.js";
+} from "./firebase-config.js?v=20260914";
 import {
   doc,
   getDoc,
