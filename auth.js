@@ -42,9 +42,9 @@ export async function registerWithEmail(displayName, email, password) {
   return credential;
 }
 
-export function sendVerificationEmail(user = auth.currentUser) {
+export function sendVerificationEmail(user = auth.currentUser, actionCodeSettings) {
   if (!user) return Promise.reject(new Error("Tiada pengguna yang sedang log masuk."));
-  return sendEmailVerification(user);
+  return sendEmailVerification(user, actionCodeSettings);
 }
 
 export async function refreshCurrentUser(user = auth.currentUser) {
