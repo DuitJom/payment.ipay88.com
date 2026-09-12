@@ -1,4 +1,7 @@
 # duitjom.my
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9d770654e9aa4085921a4f5555e1b8e2)](https://app.codacy.com/gh/DuitJom/payment.ipay88.com?utm_source=github.com&utm_medium=referral&utm_content=DuitJom/payment.ipay88.com&utm_campaign=Badge_Grade)
+
 DuitJom
 
 Digital Financial Services & Payment Platform
