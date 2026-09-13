@@ -35,18 +35,3 @@ export default function Home() {
     </>
   )
 }
-Langkah 2: 
-
-export default function Home() {
-  return (
-    <div style={{ padding: '40px' }}>
-      <Show when="signed-out">
-        <SignInButton />
-        <SignUpButton />
-      </Show>
-      <Show when="signed-in">
-        <UserButton userProfileUrl="https://safe-prawn-2987.accounts.dev/user" />
-      </Show>
-    </div>
-  )
-}
