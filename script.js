@@ -302,7 +302,7 @@ function validateDJCust(input) {
     const value = input.value.toUpperCase();
     input.value = value;
     
-    const isValid = /^(?:DJ|CUST)[0-9/]+$/.test(value);
+    const isValid = /^(?:D[0-9]+|J[0-9]+|DJ[0-9]+|CUST[0-9]+)$/.test(value);
 
     if (value.length > 0 && !isValid) {
         if (errorElement) errorElement.classList.remove('hidden');

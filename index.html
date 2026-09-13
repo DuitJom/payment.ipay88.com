@@ -81,7 +81,7 @@
     </header>
 
     <div id="sidebar-container"></div>
-    <section id="firebaseAuthContainer" class="w-full max-w-md mx-auto px-4 pt-6" aria-labelledby="authTitle">
+    <section id="firebaseAuthContainer" class="w-full max-w-md mx-auto px-4 pt-2" aria-labelledby="authTitle">
         <div id="authLoginPanel" class="login-card">
             <p class="login-kicker" data-i18n="auth.kickerLogin">SECURE ACCOUNT ACCESS</p>
             <h2 id="authTitle" class="login-title" data-i18n="auth.loginTitle">Sign In</h2>
@@ -99,7 +99,15 @@
 
             <div class="login-divider" data-i18n="auth.or">or</div>
 
-            <form id="emailLoginForm" class="login-panel">
+            <button id="emailToggleButton" type="button" class="login-provider-button email-toggle-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-[18px] h-[18px]" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                    <path stroke-linecap="round" d="M3 7l9 6 9-6"/>
+                </svg>
+                <span data-i18n="auth.emailContinue">Sign in with Email</span>
+            </button>
+
+            <form id="emailLoginForm" class="login-panel hidden">
                 <label for="emailInput" data-i18n="auth.email">Email</label>
                 <input id="emailInput" type="email" autocomplete="email" data-i18n-placeholder="auth.emailPlaceholder" placeholder="name@example.com" required>
 
@@ -124,9 +132,9 @@
          MAIN PAGE — DIPERBAIKI
          ========================================================= -->
      <div id="mainPage" 
-         class="flex flex-col min-h-screen justify-between mt-[72px]">
+         class="flex flex-col min-h-screen justify-between">
 
-     <main class="max-w-md mx-auto px-4 py-12 text-center flex-grow flex flex-col justify-center items-center">
+     <main class="max-w-md mx-auto px-4 py-4 text-center flex-grow flex flex-col justify-center items-center">
 
             <div class="duitjom-status-badge">
                 <span class="duitjom-status-dot"></span>
@@ -477,7 +485,8 @@
         </div>
     </div>
 
-    <form onsubmit="goToNextStepPage(event)" class="space-y-5 w-full">
+    <form onsubmit="goToNextStepPage(event)" class="space-y-4 w-full">
+        <!-- NAMA PENUH -->
         <div>
             <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
@@ -487,9 +496,25 @@
                 <span data-i18n="home.fullName">Full Name (IC)</span>
                 <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="namaInput" required data-i18n-placeholder="home.fullNamePlaceholder" placeholder="Ali Bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
+            <input type="text" id="namaInput" required data-i18n-placeholder="home.fullNamePlaceholder" placeholder="Ali bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
         </div>
 
+        <!-- NOMBOR KAD PENGENALAN -->
+        <div>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <circle cx="7" cy="11" r="2"/>
+                    <path stroke-linecap="round" d="M11 9h8M11 13h6M6 16h8"/>
+                </svg>
+                <span data-i18n="home.icNumber">IC Number</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="icInput" required maxlength="14" inputmode="numeric" data-i18n-placeholder="home.icPlaceholder" placeholder="000000-00-0000" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="formatIC(this)">
+            <p id="icError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.icError">Your IC number is invalid</p>
+        </div>
+
+        <!-- ID LOAN / CUST -->
         <div>
             <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
@@ -500,26 +525,55 @@
                 <span data-i18n="home.loanId">Loan / CUST ID</span>
                 <span class="text-red-500">*</span>
             </label>
-            <input type="text" id="djcustInput" required data-i18n-placeholder="home.loanIdPlaceholder" placeholder="DJ30001234 or CUST20260000" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="validateDJCust(this)">
-            <p id="djcustError" class="text-red-500 text-xs mt-1.5 hidden" data-i18n="home.loanIdError">Enter a valid "DJ" or "CUST" loan ID.</p>
+            <input type="text" id="djcustInput" required data-i18n-placeholder="home.loanIdPlaceholder" placeholder="Sila masukkan ID Loan atau CUST00000 anda" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="validateDJCust(this)">
+            <p id="djcustError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.loanIdError">Enter a valid "DJ" or "CUST" loan ID.</p>
+            <p class="text-[10px] text-sky-500 mt-1"><a href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer" data-i18n="home.loanIdHelp">Visit www.duitjom.com to get your Loan ID</a></p>
         </div>
 
+        <!-- NOMBOR TELEFON -->
         <div>
             <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 3.75h3l1.5 4-2 1.5a14 14 0 0 0 5.75 5.75l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C11.04 19.5 4.5 12.96 4.5 4.75c0-1.1.9-1 2-1Z"/>
                 </svg>
+                <span data-i18n="home.phoneNumber">Phone Number</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <div class="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-blue-400">
+                <span class="flex items-center px-3 bg-gray-50 border-r border-gray-200 text-sm font-semibold text-slate-600 whitespace-nowrap">🇲🇾 +60</span>
+                <input type="tel" id="phoneInput" required inputmode="numeric" data-i18n-placeholder="home.phonePlaceholder" placeholder="123456789" class="flex-1 px-3 py-2.5 text-sm outline-none bg-white" oninput="validatePhone(this)">
+            </div>
+            <p id="phoneError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.phoneError">Please enter a valid phone number</p>
+        </div>
+
+        <!-- JUMLAH BAYARAN -->
+        <div>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12M9 9h4.5a2 2 0 0 1 0 4H9m0 0h6"/>
+                </svg>
                 <span data-i18n="home.amount">Payment Amount</span>
                 <span class="text-red-500">*</span>
             </label>
-            <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500 pointer-events-none">RM</span>
-                <input type="number" step="0.01" min="0.01" id="amountInput" required placeholder="0.00" inputmode="decimal" class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
+            <div class="flex rounded-xl border border-blue-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-400 bg-blue-50/30">
+                <span class="flex items-center px-3 bg-blue-100/60 border-r border-blue-200 text-sm font-bold text-blue-600">RM</span>
+                <input type="number" step="0.01" min="0.01" id="amountInput" required placeholder="0.00" inputmode="decimal" class="flex-1 px-3 py-2 text-sm outline-none bg-transparent">
             </div>
         </div>
 
-        <div class="pt-4">
-            <button type="submit" class="w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-sm py-3 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 transition">
+        <!-- TERMS CHECKBOX -->
+        <div>
+            <label class="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+                <input type="checkbox" id="termsCheckbox" class="mt-0.5 w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400">
+                <span data-i18n="home.termsText">By continuing, you agree to the Terms & Conditions and Privacy Policy set by DuitJom.</span>
+            </label>
+            <p id="termsError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.termsError">Please accept the terms to continue</p>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="flex gap-3 pt-2">
+            <button type="button" onclick="backToMainFromPayment()" class="flex-1 border border-gray-300 text-slate-600 font-bold text-sm py-3 px-4 rounded-xl transition hover:bg-gray-50" data-i18n="home.back">Back</button>
+            <button type="submit" id="continueBtn" disabled class="flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition opacity-50 cursor-not-allowed">
                 <span data-i18n="home.next">Next</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
@@ -579,6 +633,16 @@
 
     <!-- Payment Page Navigation Functions -->
     <script>
+        function backToMainFromPayment() {
+            window.showPageTransition(() => {
+                document.getElementById('paymentPage')?.classList.add('hidden');
+                document.getElementById('mainPage')?.classList.remove('hidden');
+                document.getElementById('firebaseAuthContainer')?.classList.remove('hidden');
+                document.getElementById('siteFooter')?.classList.remove('hidden');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+
         function goToPaymentPage() {
             window.showPageTransition(() => {
                 document.getElementById('mainPage')?.classList.add('hidden');
@@ -591,26 +655,63 @@
 
         function goToNextStepPage(event) {
             event?.preventDefault();
+            const nama = document.getElementById("namaInput")?.value.trim();
+            const icDigits = (document.getElementById("icInput")?.value || '').replace(/\D/g, '');
+            const loanId = (document.getElementById("djcustInput")?.value || '').trim().toUpperCase();
+            const phone = (document.getElementById("phoneInput")?.value || '').replace(/\D/g, '');
+            const amount = parseFloat(document.getElementById("amountInput")?.value || '0');
+            const termsChecked = document.getElementById("termsCheckbox")?.checked;
+            if (!termsChecked) {
+                document.getElementById("termsError")?.classList.remove("hidden");
+            }
+            if (!nama || icDigits.length !== 12 || !/^(?:D[0-9]+|J[0-9]+|DJ[0-9]+|CUST[0-9]+)$/.test(loanId) || !/^1[0-9]{8,9}$/.test(phone) || amount <= 0 || !termsChecked) {
+                return;
+            }
             generateQR();
         }
 
         function formatIC(input) {
-            let value = input.value.replace(/\D/g, '');
-            if (value.length >= 6) {
-                value = value.slice(0, 6) + '-' + value.slice(6, 8) + '-' + value.slice(8, 12);
+            let digits = input.value.replace(/\D/g, '').slice(0, 12);
+            if (digits.length >= 6) {
+                input.value = digits.slice(0, 6) + '-' + digits.slice(6, 8) + '-' + digits.slice(8, 12);
+            } else if (digits.length > 0) {
+                input.value = digits;
+            } else {
+                input.value = '';
             }
-            input.value = value;
+            const error = document.getElementById('icError');
+            if (error) {
+                if (digits.length > 0 && digits.length !== 12) {
+                    error.classList.remove('hidden');
+                } else {
+                    error.classList.add('hidden');
+                }
+            }
         }
 
         function validatePhone(input) {
+            input.value = input.value.replace(/\D/g, '');
             const phoneError = document.getElementById('phoneError');
-            const value = input.value.replace(/\D/g, '');
-            if (value.length > 0 && !/^[0-9]{9,10}$/.test(value)) {
+            const value = input.value;
+            if (value.length > 0 && !/^1[0-9]{8,9}$/.test(value)) {
                 phoneError?.classList.remove('hidden');
             } else {
                 phoneError?.classList.add('hidden');
             }
         }
+
+        // Terms checkbox gate
+        (function() {
+            var cb = document.getElementById("termsCheckbox");
+            var btn = document.getElementById("continueBtn");
+            if (cb && btn) {
+                cb.addEventListener("change", function() {
+                    btn.disabled = !cb.checked;
+                    btn.classList.toggle("opacity-50", !cb.checked);
+                    btn.classList.toggle("cursor-not-allowed", !cb.checked);
+                });
+            }
+        })();
     </script>
 </body>
 </html>

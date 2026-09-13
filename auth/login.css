@@ -114,6 +114,45 @@
   font-weight: 600;
 }
 
+/* Email toggle button */
+.email-toggle-button { color: #1e293b; }
+.email-toggle-button svg { color: #1d4ed8; }
+
+/* Footer links */
+.login-footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 1.2rem;
+  font-size: .72rem;
+}
+.login-link {
+  background: none;
+  border: 0;
+  color: #1d4ed8;
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color .15s ease;
+}
+.login-link:hover { color: #1e40af; text-decoration: underline; }
+.login-link-sep { color: #cbd5e1; }
+
+/* Forgot password link */
+.login-forgot-link {
+  display: block;
+  text-align: center;
+  margin-top: .8rem;
+  color: #64748b;
+  font-size: .7rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.login-forgot-link:hover { color: #1d4ed8; text-decoration: underline; }
+
 /* Auth surface wrapper — plain section, no glass/gradient chrome */
 #firebaseAuthContainer {
   position: relative;

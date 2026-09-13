@@ -52,7 +52,7 @@ function createPanels() {
     <button id="refreshVerificationButton" type="button" class="login-secondary-button mt-2 w-full" data-i18n="auth.refreshVerification">I've Verified My Email</button>
     <button id="logoutVerificationButton" type="button" class="login-secondary-button mt-2 w-full" data-i18n="auth.logoutButton">Log Out</button>
   </div>`);
-  emailForm?.insertAdjacentHTML("afterend", `<div class="mt-3 grid grid-cols-2 gap-2"><button id="forgotPasswordButton" type="button" class="login-secondary-button" data-i18n="auth.forgotPassword">Forgot Password?</button><button id="openRegisterButton" type="button" class="login-secondary-button" data-i18n="auth.registerAccount">Create Account</button></div><button id="openMagicLinkButton" type="button" class="login-secondary-button mt-2 w-full" data-i18n="auth.magicLinkOpen">Sign In Without Password</button>`);
+  emailForm?.insertAdjacentHTML("afterend", `<div class="login-footer-links"><button id="openRegisterButton" type="button" class="login-link" data-i18n="auth.registerAccount">Create Account</button><span class="login-link-sep">·</span><button id="openMagicLinkButton" type="button" class="login-link" data-i18n="auth.magicLinkOpen">Sign In Without Password</button></div><a href="#" id="forgotPasswordLink" class="login-forgot-link" data-i18n="auth.forgotPassword">Forgot password?</a>`);
   window.DJ_I18N?.applyTranslations(container);
 }
 
@@ -61,6 +61,10 @@ function showPanel(panel) {
     const node = typeof item === "string" ? document.getElementById(item) : item;
     node?.classList.toggle("hidden", node !== panel);
   });
+  if (panel === loginPanel) {
+    document.getElementById("emailLoginForm")?.classList.add("hidden");
+    document.getElementById("emailToggleButton")?.classList.remove("hidden");
+  }
 }
 
 function isTrustedProvider(user) {
@@ -208,12 +212,16 @@ document.getElementById("googleLoginButton")?.insertAdjacentHTML("afterend", "<b
 document.getElementById("githubLoginButton")?.addEventListener("click", githubLogin);
 googleButton?.addEventListener("click", googleLogin);
 emailForm?.addEventListener("submit", login);
+document.getElementById("emailToggleButton")?.addEventListener("click", () => {
+  document.getElementById("emailLoginForm")?.classList.remove("hidden");
+  document.getElementById("emailToggleButton")?.classList.add("hidden");
+});
 document.getElementById("registerForm")?.addEventListener("submit", register);
 document.getElementById("resetForm")?.addEventListener("submit", reset);
 document.getElementById("magicLinkForm")?.addEventListener("submit", magicLink);
 document.getElementById("openRegisterButton")?.addEventListener("click", () => showPanel(document.getElementById("authRegisterPanel")));
 document.getElementById("backToLoginFromRegister")?.addEventListener("click", () => showPanel(loginPanel));
-document.getElementById("forgotPasswordButton")?.addEventListener("click", () => showPanel(document.getElementById("authResetPanel")));
+document.getElementById("forgotPasswordLink")?.addEventListener("click", (e) => { e.preventDefault(); showPanel(document.getElementById("authResetPanel")); });
 document.getElementById("backToLoginFromReset")?.addEventListener("click", () => showPanel(loginPanel));
 document.getElementById("openMagicLinkButton")?.addEventListener("click", () => showPanel(document.getElementById("authMagicPanel")));
 document.getElementById("backToLoginFromMagic")?.addEventListener("click", () => showPanel(loginPanel));
