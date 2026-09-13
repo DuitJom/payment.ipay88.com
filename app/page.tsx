@@ -1,5 +1,7 @@
+"use client"
+
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth'
-import { auth } from '@/lib/firebase' // atau path firebase config anda
+import { auth } from '@/lib/firebase'
 import { useState, useEffect } from 'react'
 
 export default function Home() {
