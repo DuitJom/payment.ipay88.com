@@ -6,11 +6,29 @@
   "use strict";
 
   var STORAGE_KEY = "duitjom_locale";
-  var supported = { en: true, zh: true };
+  var supported = { en: true, zh: true, ms: true };
   var nodeSources = new WeakMap();
 
+  var msOverrides = {
+    "About Us": "Tentang Kami",
+    "Privacy": "Privasi",
+    "Contact Us": "Hubungi Kami",
+    "Term & Conditions": "Terma & Syarat",
+    "Apply Loan": "Mohon Pinjaman",
+    "Navigation": "Navigasi",
+    "Terms": "Terma",
+    "Read More": "Baca Lagi",
+    "Our Principles": "Prinsip Kami",
+    "Featured Update": "Kemas Kini Pilihan",
+    "Latest News": "Berita Terkini",
+    "Knowledge Centre": "Pusat Ilmu",
+    "Visit Official Website": "Lawati Tapak Web Rasmi",
+    "Email:": "E-mel:",
+    "Frequently Asked Questions": "Soalan Lazim"
+  };
+
   function entry(source, en, zh) {
-    return { source: source, en: en, zh: zh };
+    return { source: source, en: en, zh: zh, ms: msOverrides[source] || source };
   }
 
   var common = [
@@ -299,7 +317,7 @@
   function buildMap(key) {
     var result = {};
     common.concat(maps[key] || []).forEach(function (item) {
-      result[item.source] = { en: item.en, zh: item.zh };
+      result[item.source] = { en: item.en, zh: item.zh, ms: item.ms };
     });
     return result;
   }
@@ -330,14 +348,14 @@
       if (parent.closest("[data-i18n], [data-i18n-html], [data-i18n-placeholder]")) return;
       textValue(textNode, map, selectedLocale);
     });
-    document.documentElement.lang = selectedLocale === "zh" ? "zh" : "en";
+    document.documentElement.lang = selectedLocale;
     var titles = {
-      home: { en: "DuitJom - Secure Digital Loan Repayment Portal", zh: "DuitJom - 安全数字贷款还款平台" },
-      about: { en: "About Us - DuitJom", zh: "关于我们 - DuitJom" },
-      blog: { en: "Blog & News - DuitJom", zh: "博客与新闻 - DuitJom" },
-      privacy: { en: "Privacy Policy - DuitJom", zh: "隐私政策 - DuitJom" },
-      deletion: { en: "Data Deletion - DuitJom", zh: "数据删除 - DuitJom" },
-      terms: { en: "Terms & Conditions - DuitJom", zh: "条款与条件 - DuitJom" }
+      home: { en: "DuitJom - Secure Digital Loan Repayment Portal", zh: "DuitJom - 安全数字贷款还款平台", ms: "DuitJom - Portal Bayaran Balik Pinjaman Digital Selamat" },
+      about: { en: "About Us - DuitJom", zh: "关于我们 - DuitJom", ms: "Tentang Kami - DuitJom" },
+      blog: { en: "Blog & News - DuitJom", zh: "博客与新闻 - DuitJom", ms: "Blog & Berita - DuitJom" },
+      privacy: { en: "Privacy Policy - DuitJom", zh: "隐私政策 - DuitJom", ms: "Polisi Privasi - DuitJom" },
+      deletion: { en: "Data Deletion - DuitJom", zh: "数据删除 - DuitJom", ms: "Pemadaman Data - DuitJom" },
+      terms: { en: "Terms & Conditions - DuitJom", zh: "条款与条件 - DuitJom", ms: "Terma & Syarat - DuitJom" }
     };
     if (titles[pageKey()]) document.title = titles[pageKey()][selectedLocale];
   }
@@ -348,7 +366,7 @@
     var wrapper = document.createElement("div");
     wrapper.setAttribute("data-dj-page-language", "true");
     wrapper.style.cssText = "display:inline-flex;align-items:center;gap:4px;margin:10px 0 0 auto;padding:3px;border:1px solid rgba(148,163,184,.25);border-radius:999px;background:rgba(255,255,255,.8);font:700 10px/1 Inter,system-ui,sans-serif;";
-    wrapper.innerHTML = '<button type="button" data-dj-locale="en" style="border:0;border-radius:999px;padding:6px 9px;background:transparent;color:#475569;cursor:pointer">🇺🇸 English</button><button type="button" data-dj-locale="zh" style="border:0;border-radius:999px;padding:6px 9px;background:transparent;color:#475569;cursor:pointer">🇨🇳 中文</button>';
+    wrapper.innerHTML = '<button type="button" data-dj-locale="en" style="border:0;border-radius:999px;padding:6px 9px;background:transparent;color:#475569;cursor:pointer">🇺🇸 EN</button><button type="button" data-dj-locale="ms" style="border:0;border-radius:999px;padding:6px 9px;background:transparent;color:#475569;cursor:pointer">🇲🇾 MS</button><button type="button" data-dj-locale="zh" style="border:0;border-radius:999px;padding:6px 9px;background:transparent;color:#475569;cursor:pointer">🇨🇳 中文</button>';
     host.appendChild(wrapper);
     wrapper.addEventListener("click", function (event) {
       var button = event.target.closest("[data-dj-locale]");

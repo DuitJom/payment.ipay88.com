@@ -77,6 +77,12 @@
       el.classList.toggle("lang-option-active", isActive);
       el.setAttribute("aria-current", isActive ? "true" : "false");
     });
+
+    var localeFlags = { en: "🇺🇸", zh: "🇨🇳", ms: "🇲🇾" };
+    var flagEl = root.querySelector(".lang-current-flag");
+    var labelEl = root.querySelector(".lang-current-label");
+    if (flagEl) flagEl.textContent = localeFlags[locale] || "🇺🇸";
+    if (labelEl) labelEl.textContent = t("lang." + locale);
   }
 
   window.DJ_I18N = {
