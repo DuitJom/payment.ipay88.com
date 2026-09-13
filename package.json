@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "firebase": "10.14.1",
-    "next": "14.2.35",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "next": "^16.3.5",
+    "react": "^19.3.0"
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
     "@types/node": "20.19.43",
