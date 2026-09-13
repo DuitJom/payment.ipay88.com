@@ -1,5 +1,9 @@
-# Mengabaikan fail kunci keselamatan daripada dimasukkan ke GitHub
-serviceAccountKey.json
-*.json
+node_modules
+.next
+out
 .env
-node_modules/
+.env.local
+.env.production
+serviceAccountKey.json
+*.log
+.DS_Store
