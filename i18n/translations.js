@@ -35,7 +35,7 @@ window.DUITJOM_I18N = {
       auth: {
         kickerLogin: "SECURE ACCOUNT ACCESS",
         loginTitle: "Sign In",
-        loginSubtitle: "Use your Google account or your email and password.",
+        loginSubtitle: "Use Google, GitHub, or your email and password.",
         googleContinue: "Continue with Google",
         githubContinue: "Continue with GitHub",
         googleConnecting: "Connecting to Google…",
@@ -142,15 +142,16 @@ window.DUITJOM_I18N = {
         fileSelected: "File selected: {name}",
         submit: "Submit",
         alertFillAll: "Please fill in all fields correctly.",
-        alertQrError: "An error occurred while generating the QR code."
+        alertQrError: "An error occurred while generating the QR code.",
+        featuresLoadError: "This section could not be loaded. Please reload the page."
       },
       loading: {
         heading: "Getting things ready",
-        message1: "Setting up a secure connection…",
-        message2: "Verifying your details…",
-        message3: "Preparing your next step…",
-        message4: "Almost there…",
-        footer: "Please wait a moment while we prepare your next page."
+        message1: "Please wait — loading your next page",
+        message2: "Securing your session and preparing your experience",
+        message3: "Almost ready — finalizing your request",
+        message4: "Everything is ready — taking you to the next page",
+        footer: "Please wait while we prepare your next page."
       },
       confirmation: {
         kicker: "PAYMENT CONFIRMATION",
@@ -293,7 +294,7 @@ window.DUITJOM_I18N = {
       auth: {
         kickerLogin: "安全帐户访问",
         loginTitle: "登录",
-        loginSubtitle: "使用您的 Google 帐户，或您的电子邮件与密码登录。",
+        loginSubtitle: "使用 Google、GitHub，或您的电子邮件与密码登录。",
         googleContinue: "使用 Google 继续",
         githubContinue: "使用 GitHub 继续",
         googleConnecting: "正在连接 Google…",
@@ -400,15 +401,16 @@ window.DUITJOM_I18N = {
         fileSelected: "已选择文件：{name}",
         submit: "提交",
         alertFillAll: "请正确填写所有字段。",
-        alertQrError: "生成二维码时发生错误。"
+        alertQrError: "生成二维码时发生错误。",
+        featuresLoadError: "此部分无法加载，请重新加载页面。"
       },
       loading: {
         heading: "正在为您准备",
-        message1: "正在建立安全连接…",
-        message2: "正在核实您的资料…",
-        message3: "正在准备下一步…",
-        message4: "即将完成…",
-        footer: "请稍候片刻，我们正在为您准备下一个页面。"
+        message1: "请稍候 — 正在加载您的下一页",
+        message2: "正在保护您的会话并准备您的体验",
+        message3: "即将完成 — 正在完成您的请求",
+        message4: "一切准备就绪 — 正在带您前往下一页",
+        footer: "请稍候，我们正在准备您的下一页。"
       },
       confirmation: {
         kicker: "付款确认",
