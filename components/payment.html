@@ -145,12 +145,32 @@ const BANKS = [
   {id:'hongleong', name:'Hong Leong Bank', cat:'online', initials:'HLB', color:'#0A4AA6', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'0390 1234 5678'},
 ];
 let activeTab='duitnow',selectedBank=null,countdownInterval=null,timeLeft=119;
+
 function init(){
-  const p=new URLSearchParams(window.location.search);
-  if(p.get('nama')){document.getElementById('namaDisplay').textContent=p.get('nama');}
-  if(p.get('jumlah')){document.getElementById('jumlahDisplay').textContent=p.get('jumlah');document.getElementById('qrJumlah').textContent=p.get('jumlah');}
+
+  const p = new URLSearchParams(window.location.search);
+
+  if(p.get('nama')){
+    document.getElementById('namaDisplay').textContent =
+      p.get('nama');
+  }
+
+  if(p.get('id')){
+    document.getElementById('idDisplay').textContent =
+      p.get('id');
+  }
+
+  if(p.get('jumlah')){
+    document.getElementById('jumlahDisplay').textContent =
+      p.get('jumlah');
+
+    document.getElementById('qrJumlah').textContent =
+      p.get('jumlah');
+  }
+
   renderBankList();
 }
+
 function switchTab(tab){
 activeTab=tab;
 document.getElementById('tab-duitnow').className=tab==='duitnow'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
