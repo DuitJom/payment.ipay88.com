@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DuitJom - Bank Selection</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer>
+</script>
+<style>
+  *{font-family:Inter,sans-serif}
+  @keyframes spin{to{transform:rotate(360deg)}}
+ .animate-spin{animation:spin 1s linear infinite}
+ .bg-pattern{
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+</style>
+</head>
+<body class="bg-[#F8FAFC] min-h-screen">
+
+<!-- ====== PAGE 1: BANK SELECTION ====== -->
+<div id="selectionPage" class="min-h-screen">
+  <div class="max-w-[480px] mx-auto bg-[#F8FAFC] min-h-screen relative pb-[120px]">
+    <div class="sticky top-0 z-20 bg-[#F8FAFC]/80 backdrop-blur-xl px-5 h-[56px] flex items-center justify-between">
+      <button onclick="history.back()" class="w-9 h-9 rounded-full bg-white border flex items-center justify-center">←</button>
+      <span class="text-[14px] font-semibold">Pilihan Pembayaran</span>
+      <div class="w-9"></div>
+    </div>
+
+    <div class="px-5 pt-2">
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-[11px]">
+        <p class="font-semibold">DEMO - auto baca?nama=&id=&jumlah=</p>
+        <div class="grid grid-cols-3 gap-2">
+          <input id="inputNama" class="px-2 py-1 rounded border" value="Ahmad Bin Ali">
+          <input id="inputId" class="px-2 py-1 rounded border" value="DJ-2024-8841">
+          <input id="inputJumlah" class="px-2 py-1 rounded border" value="350">
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[20px] border p-5">
+        <div class="flex justify-between">
+          <div><p class="text-[11px] text-slate-400">Nama Pelanggan</p><p id="namaDisplay" class="font-semibold">Ahmad Bin Ali</p></div>
+          <div class="text-right"><p class="text-[11px] text-slate-400">ID Loan</p><p id="idDisplay" class="font-semibold">DJ-2024-8841</p></div>
+        </div>
+        <div class="text-center mt-4"><p class="text-[11px] text-slate-400">Jumlah Bayaran</p><p class="text-[28px] font-bold">RM <span id="jumlahDisplay">350</span>.00</p></div>
+      </div>
+
+      <div class="mt-6 bg-slate-100 rounded-full p-1 flex gap-1">
+        <button onclick="switchTab('duitnow')" id="tab-duitnow" class="flex-1 h-[36px] rounded-full bg-[#0F172A] text-white">DuitNow</button>
+        <button onclick="switchTab('online')" id="tab-online" class="flex-1 h-[36px] rounded-full text-slate-600">Online Banking</button>
+        <button onclick="switchTab('transfer')" id="tab-transfer" class="flex-1 h-[36px] rounded-full text-slate-600">Bank Transfer</button>
+      </div>
+
+      <div class="mt-5">
+        <p class="text-[13px] font-medium mb-2">Pilih Bank / E-Wallet</p>
+        <button onclick="toggleDropdown()" id="dropdownBtn" class="w-full h-[56px] bg-white border rounded-[14px] px-4 flex justify-between items-center"><span id="dropdownText" class="text-slate-400">-- Sila Pilih --</span>▼</button>
+        <div id="dropdownList" class="hidden absolute z-30 mt-2 w-full bg-white rounded-[16px] border shadow-xl"><div id="bankListContainer"></div></div>
+        <div id="selectedCard" class="hidden mt-4 bg-[#0F172A] rounded-[16px] p-4 flex items-center gap-3 text-white">
+          <div id="selectedLogo" class="w-[48px] h-[48px] rounded-[12px] bg-white flex items-center justify-center font-bold"></div>
+          <div class="flex-1"><p id="selectedName" class="font-semibold"></p><p id="selectedOwner" class="text-[11px] text-white/50"></p></div>
+          <div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 p-5 bg-[#F8FAFC]">
+
+  <!-- CLOUDFLARE TURNSTILE -->
+  <div class="mb-3 flex justify-center">
+    <div
+      class="cf-turnstile"
+      data-sitekey="0x4AAAAAAEyqT9t_mS4evqvT"
+      data-action="bank-selection"
+      data-theme="auto"
+      data-size="flexible">
+    </div>
+  </div>
+
+  <button
+    id="continueBtn"
+    onclick="goToQR()"
+    disabled
+    class="w-full h-[56px] rounded-[16px] bg-slate-200">
+    Pilih Bank Untuk Teruskan
+  </button>
+
+</div>
+
+
+<!-- QR PAGE -->
+<div id="qrPage" class="hidden min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative">
+  <div class="absolute inset-0 opacity-20" style="background-image:url('https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800'); background-size:cover;"></div>
+  <div class="relative z-10 max-w-[480px] mx-auto min-h-screen px-5 py-6">
+    <div class="flex justify-between text-white mb-6">
+      <button onclick="backToSelection()" class="w-9 h-9 rounded-full bg-white/10">←</button>
+      <div class="bg-white/10 px-3 py-1.5 rounded-full text-[12px]">Masa Tamat: <span id="countdown">1:59</span></div>
+    </div>
+    <div class="bg-white rounded-[24px] p-6">
+      <div class="text-center">
+        <div id="qrLogo" class="w-[64px] h-[64px] rounded-[16px] mx-auto flex items-center justify-center font-bold text-white mb-3"></div>
+        <h2 id="qrBankName" class="font-bold text-[18px]"></h2>
+        <p id="qrOwnerName" class="font-semibold text-[14px]"></p>
+        <p id="qrAccountNo" class="text-[13px] font-mono bg-slate-100 px-3 py-1 rounded-full inline-block mt-1"></p>
+        <p class="mt-5 text-[28px] font-bold">RM <span id="qrJumlah">350</span>.00</p>
+        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DuitJom" class="w-[200px] h-[200px] mx-auto mt-5 border-2 border-dashed p-3 rounded-[16px]">
+      </div>
+      <div class="mt-6">
+        <label class="border-2 border-dashed rounded-[14px] p-6 flex flex-col items-center cursor-pointer">
+          <span id="fileName" class="text-[11px] text-slate-400">PNG, JPG atau PDF</span>
+          <input type="file" id="fileInput" class="hidden" onchange="onFileSelected(this)">
+        </label>
+        <button id="uploadBtn" onclick="startUpload()" disabled class="w-full mt-3 h-[48px] rounded-[12px] bg-slate-200">Muat Naik Resit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div id="transferModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-5"><div class="absolute inset-0 bg-slate-900/40" onclick="closeTransferModal()"></div><div class="relative bg-white rounded-[24px] p-7 w-full max-w-[380px] text-center"><p>Sila hubungi Sokongan DuitJom untuk Bank Transfer</p><div class="grid grid-cols-2 gap-3 mt-7"><button onclick="closeTransferModal()" class="h-[46px] bg-black text-white rounded-[12px]">Tutup</button><button onclick="contactWhatsapp()" class="h-[46px] bg-[#16A34A] text-white rounded-[12px]">Hubungi</button></div></div></div>
+<div id="verifyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-5"><div class="absolute inset-0 bg-slate-900/60"></div><div class="relative bg-white rounded-[24px] p-8 w-full max-w-[360px] text-center"><div id="verifyLoading"><div class="w-12 h-12 border-4 border-slate-200 border-t-black rounded-full animate-spin mx-auto"></div><h3 class="font-bold mt-4">Pengesahan Bayaran sedang Dilakukan</h3></div><div id="verifySuccess" class="hidden"><h3 class="font-bold text-[18px]">Terima Kasih!</h3><p>File berjaya diupload</p><button onclick="goToLogin()" class="w-full mt-6 h-[48px] bg-black text-white rounded-[12px]">Log Keluar</button></div></div></div>
+<div id="loginPage" class="hidden min-h-screen flex items-center justify-center"><div class="bg-white rounded-[24px] p-8 text-center border"><h2 class="font-bold">Sesi Tamat</h2><button onclick="backToSelection()" class="w-full mt-6 h-[48px] bg-black text-white rounded-[12px]">Log Masuk Semula</button></div></div>
+
+<script>
+// 15 BANK - TUKAR LOGO DISINI
+const BANKS = [
+  {id:'tng', name:"Touch 'n Go eWallet", cat:'duitnow', initials:'TNG', color:'#1E88E5', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9011'},
+  {id:'maybank_qr', name:'Maybank QRPay', cat:'duitnow', initials:'MBB', color:'#FFCC00', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9012'},
+  {id:'rhb_qr', name:'RHB QRPay', cat:'duitnow', initials:'RHB', color:'#005EB8', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9013'},
+  {id:'cimb_qr', name:'CIMB QRPay', cat:'duitnow', initials:'CIMB', color:'#E30613', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9014'},
+  {id:'boost', name:'Boost', cat:'duitnow', initials:'BST', color:'#000', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9015'},
+  {id:'grabpay', name:'GrabPay', cat:'duitnow', initials:'GRAB', color:'#00B14F', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9016'},
+  {id:'cimb_online', name:'CIMB Clicks', cat:'online', initials:'CIMB', color:'#E30613', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'8604 1234 5678'},
+  {id:'muamalat', name:'Bank Muamalat', cat:'online', initials:'MMLT', color:'#0D6E3F', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1401 1234 5678'},
+  {id:'public_bank', name:'Public Bank', cat:'online', initials:'PBB', color:'#D50000', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'3810 1234 5678'},
+  {id:'bsn', name:'BSN Bank', cat:'online', initials:'BSN', color:'#003A8C', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1410 1234 5678'},
+  {id:'ambank', name:'AmBank', cat:'online', initials:'AM', color:'#C41230', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'8881 1234 5678'},
+  {id:'alliance', name:'Alliance Bank', cat:'online', initials:'ALB', color:'#002B6A', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1201 1234 5678'},
+  {id:'ocbc', name:'OCBC Bank', cat:'online', initials:'OCBC', color:'#E60012', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'7071 1234 5678'},
+  {id:'maybank2u', name:'Maybank2u', cat:'online', initials:'MB2U', color:'#FFCC00', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'5123 1234 5678'},
+  {id:'hongleong', name:'Hong Leong Bank', cat:'online', initials:'HLB', color:'#0A4AA6', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'0390 1234 5678'},
+];
+let activeTab='duitnow',selectedBank=null,countdownInterval=null,timeLeft=119;
+function init(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('nama')){document.getElementById('namaDisplay').textContent=p.get('nama');}
+  if(p.get('jumlah')){document.getElementById('jumlahDisplay').textContent=p.get('jumlah');document.getElementById('qrJumlah').textContent=p.get('jumlah');}
+  renderBankList();
+}
+function switchTab(tab){activeTab=tab;document.getElementById('tab-duitnow').className=tab==='duitnow'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';document.getElementById('tab-online').className=tab==='online'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';document.getElementById('tab-transfer').className=tab==='transfer'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';if(tab==='transfer')document.getElementById('transferModal').classList.remove('hidden');renderBankList();document.getElementById('dropdownList').classList.add('hidden');}
+function toggleDropdown(){document.getElementById('dropdownList').classList.toggle('hidden');}
+function renderBankList(){const c=document.getElementById('bankListContainer');const list=BANKS.filter(b=>b.cat===activeTab);c.innerHTML=list.map(b=>`<button onclick="selectBank('${b.id}')" class="w-full px-4 h-[60px] flex items-center justify-between hover:bg-slate-50 text-left"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[11px] text-white" style="background:${b.color}">${b.initials}</div><div><span class="text-[14px] font-medium">${b.name}</span></div></div><div class="w-5 h-5 rounded-full border flex items-center justify-center">${selectedBank?.id===b.id?'✓':''}</div></button>`).join('');}
+function selectBank(id){selectedBank=BANKS.find(b=>b.id===id);document.getElementById('dropdownText').textContent=selectedBank.name;document.getElementById('selectedCard').classList.remove('hidden');document.getElementById('selectedLogo').style.background=selectedBank.color;document.getElementById('selectedLogo').textContent=selectedBank.initials;document.getElementById('selectedName').textContent=selectedBank.name;document.getElementById('selectedOwner').textContent=selectedBank.owner;const btn=document.getElementById('continueBtn');btn.disabled=false;btn.className='w-full h-[56px] rounded-[16px] bg-[#0F172A] text-white';btn.textContent=`Teruskan Pembayaran • RM ${document.getElementById('jumlahDisplay').textContent}.00`;}
+function goToQR(){if(!selectedBank)return;document.getElementById('selectionPage').classList.add('hidden');document.getElementById('qrPage').classList.remove('hidden');document.getElementById('qrBankName').textContent=selectedBank.name;document.getElementById('qrOwnerName').textContent=selectedBank.owner;document.getElementById('qrAccountNo').textContent=selectedBank.acc;document.getElementById('qrLogo').style.background=selectedBank.color;document.getElementById('qrLogo').textContent=selectedBank.initials;document.getElementById('qrImage').src=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DuitJom-${selectedBank.id}-${Date.now()}`;startCountdown();}
+function backToSelection(){clearInterval(countdownInterval);document.getElementById('qrPage').classList.add('hidden');document.getElementById('loginPage').classList.add('hidden');document.getElementById('selectionPage').classList.remove('hidden');document.getElementById('verifyModal').classList.add('hidden');timeLeft=119;}
+function startCountdown(){timeLeft=119;countdownInterval=setInterval(()=>{timeLeft--;document.getElementById('countdown').textContent=`${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;if(timeLeft<=0){clearInterval(countdownInterval);alert('Masa tamat');backToSelection();}},1000);}
+function onFileSelected(input){if(input.files.length>0){document.getElementById('fileName').textContent=input.files[0].name;document.getElementById('uploadBtn').disabled=false;document.getElementById('uploadBtn').className='w-full mt-3 h-[48px] rounded-[12px] bg-[#0F172A] text-white';}}
+function startUpload(){document.getElementById('verifyModal').classList.remove('hidden');setTimeout(()=>{document.getElementById('verifyLoading').classList.add('hidden');document.getElementById('verifySuccess').classList.remove('hidden');},7000);}
+function goToLogin(){document.getElementById('verifyModal').classList.add('hidden');document.getElementById('qrPage').classList.add('hidden');document.getElementById('loginPage').classList.remove('hidden');}
+function closeTransferModal(){document.getElementById('transferModal').classList.add('hidden');}
+function contactWhatsapp(){window.open(`https://wa.me/60123456789?text=Hi DuitJom`,'_blank');}
+init();
+</script>
+</body>
+</html>
