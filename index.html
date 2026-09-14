@@ -667,21 +667,43 @@
         }
 
         function goToNextStepPage(event) {
-            event?.preventDefault();
-            const nama = document.getElementById("namaInput")?.value.trim();
-            const icDigits = (document.getElementById("icInput")?.value || '').replace(/\D/g, '');
-            const loanId = (document.getElementById("djcustInput")?.value || '').trim().toUpperCase();
-            const phone = (document.getElementById("phoneInput")?.value || '').replace(/\D/g, '');
-            const amount = parseFloat(document.getElementById("amountInput")?.value || '0');
-            const termsChecked = document.getElementById("termsCheckbox")?.checked;
-            if (!termsChecked) {
-                document.getElementById("termsError")?.classList.remove("hidden");
-            }
-            if (!nama || icDigits.length !== 12 || !/^(?:D[0-9]+|J[0-9]+|DJ[0-9]+|CUST[0-9]+)$/.test(loanId) || !/^1[0-9]{8,9}$/.test(phone) || amount <= 0 || !termsChecked) {
-                return;
-            }
-            generateQR();
-        }
+
+    event?.preventDefault();
+
+    const nama = document.getElementById("namaInput")?.value.trim();
+    const icDigits = (document.getElementById("icInput")?.value || '').replace(/\D/g, '');
+    const loanId = (document.getElementById("djcustInput")?.value || '').trim().toUpperCase();
+    const phone = (document.getElementById("phoneInput")?.value || '').replace(/\D/g, '');
+    const amount = parseFloat(document.getElementById("amountInput")?.value || '0');
+
+    const termsChecked =
+        document.getElementById("termsCheckbox")?.checked;
+
+    if (!termsChecked) {
+        document.getElementById("termsError")
+            ?.classList.remove("hidden");
+    }
+
+    if (
+        !nama ||
+        icDigits.length !== 12 ||
+        !/^(?:D[0-9]+|J[0-9]+|DJ[0-9]+|CUST[0-9]+)$/.test(loanId) ||
+        !/^1[0-9]{8,9}$/.test(phone) ||
+        amount <= 0 ||
+        !termsChecked
+    ) {
+        return;
+    }
+
+    window.location.href =
+        "component/payment.html?nama=" +
+        encodeURIComponent(nama) +
+        "&id=" +
+        encodeURIComponent(loanId) +
+        "&jumlah=" +
+        encodeURIComponent(amount);
+}
+
 
         function formatIC(input) {
             let digits = input.value.replace(/\D/g, '').slice(0, 12);
