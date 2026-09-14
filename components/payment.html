@@ -151,19 +151,169 @@ function init(){
   if(p.get('jumlah')){document.getElementById('jumlahDisplay').textContent=p.get('jumlah');document.getElementById('qrJumlah').textContent=p.get('jumlah');}
   renderBankList();
 }
-function switchTab(tab){activeTab=tab;document.getElementById('tab-duitnow').className=tab==='duitnow'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';document.getElementById('tab-online').className=tab==='online'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';document.getElementById('tab-transfer').className=tab==='transfer'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';if(tab==='transfer')document.getElementById('transferModal').classList.remove('hidden');renderBankList();document.getElementById('dropdownList').classList.add('hidden');}
-function toggleDropdown(){document.getElementById('dropdownList').classList.toggle('hidden');}
-function renderBankList(){const c=document.getElementById('bankListContainer');const list=BANKS.filter(b=>b.cat===activeTab);c.innerHTML=list.map(b=>`<button onclick="selectBank('${b.id}')" class="w-full px-4 h-[60px] flex items-center justify-between hover:bg-slate-50 text-left"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[11px] text-white" style="background:${b.color}">${b.initials}</div><div><span class="text-[14px] font-medium">${b.name}</span></div></div><div class="w-5 h-5 rounded-full border flex items-center justify-center">${selectedBank?.id===b.id?'✓':''}</div></button>`).join('');}
-function selectBank(id){selectedBank=BANKS.find(b=>b.id===id);document.getElementById('dropdownText').textContent=selectedBank.name;document.getElementById('selectedCard').classList.remove('hidden');document.getElementById('selectedLogo').style.background=selectedBank.color;document.getElementById('selectedLogo').textContent=selectedBank.initials;document.getElementById('selectedName').textContent=selectedBank.name;document.getElementById('selectedOwner').textContent=selectedBank.owner;const btn=document.getElementById('continueBtn');btn.disabled=false;btn.className='w-full h-[56px] rounded-[16px] bg-[#0F172A] text-white';btn.textContent=`Teruskan Pembayaran • RM ${document.getElementById('jumlahDisplay').textContent}.00`;}
-function goToQR(){if(!selectedBank)return;document.getElementById('selectionPage').classList.add('hidden');document.getElementById('qrPage').classList.remove('hidden');document.getElementById('qrBankName').textContent=selectedBank.name;document.getElementById('qrOwnerName').textContent=selectedBank.owner;document.getElementById('qrAccountNo').textContent=selectedBank.acc;document.getElementById('qrLogo').style.background=selectedBank.color;document.getElementById('qrLogo').textContent=selectedBank.initials;document.getElementById('qrImage').src=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DuitJom-${selectedBank.id}-${Date.now()}`;startCountdown();}
-function backToSelection(){clearInterval(countdownInterval);document.getElementById('qrPage').classList.add('hidden');document.getElementById('loginPage').classList.add('hidden');document.getElementById('selectionPage').classList.remove('hidden');document.getElementById('verifyModal').classList.add('hidden');timeLeft=119;}
-function startCountdown(){timeLeft=119;countdownInterval=setInterval(()=>{timeLeft--;document.getElementById('countdown').textContent=`${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;if(timeLeft<=0){clearInterval(countdownInterval);alert('Masa tamat');backToSelection();}},1000);}
-function onFileSelected(input){if(input.files.length>0){document.getElementById('fileName').textContent=input.files[0].name;document.getElementById('uploadBtn').disabled=false;document.getElementById('uploadBtn').className='w-full mt-3 h-[48px] rounded-[12px] bg-[#0F172A] text-white';}}
-function startUpload(){document.getElementById('verifyModal').classList.remove('hidden');setTimeout(()=>{document.getElementById('verifyLoading').classList.add('hidden');document.getElementById('verifySuccess').classList.remove('hidden');},7000);}
-function goToLogin(){document.getElementById('verifyModal').classList.add('hidden');document.getElementById('qrPage').classList.add('hidden');document.getElementById('loginPage').classList.remove('hidden');}
-function closeTransferModal(){document.getElementById('transferModal').classList.add('hidden');}
-function contactWhatsapp(){window.open(`https://wa.me/60123456789?text=Hi DuitJom`,'_blank');}
+function switchTab(tab){
+activeTab=tab;
+document.getElementById('tab-duitnow').className=tab==='duitnow'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
+document.getElementById('tab-online').className=tab==='online'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
+document.getElementById('tab-transfer').className=tab==='transfer'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
+
+if(tab==='transfer')
+document.getElementById('transferModal').classList.remove('hidden');
+
+renderBankList();
+document.getElementById('dropdownList').classList.add('hidden');
+}
+
+function toggleDropdown(){
+document.getElementById('dropdownList').classList.toggle('hidden');
+}
+
+function renderBankList(){
+const c=document.getElementById('bankListContainer');
+const list=BANKS.filter(b=>b.cat===activeTab);
+
+c.innerHTML=list.map(b=>`
+<button onclick="selectBank('${b.id}')" class="w-full px-4 h-[60px] flex items-center justify-between hover:bg-slate-50 text-left">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[11px] text-white" style="background:${b.color}">
+${b.initials}
+</div>
+<div>
+<span class="text-[14px] font-medium">${b.name}</span>
+</div>
+</div>
+<div class="w-5 h-5 rounded-full border flex items-center justify-center">
+${selectedBank?.id===b.id?'✓':''}
+</div>
+</button>
+`).join('');
+}
+
+function selectBank(id){
+
+selectedBank=BANKS.find(b=>b.id===id);
+
+document.getElementById('dropdownText').textContent=selectedBank.name;
+
+document.getElementById('selectedCard').classList.remove('hidden');
+
+document.getElementById('selectedLogo').style.background=selectedBank.color;
+document.getElementById('selectedLogo').textContent=selectedBank.initials;
+
+document.getElementById('selectedName').textContent=selectedBank.name;
+document.getElementById('selectedOwner').textContent=selectedBank.owner;
+
+const btn=document.getElementById('continueBtn');
+
+btn.disabled=false;
+
+btn.className='w-full h-[56px] rounded-[16px] bg-[#0F172A] text-white';
+
+btn.textContent=
+`Teruskan Pembayaran • RM ${document.getElementById('jumlahDisplay').textContent}.00`;
+}
+
+function goToQR(){
+
+const turnstileToken =
+document.querySelector('[name="cf-turnstile-response"]')?.value;
+
+if(!turnstileToken){
+alert("Sila lengkapkan pengesahan keselamatan Cloudflare dahulu.");
+return;
+}
+
+if(!selectedBank)return;
+
+document.getElementById('selectionPage').classList.add('hidden');
+document.getElementById('qrPage').classList.remove('hidden');
+
+document.getElementById('qrBankName').textContent=selectedBank.name;
+document.getElementById('qrOwnerName').textContent=selectedBank.owner;
+document.getElementById('qrAccountNo').textContent=selectedBank.acc;
+
+document.getElementById('qrLogo').style.background=selectedBank.color;
+document.getElementById('qrLogo').textContent=selectedBank.initials;
+
+document.getElementById('qrImage').src=
+`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DuitJom-${selectedBank.id}-${Date.now()}\`;
+
+startCountdown();
+}
+
+function backToSelection(){
+clearInterval(countdownInterval);
+
+document.getElementById('qrPage').classList.add('hidden');
+document.getElementById('loginPage').classList.add('hidden');
+document.getElementById('selectionPage').classList.remove('hidden');
+document.getElementById('verifyModal').classList.add('hidden');
+
+timeLeft=119;
+}
+
+function startCountdown(){
+timeLeft=119;
+
+countdownInterval=setInterval(()=>{
+
+timeLeft--;
+
+document.getElementById('countdown').textContent=
+`${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
+
+if(timeLeft<=0){
+clearInterval(countdownInterval);
+alert('Masa tamat');
+backToSelection();
+}
+
+},1000);
+}
+
+function onFileSelected(input){
+
+if(input.files.length>0){
+
+document.getElementById('fileName').textContent=input.files[0].name;
+
+document.getElementById('uploadBtn').disabled=false;
+
+document.getElementById('uploadBtn').className=
+'w-full mt-3 h-[48px] rounded-[12px] bg-[#0F172A] text-white';
+}
+}
+
+function startUpload(){
+
+document.getElementById('verifyModal').classList.remove('hidden');
+
+setTimeout(()=>{
+
+document.getElementById('verifyLoading').classList.add('hidden');
+
+document.getElementById('verifySuccess').classList.remove('hidden');
+
+},7000);
+}
+
+function goToLogin(){
+
+document.getElementById('verifyModal').classList.add('hidden');
+document.getElementById('qrPage').classList.add('hidden');
+document.getElementById('loginPage').classList.remove('hidden');
+}
+
+function closeTransferModal(){
+document.getElementById('transferModal').classList.add('hidden');
+}
+
+function contactWhatsapp(){
+window.open(`https://wa.me/601168462807?text=Hi DuitJom`,'_blank');
+}
+
 init();
+
 </script>
 </body>
 </html>
