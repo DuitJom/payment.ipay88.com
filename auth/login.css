@@ -1,161 +1,181 @@
 /* =========================================================
-   DUITJOM AUTH SURFACE — restrained fintech design
-   Light, high-contrast, single accent color, hairline borders.
+   GLOBAL STYLES — DuitJom Fintech Theme
    ========================================================= */
-.login-card {
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  margin: 0;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+a, button {
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+input, button {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #e2e8f0;
+}
+
+/* =========================================================
+   DUITJOM AUTH BANNER — fintech design (light, high-contrast)
+   ========================================================= */
+.auth-banner {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  text-align: center;
+  color: #0f172a;
+}
+
+.auth-banner h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1d4ed8;
+}
+
+.auth-banner p {
+  margin: 0.5rem 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.banner-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.625rem;
+  margin-top: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* =========================================================
+   DUITJOM AUTH LOGIN CONTAINER — moved to bottom
+   ========================================================= */
+#auth-login-container {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
   padding: 1.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
   background: #ffffff;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
-.login-kicker {
-  margin: 0;
-  color: #1d4ed8;
-  font-size: .625rem;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.login-title {
-  margin: .4rem 0 .3rem;
-  color: #0f172a;
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -.01em;
-}
-.login-subtitle, .login-help {
-  color: #64748b;
-  font-size: .75rem;
-  line-height: 1.55;
-}
-.login-subtitle { margin: 0; }
 
-.login-provider-button, .login-primary-button, .login-secondary-button {
-  display: block;
-  width: 100%;
-  border-radius: .625rem;
-  padding: .68rem 1rem;
-  font-size: .8rem;
-  font-weight: 600;
-  transition: background-color .15s ease, border-color .15s ease, transform .1s ease;
-}
+/* Butang Google Sign-In */
 .login-provider-button {
+  width: 100%;
+  background: #ffffff;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .6rem;
-  margin-top: 1.1rem;
-  border: 1px solid #e2e8f0;
-  color: #1e293b;
-  background: #ffffff;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
-.login-provider-button:hover { background: #f8fafc; border-color: #cbd5e1; }
-.login-provider-button:active { transform: scale(.99); }
-.login-provider-button:disabled { opacity: .6; cursor: wait; }
-.google-provider-icon, .github-provider-icon { flex: 0 0 auto; }
-.github-provider-icon { color: #0f172a; }
 
-.login-primary-button {
-  border: 0;
-  color: #ffffff;
+.login-provider-button:hover {
+  background: #f9fafb;
+}
+
+/* Tab Kaedah Log Masuk (Email/Phone/TOTP) */
+.login-methods {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.login-method {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 0.625rem;
+  cursor: pointer;
+}
+
+.login-method.active {
   background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
 }
-.login-primary-button:hover { background: #1e40af; }
-.login-primary-button:disabled { opacity: .6; cursor: wait; }
 
-.login-secondary-button {
-  border: 1px solid #e2e8f0;
-  color: #334155;
+/* Input dan Butang Log Masuk */
+.login-input {
+  width: 100%;
+  margin-bottom: 1rem;
   background: #f8fafc;
 }
-.login-secondary-button:hover { background: #f1f5f9; border-color: #cbd5e1; }
 
-.login-divider {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  margin: 1.1rem 0;
-  color: #94a3b8;
-  font-size: .65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-.login-divider::before, .login-divider::after { content: ""; flex: 1; height: 1px; background: #e5e7eb; }
-
-.login-panel label {
-  display: block;
-  margin-bottom: .35rem;
-  color: #334155;
-  font-size: .7rem;
-  font-weight: 600;
-}
-.login-panel input {
+.login-button {
   width: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: .625rem;
-  padding: .68rem .85rem;
-  color: #0f172a;
-  font-size: .82rem;
-  background: #ffffff;
-  outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
-.login-panel input::placeholder { color: #9ca3af; }
-.login-panel input:focus { border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, .12); }
-
-.login-help { margin: .8rem 0 0; }
-.login-message {
-  min-height: 1.25rem;
-  margin: .9rem 0 0;
-  text-align: center;
-  font-size: .72rem;
+  background: #1d4ed8;
+  color: #ffffff;
+  border: none;
   font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
-/* Email toggle button */
-.email-toggle-button { color: #1e293b; }
-.email-toggle-button svg { color: #1d4ed8; }
-
-/* Footer links */
-.login-footer-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  margin-top: 1.2rem;
-  font-size: .72rem;
+.login-button:hover {
+  background: #1e40af;
 }
-.login-link {
-  background: none;
-  border: 0;
-  color: #1d4ed8;
-  font-size: .72rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  transition: color .15s ease;
-}
-.login-link:hover { color: #1e40af; text-decoration: underline; }
-.login-link-sep { color: #cbd5e1; }
 
-/* Forgot password link */
-.login-forgot-link {
+.magic-link {
   display: block;
   text-align: center;
-  margin-top: .8rem;
   color: #64748b;
-  font-size: .7rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: color .15s ease;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
 }
-.login-forgot-link:hover { color: #1d4ed8; text-decoration: underline; }
 
-/* Auth surface wrapper — plain section, no glass/gradient chrome */
-#firebaseAuthContainer {
-  position: relative;
-  margin-top: .5rem;
-  margin-bottom: 2rem;
+.magic-link:hover {
+  color: #1d4ed8;
+}
+
+/* Sembunyikan panel yang tidak aktif */
+.login-panel.hidden {
+  display: none;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN — mobile-friendly
+   ========================================================= */
+@media (max-width: 640px) {
+  body {
+    padding: 1rem;
+  }
+
+  .auth-banner {
+    padding: 1.5rem;
+  }
+
+  .auth-banner h1 {
+    font-size: 1.25rem;
+  }
+
+  #auth-login-container {
+    padding: 1rem;
+  }
 }
