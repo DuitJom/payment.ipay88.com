@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>DuitJom - Log Masuk</title>
+
   <link rel="stylesheet" href="login.css">
-  <!-- Tambah Font Awesome untuk ikon (jika diperlukan) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  >
 </head>
+
 <body>
   <!-- ===== BANNER BAHAGIAN ATAS ===== -->
   <div class="auth-banner">
     <h1>Selamat Datang ke DuitJom</h1>
-    <p>Cara paling selamat dan mudah untuk urus kewangan anda.</p>
+
+    <p>
+      Cara paling selamat dan mudah untuk urus kewangan anda.
+    </p>
+
     <img
       src="https://via.placeholder.com/600x200/e5e7eb/1d4ed8?text=Fintech+Banner+Image"
       alt="Banner DuitJom"
@@ -20,57 +30,178 @@
     >
   </div>
 
-  <!-- ===== PANEL LOG MASUK (DIPINDAHKAN KE BAWAH) ===== -->
+  <!-- ===== PANEL LOG MASUK ===== -->
   <div id="auth-login-container">
-    <!-- Butang Google Sign-In (boleh kekal di atas atau dipindahkan ke bawah) -->
-    <button class="login-provider-button" id="google-login-button">
-      <i class="fab fa-google"></i> Log Masuk dengan Google
+    <button
+      type="button"
+      class="login-provider-button"
+      id="google-login-button"
+    >
+      <i class="fab fa-google"></i>
+      Log Masuk dengan Google
     </button>
 
-    <!-- Tab Kaedah Log Masuk (Email/Phone/TOTP) -->
     <div class="login-methods">
-      <button class="login-method active" data-method="email">E-mel</button>
-      <button class="login-method" data-method="phone">Telefon</button>
-      <button class="login-method" data-method="totp">TOTP</button>
+      <button
+        type="button"
+        class="login-method active"
+        data-method="email"
+      >
+        E-mel
+      </button>
+
+      <button
+        type="button"
+        class="login-method"
+        data-method="phone"
+      >
+        Telefon
+      </button>
+
+      <button
+        type="button"
+        class="login-method"
+        data-method="totp"
+      >
+        TOTP
+      </button>
     </div>
 
-    <!-- Panel E-mel (aktif secara lalai) -->
+    <!-- Panel E-mel -->
     <div id="email-panel" class="login-panel">
-      <input type="email" placeholder="Alamat e-mel" class="login-input">
-      <button class="login-button">Log Masuk dengan E-mel</button>
-      <a href="#" class="magic-link">Hantar Pautan Ajaib</a>
+      <input
+        type="email"
+        placeholder="Alamat e-mel"
+        class="login-input"
+      >
+
+      <button type="button" class="login-button">
+        Log Masuk dengan E-mel
+      </button>
+
+      <a href="#" class="magic-link">
+        Hantar Pautan Ajaib
+      </a>
     </div>
 
-    <!-- Panel Telefon (tersembunyi secara lalai) -->
+    <!-- Panel Telefon -->
     <div id="phone-panel" class="login-panel hidden">
-      <input type="tel" placeholder="Nombor telefon" class="login-input">
-      <button class="login-button">Hantar Kod OTP</button>
+      <input
+        type="tel"
+        placeholder="Nombor telefon"
+        class="login-input"
+      >
+
+      <button type="button" class="login-button">
+        Hantar Kod OTP
+      </button>
     </div>
 
-    <!-- Panel TOTP (tersembunyi secara lalai) -->
+    <!-- Panel TOTP -->
     <div id="totp-panel" class="login-panel hidden">
-      <input type="text" placeholder="Kod TOTP" class="login-input">
-      <button class="login-button">Sahkan Kod</button>
+      <input
+        type="text"
+        placeholder="Kod TOTP"
+        class="login-input"
+      >
+
+      <button type="button" class="login-button">
+        Sahkan Kod
+      </button>
     </div>
   </div>
 
-  <!-- Script untuk toggle tab kaedah log masuk -->
+  <!-- ===== POPUP NOTIS PENYELENGGARAAN ===== -->
+  <div
+    id="maintenance-popup"
+    class="maintenance-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="maintenance-title"
+  >
+    <div class="maintenance-popup">
+      <div class="maintenance-icon">
+        <i class="fas fa-tools"></i>
+      </div>
+
+      <h2 id="maintenance-title">
+        Notis Penyelenggaraan
+      </h2>
+
+      <p>
+        Website DuitJom sedang menjalani kerja-kerja penyelenggaraan.
+        Sesetengah fungsi mungkin tidak dapat digunakan buat sementara waktu.
+      </p>
+
+      <p>
+        Jika anda memerlukan bantuan, sila hubungi pasukan support kami:
+      </p>
+
+      <a
+        href="mailto:support@duitjom.my"
+        class="support-email"
+      >
+        support@duitjom.my
+      </a>
+
+      <div class="maintenance-buttons">
+        <button
+          type="button"
+          id="close-maintenance-popup"
+          class="maintenance-close-button"
+        >
+          Tutup
+        </button>
+
+        <a
+          href="mailto:support@duitjom.my?subject=Bantuan%20DuitJom"
+          class="maintenance-support-button"
+        >
+          <i class="fas fa-envelope"></i>
+          Hubungi Support
+        </a>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Toggle tab kaedah log masuk
     document.querySelectorAll('.login-method').forEach(button => {
       button.addEventListener('click', () => {
-        // Alihkan kelas 'active' pada tab
         document.querySelectorAll('.login-method').forEach(btn => {
           btn.classList.remove('active');
         });
+
         button.classList.add('active');
 
-        // Sembunyikan semua panel, kemudian tunjukkan panel yang dipilih
         document.querySelectorAll('.login-panel').forEach(panel => {
           panel.classList.add('hidden');
         });
-        document.getElementById(button.dataset.method + '-panel').classList.remove('hidden');
+
+        const selectedPanel = document.getElementById(
+          button.dataset.method + '-panel'
+        );
+
+        if (selectedPanel) {
+          selectedPanel.classList.remove('hidden');
+        }
       });
     });
+
+    // Tutup popup penyelenggaraan
+    const maintenancePopup = document.getElementById(
+      'maintenance-popup'
+    );
+
+    const closeMaintenanceButton = document.getElementById(
+      'close-maintenance-popup'
+    );
+
+    if (closeMaintenanceButton && maintenancePopup) {
+      closeMaintenanceButton.addEventListener('click', () => {
+        maintenancePopup.classList.add('maintenance-hidden');
+      });
+    }
   </script>
 </body>
 </html>
