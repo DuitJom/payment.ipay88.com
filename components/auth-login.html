@@ -1,98 +1,76 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DuitJom - Log Masuk</title>
   <link rel="stylesheet" href="login.css">
+  <!-- Tambah Font Awesome untuk ikon (jika diperlukan) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <!-- ===== BANNER BAHAGIAN ATAS ===== -->
+  <div class="auth-banner">
+    <h1>Selamat Datang ke DuitJom</h1>
+    <p>Cara paling selamat dan mudah untuk urus kewangan anda.</p>
+    <img
+      src="https://via.placeholder.com/600x200/e5e7eb/1d4ed8?text=Fintech+Banner+Image"
+      alt="Banner DuitJom"
+      class="banner-image"
+    >
+  </div>
 
-  <!-- Bekas Borang Log Masuk Utama -->
+  <!-- ===== PANEL LOG MASUK (DIPINDAHKAN KE BAWAH) ===== -->
   <div id="auth-login-container">
-    <h2>Log Masuk ke DuitJom</h2>
-
-    <!-- Messages Container -->
-    <p data-auth-message class="login-message"></p>
-
-    <!-- Google Sign-In Button -->
-    <button 
-      type="button" 
-      class="login-provider-button"
-      data-google-sign-in 
-      onclick="window.signInWithGoogle(event)">
-      Log Masuk dengan Google
+    <!-- Butang Google Sign-In (boleh kekal di atas atau dipindahkan ke bawah) -->
+    <button class="login-provider-button" id="google-login-button">
+      <i class="fab fa-google"></i> Log Masuk dengan Google
     </button>
-    
-    <div
-      class="cf-turnstile"
-      data-sitekey="0x4AAAAAAEyqT9t_mS4evqvT"
-      data-action="login"
-      data-theme="auto"
-      data-size="flexible">
+
+    <!-- Tab Kaedah Log Masuk (Email/Phone/TOTP) -->
+    <div class="login-methods">
+      <button class="login-method active" data-method="email">E-mel</button>
+      <button class="login-method" data-method="phone">Telefon</button>
+      <button class="login-method" data-method="totp">TOTP</button>
     </div>
 
-
-    <!-- Tab pilihan kaedah log masuk -->
-    <div class="login-methods mt-4">
-      <button type="button" class="login-method active" data-method="email" onclick="window.switchAuthMethod('email')">Email</button>
-      <button type="button" class="login-method" data-method="phone" onclick="window.switchAuthMethod('phone')">Telefon</button>
-      <button type="button" class="login-method" data-method="totp" onclick="window.switchAuthMethod('totp')">TOTP</button>
+    <!-- Panel E-mel (aktif secara lalai) -->
+    <div id="email-panel" class="login-panel">
+      <input type="email" placeholder="Alamat e-mel" class="login-input">
+      <button class="login-button">Log Masuk dengan E-mel</button>
+      <a href="#" class="magic-link">Hantar Pautan Ajaib</a>
     </div>
 
-    <!-- Panel Email (Magic Link) -->
-    <div id="emailPanel" class="login-panel">
-      <label for="magicLinkEmail">Alamat Email</label>
-      <input type="email" id="magicLinkEmail" placeholder="nama@email.com" />
-      <button id="magicLinkButton" type="button" class="login-primary-button mt-3" onclick="window.sendMagicLink(event)">
-        Hantar pautan log masuk
-      </button>
+    <!-- Panel Telefon (tersembunyi secara lalai) -->
+    <div id="phone-panel" class="login-panel hidden">
+      <input type="tel" placeholder="Nombor telefon" class="login-input">
+      <button class="login-button">Hantar Kod OTP</button>
     </div>
 
-    <!-- Panel Telefon (SMS OTP) -->
-    <div id="phonePanel" class="login-panel hidden">
-      <label for="phoneOtpNumber">Nombor Telefon</label>
-      <div class="phone-field">
-        <span>+60</span>
-        <input type="tel" id="phoneOtpNumber" placeholder="12 345 6789" />
-      </div>
-
-      <!-- Bekas reCAPTCHA Invisible (Diperlukan oleh Firebase) -->
-      <div id="recaptcha-container"></div>
-
-      <button type="button" class="login-primary-button mt-3" onclick="window.sendPhoneOtp(event)">
-        Hantar Kod OTP
-      </button>
-
-      <div id="phoneOtpVerify" class="hidden mt-4">
-        <label for="phoneOtpCode">Kod OTP (6 Digit)</label>
-        <input type="text" id="phoneOtpCode" maxlength="6" placeholder="123456" />
-        <button type="button" class="login-secondary-button mt-2" onclick="window.verifyPhoneOtp(event)">
-          Sahkan OTP
-        </button>
-      </div>
-    </div>
-
-    <!-- Panel TOTP (2FA) -->
-    <div id="totpPanel" class="login-panel hidden">
-      <button type="button" class="login-primary-button" onclick="window.enrolTotp(event)">Mula Daftar TOTP</button>
-      
-      <div id="totpSetupDetails" class="totp-setup hidden">
-        <img id="totpQrCode" alt="QR Code TOTP" />
-        <p>Secret: <code id="totpSecret"></code></p>
-        <input type="hidden" id="totpFactorId" />
-        <input type="text" id="totpCode" maxlength="6" placeholder="123456" class="mt-2" />
-        <button type="button" class="login-secondary-button mt-2" onclick="window.verifyTotp(event)">Sahkan Kod TOTP</button>
-      </div>
+    <!-- Panel TOTP (tersembunyi secara lalai) -->
+    <div id="totp-panel" class="login-panel hidden">
+      <input type="text" placeholder="Kod TOTP" class="login-input">
+      <button class="login-button">Sahkan Kod</button>
     </div>
   </div>
 
-  <!-- Panggil fail JS Firebase dan Skrip UI di BAHAGIAN BAWAH </body> -->
-  <script type="module" src="../firebase-config.js"></script>
-  <script src="auth-ui.js"></script>
-  <script src="email-magic-link.js"></script>
-  <script src="phone-otp.js"></script>
-  <script src="totp.js"></script>
+  <!-- Script untuk toggle tab kaedah log masuk -->
+  <script>
+    document.querySelectorAll('.login-method').forEach(button => {
+      button.addEventListener('click', () => {
+        // Alihkan kelas 'active' pada tab
+        document.querySelectorAll('.login-method').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        button.classList.add('active');
 
+        // Sembunyikan semua panel, kemudian tunjukkan panel yang dipilih
+        document.querySelectorAll('.login-panel').forEach(panel => {
+          panel.classList.add('hidden');
+        });
+        document.getElementById(button.dataset.method + '-panel').classList.remove('hidden');
+      });
+    });
+  </script>
 </body>
 </html>
