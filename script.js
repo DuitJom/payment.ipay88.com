@@ -410,3 +410,83 @@ document.addEventListener('keydown', (event) => {
         closeSidebar();
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const notificationOverlay = document.getElementById('notificationOverlay');
+    const closeIconButton = document.getElementById('closePopupIcon');
+    const closeButton = document.getElementById('closePopupButton');
+
+    // Fungsi untuk membuka popup
+    function openNotificationPopup() {
+        if (notificationOverlay) {
+            notificationOverlay.style.display = 'flex';
+            // Optional: Tambahkan class untuk animasi jika ada
+            // notificationOverlay.classList.add('fade-in');
+        }
+    }
+
+    // Fungsi untuk menutup popup
+    function closeNotificationPopup() {
+        if (notificationOverlay) {
+            // Optional: Tambahkan class untuk animasi jika ada
+            // notificationOverlay.classList.remove('fade-in');
+            notificationOverlay.style.display = 'none';
+        }
+    }
+
+    // Buka popup secara automatik apabila halaman dimuatkan
+    // Anda boleh menambah logik di sini untuk tidak memaparkan popup jika ia sudah dilihat
+    // atau bergantung kepada parameter URL, dsb. Buat masa ini, ia akan sentiasa muncul.
+    openNotificationPopup();
+
+    // Event listener untuk ikon 'X' (closeIconButton)
+    if (closeIconButton) {
+        closeIconButton.addEventListener('click', closeNotificationPopup);
+    }
+
+    // Event listener untuk butang 'Tutup' (closeButton)
+    if (closeButton) {
+        closeButton.addEventListener('click', closeNotificationPopup);
+    }
+
+    // Event listener untuk menutup popup apabila klik di luar kandungan popup
+    if (notificationOverlay) {
+        notificationOverlay.addEventListener('click', function(event) {
+            // Pastikan klik adalah pada overlay itu sendiri, bukan pada kandungan popup
+            if (event.target === notificationOverlay) {
+                closeNotificationPopup();
+            }
+        });
+    }
+
+    // ---------- Logik untuk tab login (jika ada dalam auth-login.html anda) ----------
+    // Jika anda mempunyai tab login seperti 'Email', 'Phone', 'TOTP',
+    // pastikan logik ini juga ada dalam script.js anda.
+    const loginMethods = document.querySelectorAll('.login-method');
+    const loginPanels = document.querySelectorAll('.login-panel');
+
+    loginMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            // Buang kelas 'active' dari semua tab
+            loginMethods.forEach(m => m.classList.remove('active'));
+            // Tambah kelas 'active' pada tab yang diklik
+            this.classList.add('active');
+
+            // Sembunyikan semua panel login
+            loginPanels.forEach(panel => panel.classList.add('hidden'));
+
+            // Paparkan panel yang sepadan dengan tab yang diklik
+            const targetPanelId = this.dataset.target; // Ambil ID panel dari atribut data-target
+            const targetPanel = document.getElementById(targetPanelId);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+            }
+        });
+    });
+
+    // Tetapkan tab dan panel pertama sebagai aktif secara lalai apabila dimuatkan
+    if (loginMethods.length > 0) {
+        loginMethods[0].click(); // Simulasikan klik pada tab pertama
+    }
+});
+
