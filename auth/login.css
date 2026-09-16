@@ -180,154 +180,170 @@ input, button {
   }
 }
 
-/* =========================================================
-   POPUP NOTIS PENYELENGGARAAN
-   ========================================================= */
-
-.maintenance-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-sizing: border-box;
-  padding: 20px;
-
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(4px);
-}
-
-.maintenance-popup {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 460px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 30px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);
-
-  text-align: center;
-  animation: showMaintenancePopup 0.3s ease-out;
-}
-
-.maintenance-icon {
-  margin-bottom: 12px;
-  color: #f59e0b;
-  font-size: 42px;
-}
-
-.maintenance-popup h2 {
-  margin: 0 0 15px;
-  color: #172554;
-  font-size: 25px;
-}
-
-.maintenance-popup p {
-  margin: 0 0 14px;
-  color: #475569;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-.support-email {
-  display: inline-block;
-  margin-bottom: 24px;
-
-  color: #2563eb;
-  font-weight: 700;
-  text-decoration: none;
-  overflow-wrap: anywhere;
-}
-
-.support-email:hover {
-  color: #1d4ed8;
-  text-decoration: underline;
-}
-
-.maintenance-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-.maintenance-close-button,
-.maintenance-support-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-
-  box-sizing: border-box;
-  min-width: 145px;
-  min-height: 44px;
-  padding: 12px 18px;
-
-  border: none;
-  border-radius: 9px;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.maintenance-close-button {
-  color: #334155;
-  background: #e2e8f0;
-}
-
-.maintenance-close-button:hover {
-  background: #cbd5e1;
-}
-
-.maintenance-support-button {
-  color: #ffffff;
-  background: #2563eb;
-}
-
-.maintenance-support-button:hover {
-  color: #ffffff;
-  background: #1d4ed8;
-}
-
-/* Digunakan oleh JavaScript apabila pelanggan tekan Tutup */
-.maintenance-hidden {
-  display: none;
-}
-
-@keyframes showMaintenancePopup {
-  from {
-    opacity: 0;
-    transform: translateY(15px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 480px) {
-  .maintenance-popup {
-    padding: 24px 18px;
-  }
-
-  .maintenance-buttons {
-    flex-direction: column;
-  }
-
-  .maintenance-close-button,
-  .maintenance-support-button {
+/* ===== POPUP NOTIS PENYELENGGARAAN BARU ===== */
+.notification-overlay {
+    display: none; /* Sembunyikan secara lalai, akan ditukar ke 'flex' oleh JS */
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-  }
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Latar belakang gelap */
+    z-index: 1000;
+    justify-content: center; /* Pusat secara mendatar */
+    align-items: center; /* Pusat secara menegak */
+    padding: 20px; /* Padding keseluruhan untuk skrin kecil */
+    box-sizing: border-box;
+}
+
+.notification-popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px; /* Lebar maksimum popup */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative; /* Untuk positioning ikon tutup */
+    font-family: Arial, sans-serif; /* Font yang lebih umum */
+    color: #333;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+.close-icon-container {
+    position: absolute;
+    top: 15px;
+    left: 15px; /* Posisikan ke kiri atas */
+}
+
+.close-popup-button {
+    color: #888;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1; /* Pastikan 'x' tidak terlalu tinggi */
+    display: inline-block;
+    padding: 0 5px; /* Sedikit padding untuk memudahkan klik */
+}
+
+.close-popup-button:hover,
+.close-popup-button:focus {
+    color: #333;
+}
+
+.popup-logo-placeholder {
+    margin-top: 10px; /* Jarak dari butang tutup */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.popup-logo-placeholder .logo-text {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 15px 25px;
+    font-size: 1.2em;
+    color: #555;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+/* Jika anda menggunakan <img> untuk logo, gayakan di sini */
+/* .popup-logo-placeholder img {
+    max-width: 80px;
+    height: auto;
+} */
+
+.popup-title {
+    font-size: 1.6em;
+    color: #d9534f; /* Warna merah untuk notis penting */
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.popup-subtitle {
+    font-size: 1.3em;
+    color: #555;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.popup-divider {
+    border: 0;
+    height: 1px;
+    background-color: #eee;
+    margin: 25px 0;
+}
+
+.popup-paragraph {
+    font-size: 0.95em;
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.popup-contact-email {
+    font-size: 1em;
+    font-weight: bold;
+    color: #007bff; /* Warna biru untuk emel */
+    margin: 20px 0;
+    word-break: break-all; /* Pastikan emel panjang tidak melimpah */
+}
+
+.popup-actions {
+    display: flex;
+    flex-wrap: wrap; /* Untuk responsif pada skrin kecil */
+    justify-content: center;
+    gap: 15px; /* Jarak antara butang */
+    margin-top: 30px;
+}
+
+.popup-action-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none; /* Untuk link */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-width: 150px; /* Lebar minimum untuk butang */
+    box-sizing: border-box;
+}
+
+.popup-action-button.close-btn {
+    background-color: #6c757d; /* Kelabu */
+    color: white;
+}
+
+.popup-action-button.close-btn:hover {
+    background-color: #5a6268;
+}
+
+.popup-action-button.support-btn {
+    background-color: #007bff; /* Biru */
+    color: white;
+}
+
+.popup-action-button.support-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Responsif untuk skrin kecil */
+@media (max-width: 500px) {
+    .notification-popup-content {
+        padding: 20px;
+    }
+    .popup-title {
+        font-size: 1.4em;
+    }
+    .popup-subtitle {
+        font-size: 1.1em;
+    }
+    .popup-action-button {
+        width: 100%; /* Butang penuh lebar pada skrin kecil */
+        min-width: unset;
+    }
+    .popup-actions {
+        flex-direction: column; /* Susun butang secara menegak */
+    }
 }
