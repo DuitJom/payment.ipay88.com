@@ -347,3 +347,9 @@ input, button {
         flex-direction: column; /* Susun butang secara menegak */
     }
 }
+
+.popup-logo {
+    max-width: 150px; /* Saiz maksimum logo */
+    height: auto;    /* Kekalkan nisbah aspek */
+    margin-bottom: 20px; /* Ruang di bawah logo */
+}
