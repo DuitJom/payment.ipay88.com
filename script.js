@@ -490,3 +490,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+/* =========================================================
+   DUITJOM MAINTENANCE NOTICE
+   Isolated from authentication and navigation behaviour.
+========================================================= */
+document.addEventListener('DOMContentLoaded', function () {
+    const overlay = document.getElementById('maintenanceNotificationPopup');
+    const popup = overlay?.querySelector('.maintenance-popup');
+    const closeButtons = [
+        document.getElementById('maintenancePopupClose'),
+        document.getElementById('maintenancePopupCloseX')
+    ].filter(Boolean);
+
+    if (!overlay || !popup || closeButtons.length === 0) return;
+
+    const previouslyFocusedElement = document.activeElement;
+
+    function closeMaintenanceNotice() {
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('maintenance-popup-open');
+        if (previouslyFocusedElement instanceof HTMLElement) {
+            previouslyFocusedElement.focus({ preventScroll: true });
+        }
+    }
+
+    function openMaintenanceNotice() {
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('maintenance-popup-open');
+        window.requestAnimationFrame(() => popup.focus());
+    }
+
+    closeButtons.forEach((button) => {
+        button.addEventListener('click', closeMaintenanceNotice);
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') {
+            closeMaintenanceNotice();
+        }
+    });
+
+    openMaintenanceNotice();
+});
+

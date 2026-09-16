@@ -86,7 +86,7 @@
     onclick="goToQR()"
     disabled
     class="w-full h-[56px] rounded-[16px] bg-slate-200">
-    Pilih Bank Untuk Teruskan
+    Seterusnya
   </button>
 
 </div>
@@ -107,7 +107,7 @@
         <p id="qrOwnerName" class="font-semibold text-[14px]"></p>
         <p id="qrAccountNo" class="text-[13px] font-mono bg-slate-100 px-3 py-1 rounded-full inline-block mt-1"></p>
         <p class="mt-5 text-[28px] font-bold">RM <span id="qrJumlah">350</span>.00</p>
-        <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DuitJom" class="w-[200px] h-[200px] mx-auto mt-5 border-2 border-dashed p-3 rounded-[16px]">
+        <img id="qrImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Kod QR DuitNow DuitJom" class="w-[200px] h-[200px] mx-auto mt-5 border-2 border-dashed p-3 rounded-[16px] object-contain">
       </div>
       <div class="mt-6">
         <label class="border-2 border-dashed rounded-[14px] p-6 flex flex-col items-center cursor-pointer">
@@ -230,19 +230,10 @@ btn.disabled=false;
 btn.className='w-full h-[56px] rounded-[16px] bg-[#0F172A] text-white';
 
 btn.textContent=
-`Teruskan Pembayaran • RM ${document.getElementById('jumlahDisplay').textContent}.00`;
+`Seterusnya • RM ${document.getElementById('jumlahDisplay').textContent}.00`;
 }
 
 function goToQR(){
-
-const turnstileToken =
-document.querySelector('[name="cf-turnstile-response"]')?.value;
-
-if(!turnstileToken){
-alert("Sila lengkapkan pengesahan keselamatan Cloudflare dahulu.");
-return;
-}
-
 if(!selectedBank)return;
 
 document.getElementById('selectionPage').classList.add('hidden');
@@ -251,12 +242,13 @@ document.getElementById('qrPage').classList.remove('hidden');
 document.getElementById('qrBankName').textContent=selectedBank.name;
 document.getElementById('qrOwnerName').textContent=selectedBank.owner;
 document.getElementById('qrAccountNo').textContent=selectedBank.acc;
+document.getElementById('qrJumlah').textContent=
+document.getElementById('jumlahDisplay').textContent;
 
 document.getElementById('qrLogo').style.background=selectedBank.color;
 document.getElementById('qrLogo').textContent=selectedBank.initials;
 
-document.getElementById('qrImage').src=
-`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=DuitJom-${selectedBank.id}-${Date.now()}\`;
+document.getElementById('qrImage').src='../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg';
 
 startCountdown();
 }
