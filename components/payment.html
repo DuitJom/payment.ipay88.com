@@ -33,14 +33,18 @@
     </div>
 
     <div class="px-5 pt-2">
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-[11px]">
-        <p class="font-semibold">DEMO - auto baca?nama=&id=&jumlah=</p>
-        <div class="grid grid-cols-3 gap-2">
-          <input id="inputNama" class="px-2 py-1 rounded border" value="Ahmad Bin Ali">
-          <input id="inputId" class="px-2 py-1 rounded border" value="DJ-2024-8841">
-          <input id="inputJumlah" class="px-2 py-1 rounded border" value="350">
-        </div>
-      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
+  <div class="grid grid-cols-2 gap-3 text-[12px]">
+    <div>
+      <p class="text-slate-400 text-[10px] font-semibold uppercase tracking-wide">No. Ref</p>
+      <p id="noRefDisplay" class="font-bold text-slate-800 mt-0.5 tracking-wide">—</p>
+    </div>
+    <div class="text-right">
+      <p class="text-slate-400 text-[10px] font-semibold uppercase tracking-wide">Tarikh & Masa</p>
+      <p id="realtimeClock" class="font-semibold text-slate-700 mt-0.5">—</p>
+    </div>
+  </div>
+</div>
 
       <div class="bg-white rounded-[20px] border p-5">
         <div class="flex justify-between">
@@ -268,10 +272,9 @@ timeLeft=119;
 }
 
 function startCountdown(){
-timeLeft=119;
-
-countdownInterval=setInterval(()=>{
-
+  clearInterval(countdownInterval); // ← TAMBAH BARIS INI
+  timeLeft=119;
+  countdownInterval=setInterval(()=>{
 timeLeft--;
 
 document.getElementById('countdown').textContent=
@@ -300,31 +303,25 @@ document.getElementById('uploadBtn').className=
 }
 
 function startUpload(){
-
-document.getElementById('verifyModal').classList.remove('hidden');
-
-setTimeout(()=>{
-
-document.getElementById('verifyLoading').classList.add('hidden');
-
-document.getElementById('verifySuccess').classList.remove('hidden');
-
-},7000);
+  document.getElementById('verifyModal').classList.remove('hidden');
+  setTimeout(()=>{
+    document.getElementById('verifyLoading').classList.add('hidden');
+    document.getElementById('verifySuccess').classList.remove('hidden');
+  }, 5000);  // ← 5 saat
 }
 
 function goToLogin(){
-
-document.getElementById('verifyModal').classList.add('hidden');
-document.getElementById('qrPage').classList.add('hidden');
-document.getElementById('loginPage').classList.remove('hidden');
+  document.getElementById('verifyModal').classList.add('hidden');
+  // Redirect ke halaman login utama
+  window.location.href = '../index.html';
 }
 
 function closeTransferModal(){
-document.getElementById('transferModal').classList.add('hidden');
+  document.getElementById('transferModal').classList.add('hidden');
 }
 
 function contactWhatsapp(){
-window.open(`https://wa.me/601168462807?text=Hi DuitJom`,'_blank');
+  window.open(`https://wa.me/601168462807?text=PMDuitJom`,'_blank');
 }
 
 init();
