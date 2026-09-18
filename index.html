@@ -778,13 +778,25 @@
         return;
     }
 
-    window.location.href =
-       "components/payment.html?nama=" +
-        encodeURIComponent(nama) +
-        "&id=" +
-        encodeURIComponent(loanId) +
-        "&jumlah=" +
-        encodeURIComponent(amount);
+    const paymentFlow = {
+        nama,
+        ic: icDigits,
+        id: loanId,
+        phone,
+        jumlah: amount.toFixed(2),
+        createdAt: Date.now()
+    };
+
+    try {
+        window.sessionStorage.setItem("duitjomPaymentFlow", JSON.stringify(paymentFlow));
+        window.sessionStorage.setItem("duitjomShowLoadingOnNextPage", "1");
+    } catch (error) {
+        console.warn("Unable to cache payment flow in sessionStorage:", error);
+    }
+
+    window.showPageTransition(() => {
+        window.location.href = "components/payment.html";
+    });
 }
 
 

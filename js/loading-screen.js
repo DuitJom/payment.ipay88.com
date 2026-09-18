@@ -7,9 +7,9 @@
 (function () {
   "use strict";
 
-  var DURATION_MS = 7500;
+  var MIN_VISIBLE_MS = 450;
   var MESSAGE_KEYS = ["loading.message1", "loading.message2", "loading.message3", "loading.message4"];
-  var MESSAGE_TIMES = [0, 2000, 4000, 6000];
+  var MESSAGE_TIMES = [0, 150, 600, 1100];
 
   var overlay = null;
   var progressBar = null;
@@ -18,7 +18,7 @@
   var rafId = null;
   var messageTimers = [];
   var startedAt = 0;
-  var minimumHideResolve = null;
+  var activeTransitionId = 0;
 
   function cacheRefs() {
     overlay = document.getElementById("loadingPage");
@@ -39,14 +39,11 @@
 
   function tick() {
     var elapsed = Date.now() - startedAt;
-    var pct = Math.min(100, Math.round((elapsed / DURATION_MS) * 100));
+    var pct = Math.min(100, Math.round((elapsed / MIN_VISIBLE_MS) * 100));
     if (progressBar) progressBar.style.width = pct + "%";
     if (percentageLabel) percentageLabel.textContent = pct + "%";
-    if (elapsed < DURATION_MS) {
+    if (elapsed < MIN_VISIBLE_MS) {
       rafId = window.requestAnimationFrame(tick);
-    } else if (minimumHideResolve) {
-      minimumHideResolve();
-      minimumHideResolve = null;
     }
   }
 
@@ -59,6 +56,7 @@
     if (!overlay) cacheRefs();
     if (!overlay) return Promise.resolve();
 
+    activeTransitionId += 1;
     overlay.classList.remove("hidden");
     overlay.classList.add("flex");
     document.body.style.overflow = "hidden";
@@ -74,17 +72,14 @@
     });
 
     if (rafId) window.cancelAnimationFrame(rafId);
-    return new Promise(function (resolve) {
-      minimumHideResolve = resolve;
-      rafId = window.requestAnimationFrame(tick);
-    });
+    rafId = window.requestAnimationFrame(tick);
+    return Promise.resolve();
   }
 
   function hideOverlay() {
     if (!overlay) cacheRefs();
     if (rafId) window.cancelAnimationFrame(rafId);
     clearMessageTimers();
-    minimumHideResolve = null;
     if (!overlay) return;
     overlay.classList.add("hidden");
     overlay.classList.remove("flex");
@@ -92,14 +87,20 @@
   }
 
   /**
-   * Shows the DuitJom transition overlay for a minimum of ~7.5s (cosmetic)
-   * while `action` runs concurrently in the background. If `action` rejects,
-   * the overlay is dismissed immediately so the real error UI can take over.
+   * Shows the shared DuitJom transition overlay before navigation or async work
+   * and keeps it visible just long enough to avoid flicker.
    * @param {() => (void | Promise<void>)} action
    */
   window.showPageTransition = function showPageTransition(action) {
-    var minimumWait = showOverlay();
+    var transitionId = activeTransitionId + 1;
+    var minimumWait;
     var actionResult;
+
+    showOverlay();
+    minimumWait = new Promise(function (resolve) {
+      window.setTimeout(resolve, MIN_VISIBLE_MS);
+    });
+
     try {
       actionResult = action ? action() : undefined;
     } catch (error) {
@@ -112,12 +113,16 @@
         hideOverlay();
       });
       return Promise.all([minimumWait, actionResult]).then(
-        function () { hideOverlay(); },
+        function () {
+          if (transitionId === activeTransitionId) hideOverlay();
+        },
         function (error) { hideOverlay(); throw error; }
       );
     }
 
-    return minimumWait.then(function () { hideOverlay(); });
+    return minimumWait.then(function () {
+      if (transitionId === activeTransitionId) hideOverlay();
+    });
   };
 
   window.hidePageTransition = hideOverlay;

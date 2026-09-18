@@ -76,10 +76,18 @@ function updateAuthState(user) {
   isVerified = isTrustedProvider(user);
   window.duitjomAuthState = { user: currentUser, isVerified };
   const name = user?.displayName || user?.email || "";
+  const featuresContainer = document.getElementById("features-container");
   showPanel(!user ? loginPanel : isVerified ? userPanel : document.getElementById("authVerificationPanel"));
   document.getElementById("btnPembayaranPinjaman")?.classList.toggle("hidden", !isVerified);
   document.getElementById("sidebarGoogleSection")?.classList.toggle("hidden", isVerified);
   document.getElementById("sidebarAccountSection")?.classList.toggle("hidden", !isVerified);
+  if (isVerified) {
+    window.unloadLoginFeatures?.();
+    featuresContainer?.classList.add("hidden");
+  } else {
+    featuresContainer?.classList.remove("hidden");
+    window.loadLoginFeatures?.();
+  }
   document.querySelectorAll("[data-auth-user-name]").forEach((el) => { el.textContent = name; });
   document.getElementById("authUserLabel")?.replaceChildren(document.createTextNode(name));
   document.getElementById("userDisplay")?.replaceChildren(document.createTextNode(name));

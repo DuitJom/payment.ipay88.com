@@ -301,6 +301,11 @@ window.loadLoginFeatures = function loadLoginFeatures() {
   loginFeaturesLoaded = true;
   loadComponent('features-container', 'features.html');
 };
+window.unloadLoginFeatures = function unloadLoginFeatures() {
+  const container = document.getElementById("features-container");
+  if (container) container.innerHTML = "";
+  loginFeaturesLoaded = false;
+};
 
 // JALANKAN PEMUATAN KOMPONEN BERSAMA APABILA WEB DIBUKA
 document.addEventListener("DOMContentLoaded", function() {
@@ -550,4 +555,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
     openMaintenanceNotice();
 });
-
