@@ -580,9 +580,9 @@ window.DUITJOM_I18N = {
         dataDeletion: "Pemadaman Data"
       },
       auth: {
-        kickerLogin: "AKSES AKAUN SELAMAT",
-        loginTitle: "Log Masuk",
-        loginSubtitle: "Gunakan Google, GitHub, atau e-mel dan kata laluan anda.",
+        kickerLogin: "JAMINAN KESELAMATAN PENGGUNA",
+        loginTitle: "Log Masuk ke DuitJom",
+        loginSubtitle: "Sila pilih kaedah log masuk pilihan anda untuk meneruskan ke akaun DuitJom.",
         googleContinue: "Teruskan dengan Google",
         githubContinue: "Teruskan dengan GitHub",
         emailContinue: "Log masuk dengan E-mel",
