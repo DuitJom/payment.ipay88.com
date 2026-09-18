@@ -606,3 +606,132 @@ input, button {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   LOGIN SHELL — animated colour background, mobile-first
+   ========================================================= */
+body.login-page {
+  padding: 72px 0 0;
+  align-items: stretch;
+  background: #f4f8ff;
+}
+
+#firebaseAuthContainer.login-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: min(100%, 28rem);
+  margin: 0 auto;
+  padding: clamp(.75rem, 3vw, 1.2rem);
+  border: 1px solid rgba(255, 255, 255, .72);
+  border-radius: 2rem;
+  background: linear-gradient(145deg, rgba(255,255,255,.72), rgba(232,242,255,.6));
+  box-shadow: 0 24px 70px rgba(37, 99, 235, .13);
+}
+
+.login-live-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eaf3ff 0%, #f9fbff 48%, #e8fff8 100%);
+}
+
+.login-live-background::before {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
+  background-size: 28px 28px;
+  content: "";
+  opacity: .48;
+}
+
+.login-live-orb {
+  position: absolute;
+  display: block;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 999px;
+  filter: blur(8px);
+  opacity: .58;
+  transform: translate3d(0, 0, 0);
+  animation: loginOrbFloat 12s ease-in-out infinite alternate;
+}
+.login-live-orb-one { top: -6rem; left: -5rem; background: #8ec5ff; }
+.login-live-orb-two { right: -6rem; bottom: -7rem; background: #79e6c2; animation-delay: -4s; animation-duration: 15s; }
+.login-live-orb-three { top: 36%; left: 40%; width: 9rem; height: 9rem; background: #c9a7ff; opacity: .24; animation-delay: -7s; animation-duration: 18s; }
+
+@keyframes loginOrbFloat {
+  0% { transform: translate3d(-8px, 8px, 0) scale(.94); }
+  50% { transform: translate3d(18px, -14px, 0) scale(1.06); }
+  100% { transform: translate3d(-4px, 18px, 0) scale(1); }
+}
+
+#firebaseAuthContainer.login-shell > :not(.login-live-background) { position: relative; z-index: 1; }
+
+#firebaseAuthContainer .login-card {
+  padding: clamp(1.1rem, 4vw, 1.65rem);
+  border: 1px solid rgba(255,255,255,.88);
+  border-radius: 1.45rem;
+  background: rgba(255,255,255,.84);
+  box-shadow: 0 16px 45px rgba(15, 23, 42, .1), inset 0 1px 0 rgba(255,255,255,.8);
+  backdrop-filter: blur(18px);
+}
+
+#firebaseAuthContainer .login-kicker {
+  margin: 0 0 .55rem;
+  color: #2563eb;
+  font-size: .63rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+#firebaseAuthContainer .login-title { margin: 0; color: #0f172a; font-size: clamp(1.45rem, 6vw, 1.85rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.15; }
+#firebaseAuthContainer .login-subtitle { margin: .65rem 0 1.25rem; color: #64748b; font-size: .82rem; line-height: 1.6; }
+#firebaseAuthContainer .login-divider { display: flex; align-items: center; gap: .7rem; margin: 1.1rem 0; color: #94a3b8; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+#firebaseAuthContainer .login-divider::before, #firebaseAuthContainer .login-divider::after { flex: 1; height: 1px; background: #e2e8f0; content: ""; }
+#firebaseAuthContainer .login-provider-button, #firebaseAuthContainer .login-primary-button, #firebaseAuthContainer .login-secondary-button { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.9rem; gap: .55rem; border-radius: .85rem; font-size: .78rem; font-weight: 750; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease; }
+#firebaseAuthContainer .login-provider-button { border: 1px solid #dbe4f0; background: rgba(255,255,255,.86); color: #334155; }
+#firebaseAuthContainer .login-provider-button:hover { border-color: #bfdbfe; background: #fff; box-shadow: 0 8px 20px rgba(37,99,235,.1); transform: translateY(-1px); }
+#firebaseAuthContainer .login-primary-button { border: 1px solid #2563eb; background: linear-gradient(135deg, #2563eb, #4f46e5); color: #fff; box-shadow: 0 9px 20px rgba(37,99,235,.2); }
+#firebaseAuthContainer .login-primary-button:hover { box-shadow: 0 12px 24px rgba(37,99,235,.27); transform: translateY(-1px); }
+#firebaseAuthContainer .login-secondary-button { border: 1px solid #dbe4f0; background: #fff; color: #475569; }
+#firebaseAuthContainer .login-panel { display: flex; flex-direction: column; gap: .55rem; }
+#firebaseAuthContainer .login-panel label { color: #334155; font-size: .72rem; font-weight: 700; }
+#firebaseAuthContainer .login-panel input { width: 100%; min-height: 2.85rem; padding: .7rem .85rem; border: 1px solid #dbe4f0; border-radius: .8rem; background: rgba(248,250,252,.9); color: #0f172a; font-size: .82rem; }
+#firebaseAuthContainer .login-panel input:focus { border-color: #60a5fa; outline: 0; box-shadow: 0 0 0 3px rgba(96,165,250,.18); }
+#firebaseAuthContainer .login-footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; margin-top: 1rem; }
+#firebaseAuthContainer .login-link, #firebaseAuthContainer .login-forgot-link { border: 0; background: transparent; color: #2563eb; font-size: .72rem; font-weight: 700; }
+#firebaseAuthContainer .login-forgot-link { display: block; margin: .85rem auto 0; text-align: center; }
+#firebaseAuthContainer .login-link-sep { color: #cbd5e1; }
+#firebaseAuthContainer .login-message { min-height: 1.2rem; margin: .75rem .25rem 0; font-size: .72rem; line-height: 1.45; text-align: center; }
+
+/* Navigation drawer used by the existing hamburger control. */
+.sidebar-overlay { position: fixed; inset: 0; z-index: 60; display: flex; justify-content: flex-end; background: rgba(15,23,42,.42); backdrop-filter: blur(5px); transition: opacity .25s ease; }
+.sidebar-menu { display: flex; flex-direction: column; width: min(22rem, calc(100vw - 1rem)); height: 100%; padding: 1.25rem; overflow-y: auto; border-left: 1px solid rgba(255,255,255,.72); background: rgba(255,255,255,.95); box-shadow: -18px 0 45px rgba(15,23,42,.16); transition: transform .3s ease; }
+.sidebar-overlay.opacity-0 .sidebar-menu { transform: translateX(100%); }
+.sidebar-overlay:not(.opacity-0) .sidebar-menu { transform: translateX(0); }
+.sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1.2rem; border-bottom: 1px solid #eaf0f7; }
+.sidebar-brand { display: flex; align-items: center; gap: .7rem; }
+.sidebar-logo { width: 2.6rem; height: 2.6rem; object-fit: contain; }
+.sidebar-brand-kicker { margin: 0; color: #2563eb; font-size: .58rem; font-weight: 800; letter-spacing: .16em; }
+.sidebar-brand h2 { margin: .15rem 0 0; color: #0f172a; font-size: 1rem; font-weight: 800; }
+.sidebar-close { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid #e2e8f0; border-radius: .75rem; background: #f8fafc; color: #475569; }
+.sidebar-close:hover { background: #eff6ff; color: #2563eb; }
+.sidebar-nav { display: grid; gap: .45rem; padding: 1.25rem 0; }
+.sidebar-nav-item { display: flex; align-items: center; width: 100%; gap: .8rem; padding: .85rem .9rem; border: 1px solid transparent; border-radius: .8rem; background: transparent; color: #475569; font-size: .82rem; font-weight: 700; text-align: left; }
+.sidebar-nav-item:hover, .sidebar-nav-item.is-active { border-color: #dbeafe; background: #eff6ff; color: #1d4ed8; }
+.sidebar-nav-item i { width: 1rem; text-align: center; }
+.sidebar-footer { display: flex; flex-wrap: wrap; gap: .7rem 1rem; margin-top: auto; padding-top: 1rem; border-top: 1px solid #eaf0f7; }
+.sidebar-footer a { color: #64748b; font-size: .68rem; text-decoration: none; }
+.sidebar-footer a:hover { color: #2563eb; }
+
+@media (max-width: 480px) {
+  #firebaseAuthContainer.login-shell { border-radius: 1.4rem; }
+  #firebaseAuthContainer .login-card { border-radius: 1.1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-live-orb, .sidebar-menu { animation: none; transition-duration: .01ms; }
+}
