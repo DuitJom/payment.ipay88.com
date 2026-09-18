@@ -14,23 +14,34 @@ function t(key, vars) {
 function openSidebar() {
     const overlay = document.getElementById('sidebarOverlay');
     const menu = document.getElementById('sidebarMenu');
-    if (!overlay || !menu) return;
+    const toggle = document.getElementById('sidebarToggleButton');
+    if (!overlay || !menu) {
+        window.sidebarOpenPending = true;
+        return;
+    }
 
+    window.sidebarOpenPending = false;
     document.body.style.overflowY = 'hidden';
     overlay.classList.remove('hidden');
-    setTimeout(() => {
+    overlay.setAttribute('aria-hidden', 'false');
+    toggle?.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => {
         overlay.classList.remove('opacity-0');
         menu.classList.remove('translate-x-full');
-    }, 10);
+        menu.querySelector('button, a')?.focus();
+    });
 }
 
 function closeSidebar() {
     const overlay = document.getElementById('sidebarOverlay');
     const menu = document.getElementById('sidebarMenu');
+    const toggle = document.getElementById('sidebarToggleButton');
     if (!overlay || !menu) return;
 
     document.body.style.overflowY = '';
     overlay.classList.add('opacity-0');
+    overlay.setAttribute('aria-hidden', 'true');
+    toggle?.setAttribute('aria-expanded', 'false');
     menu.classList.add('translate-x-full');
     setTimeout(() => {
         overlay.classList.add('hidden');
@@ -288,7 +299,9 @@ window.loadLoginFeatures = function loadLoginFeatures() {
 
 // JALANKAN PEMUATAN KOMPONEN BERSAMA APABILA WEB DIBUKA
 document.addEventListener("DOMContentLoaded", function() {
-  loadComponent('sidebar-container', 'components/sidebar.html');
+  loadComponent('sidebar-container', 'components/sidebar.html').then((loaded) => {
+    if (loaded && window.sidebarOpenPending) openSidebar();
+  });
   loadComponent('tutorial-modal-container', 'components/tutorial-modal.html');
   loadComponent('scammer-modal-container', 'components/scammer-modal.html');
   if (document.body.dataset.page === 'home') window.loadLoginFeatures();
