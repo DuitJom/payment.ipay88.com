@@ -44,7 +44,7 @@
     <script src="js/loading-screen.js"></script>
 
 </head>
-<body data-page="home" class="font-sans bg-[#FAF6F0] text-gray-900 min-h-screen flex flex-col pt-[72px] overflow-x-hidden">
+<body data-page="home" class="login-page font-sans bg-[#FAF6F0] text-gray-900 min-h-screen flex flex-col pt-[72px] overflow-x-hidden">
 
     <!-- GLOBAL FIXED NAVBAR UNTUK SEMUA HALAMAN -->
     <header class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-100">
@@ -75,8 +75,8 @@
                 </div>
 
                 <!-- Hamburger Button -->
-                <button type="button" onclick="openSidebar()" class="text-gray-500 hover:text-black transition" data-i18n-aria-label="nav.menu" aria-label="Open menu">
-                    <i class="fas fa-bars text-2xl"></i>
+                <button id="sidebarToggleButton" type="button" onclick="openSidebar(event)" class="text-gray-500 hover:text-black transition" data-i18n-aria-label="nav.menu" aria-label="Open menu" aria-controls="sidebarMenu" aria-expanded="false">
+                    <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -163,11 +163,12 @@
     </div>
 
     <div id="sidebar-container"></div>
-    <section id="firebaseAuthContainer" class="w-full max-w-md mx-auto px-4 pt-2" aria-labelledby="authTitle">
+    <section id="firebaseAuthContainer" class="login-shell w-full max-w-md mx-auto px-4 pt-2" aria-labelledby="authTitle">
+        <div class="login-live-background" aria-hidden="true"><span class="login-live-orb login-live-orb-one"></span><span class="login-live-orb login-live-orb-two"></span><span class="login-live-orb login-live-orb-three"></span></div>
         <div id="authLoginPanel" class="login-card">
-            <p class="login-kicker" data-i18n="auth.kickerLogin">SECURE ACCOUNT ACCESS</p>
-            <h2 id="authTitle" class="login-title" data-i18n="auth.loginTitle">Sign In</h2>
-            <p class="login-subtitle" data-i18n="auth.loginSubtitle">Use your Google account or your email and password.</p>
+            <p class="login-kicker" data-i18n="auth.kickerLogin">JAMINAN KESELAMATAN PENGGUNA</p>
+            <h2 id="authTitle" class="login-title" data-i18n="auth.loginTitle">Log Masuk ke DuitJom</h2>
+            <p class="login-subtitle" data-i18n="auth.loginSubtitle">Sila pilih kaedah log masuk pilihan anda untuk meneruskan ke akaun DuitJom.</p>
 
             <button id="googleLoginButton" type="button" class="login-provider-button">
                 <svg class="google-provider-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
