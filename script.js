@@ -20,6 +20,11 @@ function openSidebar() {
         return;
     }
 
+    if (!overlay.classList.contains('hidden') && !menu.classList.contains('translate-x-full')) {
+        closeSidebar();
+        return;
+    }
+
     window.sidebarOpenPending = false;
     document.body.style.overflowY = 'hidden';
     overlay.classList.remove('hidden');
