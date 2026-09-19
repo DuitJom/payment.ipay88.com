@@ -41,11 +41,18 @@ export async function loginWithEmail(email, password) {
 
 export async function registerWithEmail(displayName, email, password) {
   await authPersistenceReady;
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
-  const cleanName = displayName.trim();
-  if (cleanName) await updateProfile(credential.user, { displayName: cleanName });
-  await sendEmailVerification(credential.user);
-  return credential;
+  try {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const cleanName = displayName?.trim() || "";
+    if (cleanName) {
+      await updateProfile(credential.user, { displayName: cleanName });
+    }
+    await sendEmailVerification(credential.user);
+    return credential;
+  } catch (error) {
+    console.error("Ralat pendaftaran:", error);
+    throw error;
+  }
 }
 
 export function sendVerificationEmail(user = auth.currentUser, actionCodeSettings) {
@@ -79,25 +86,30 @@ export async function completeMagicLink(email, url = window.location.href) {
 
 export async function ensureUserProfile(user = auth.currentUser) {
   if (!user) return null;
+  try {
+    const profileRef = doc(db, "users", user.uid);
+    const existingProfile = await getDoc(profileRef);
+    const provider = user.providerData.map((item) => item.providerId).join(",") || "password";
+    const providerVerified = user.providerData.some(({ providerId }) => providerId === "google.com" || providerId === "github.com");
+    
+    const profile = {
+      uid: user.uid,
+      displayName: user.displayName || "",
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      provider,
+      emailVerified: Boolean(user.emailVerified || providerVerified),
+      updatedAt: serverTimestamp(),
+      lastLoginAt: serverTimestamp()
+    };
 
-  const profileRef = doc(db, "users", user.uid);
-  const existingProfile = await getDoc(profileRef);
-  const provider = user.providerData.map((item) => item.providerId).join(",") || "password";
-  const providerVerified = user.providerData.some(({ providerId }) => providerId === "google.com" || providerId === "github.com");
-  const profile = {
-    uid: user.uid,
-    displayName: user.displayName || "",
-    email: user.email || "",
-    photoURL: user.photoURL || "",
-    provider,
-    emailVerified: Boolean(user.emailVerified || providerVerified),
-    updatedAt: serverTimestamp(),
-    lastLoginAt: serverTimestamp()
-  };
-
-  if (!existingProfile.exists()) profile.createdAt = serverTimestamp();
-  await setDoc(profileRef, profile, { merge: true });
-  return profile;
+    if (!existingProfile.exists()) profile.createdAt = serverTimestamp();
+    await setDoc(profileRef, profile, { merge: true });
+    return profile;
+  } catch (error) {
+    console.warn("Profil gagal disimpan di Firestore (E-mel belum disahkan):", error.message);
+    return null; // Menghalang aplikasi daripada crash
+  }
 }
 
 export function logOut() {
