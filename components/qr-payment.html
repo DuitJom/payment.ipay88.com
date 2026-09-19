@@ -23,7 +23,6 @@
       max-width: 480px;
     }
 
-    /* ── PAYMENT AMOUNT ── */
     .payment-amount {
       text-align: center;
       background: #fff;
@@ -39,7 +38,6 @@
       letter-spacing: 0.3px;
     }
 
-    /* ── QR IMAGE CONTAINER ── */
     .qr-container {
       position: relative;
       width: 100%;
@@ -52,7 +50,6 @@
       display: block;
     }
 
-    /* ── REFERENCE NO (overlay top-right) ── */
     .ref-no {
       position: absolute;
       top: 12px;
@@ -67,7 +64,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
-    /* ── COUNTDOWN ── */
     .countdown-wrapper {
       text-align: center;
       margin: 16px 0 10px;
@@ -90,7 +86,6 @@
       50% { transform: scale(1.06); }
     }
 
-    /* ── SELESAI BAYARAN BUTTON ── */
     .btn-selesai-bayaran {
       display: block;
       width: 100%;
@@ -113,7 +108,6 @@
     }
     .btn-selesai-bayaran:active { transform: translateY(0); }
 
-    /* ── UPLOAD SECTION ── */
     .upload-section {
       display: none;
       margin-top: 16px;
@@ -170,7 +164,6 @@
       font-weight: 500;
     }
 
-    /* ── OVERLAY BACKDROP ── */
     .overlay {
       display: none;
       position: fixed;
@@ -183,7 +176,6 @@
     }
     .overlay.active { display: flex; }
 
-    /* ── LOADING POPUP ── */
     .popup-loading {
       background: #fff;
       border-radius: 20px;
@@ -215,7 +207,6 @@
       line-height: 1.6;
     }
 
-    /* ── SUCCESS POPUP ── */
     .popup-success {
       background: #fff;
       border-radius: 20px;
@@ -267,7 +258,6 @@
     }
     .btn-selesai:hover { transform: translateY(-2px); }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 360px) {
       .countdown-number { font-size: 2.4rem; }
       .btn-selesai-bayaran { font-size: 0.95rem; }
@@ -278,29 +268,24 @@
 
   <div class="payment-wrapper">
 
-    <!-- Payment Amount -->
     <div class="payment-amount">
       <p id="paymentText">Please pay RM100.00 Only</p>
     </div>
 
-    <!-- QR Image + Reference No Overlay -->
     <div class="qr-container">
-      <img src="images/qr-page.png" alt="QR Payment" />
+      <img src="../images/qr-page.jpeg" alt="QR Payment" />
       <div class="ref-no" id="refNo">iP88-00000-DJ</div>
     </div>
 
-    <!-- Countdown -->
     <div class="countdown-wrapper">
       <div class="countdown-number" id="countdownNum">160</div>
       <div class="countdown-label">saat berbaki</div>
     </div>
 
-    <!-- Selesai Bayaran Button -->
     <button class="btn-selesai-bayaran" id="btnSelesaiBayaran" onclick="showUpload()">
       Selesai Bayaran
     </button>
 
-    <!-- Upload Section (hidden by default) -->
     <div class="upload-section" id="uploadSection">
       <h3>📎 Muat Naik Bukti Bayaran</h3>
       <p class="upload-info">Format: PNG, JPG, JPEG, PDF &nbsp;|&nbsp; Saiz maks: 5MB</p>
@@ -336,29 +321,29 @@
   </div>
 
   <script>
-    // ── PAYMENT AMOUNT FROM URL ──
-    const params = new URLSearchParams(window.location.search);
-    const paymentAmount = parseInt(params.get('amount')) || 100;
+    // PAYMENT AMOUNT FROM URL
+    var params = new URLSearchParams(window.location.search);
+    var paymentAmount = parseInt(params.get('amount')) || 100;
     document.getElementById('paymentText').textContent =
       'Please pay RM' + paymentAmount + '.00 Only';
 
-    // ── REFERENCE NUMBER ──
-    const randomDigits = String(Math.floor(10000 + Math.random() * 90000));
+    // REFERENCE NUMBER
+    var randomDigits = String(Math.floor(10000 + Math.random() * 90000));
     document.getElementById('refNo').textContent = 'iP88-' + randomDigits + '-DJ';
 
-    // ── MAIN COUNTDOWN (160s) ──
-    let mainCount = 160;
-    const countdownEl = document.getElementById('countdownNum');
-    const mainTimer = setInterval(function () {
+    // MAIN COUNTDOWN (160s)
+    var mainCount = 160;
+    var countdownEl = document.getElementById('countdownNum');
+    var mainTimer = setInterval(function () {
       mainCount--;
       countdownEl.textContent = mainCount;
       if (mainCount <= 0) {
         clearInterval(mainTimer);
-        window.location.href = 'login.html';
+        window.location.href = 'auth-login.html';
       }
     }, 1000);
 
-    // ── SHOW UPLOAD SECTION ──
+    // SHOW UPLOAD SECTION
     function showUpload() {
       document.getElementById('btnSelesaiBayaran').style.display = 'none';
       var section = document.getElementById('uploadSection');
@@ -366,7 +351,7 @@
       section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // ── HANDLE FILE SELECTION ──
+    // HANDLE FILE SELECTION
     function handleFile(input) {
       var file = input.files[0];
       var errorEl = document.getElementById('uploadError');
@@ -374,7 +359,7 @@
       if (!file) return;
 
       var allowed = ['image/png', 'image/jpeg', 'application/pdf'];
-      var maxSize = 5 * 1024 * 1024; // 5MB
+      var maxSize = 5 * 1024 * 1024;
 
       if (!allowed.includes(file.type) || file.size > maxSize) {
         errorEl.style.display = 'block';
@@ -382,11 +367,10 @@
         return;
       }
 
-      // Valid — terus loading
       startLoading();
     }
 
-    // ── LOADING POPUP (6.5s) ──
+    // LOADING POPUP (6.5s)
     function startLoading() {
       document.getElementById('overlayLoading').classList.add('active');
       setTimeout(function () {
@@ -395,7 +379,7 @@
       }, 6500);
     }
 
-    // ── SUCCESS POPUP ──
+    // SUCCESS POPUP
     function showSuccess() {
       document.getElementById('overlaySuccess').classList.add('active');
       startSuccessCountdown();
@@ -419,7 +403,7 @@
 
     function redirectNow() {
       if (successTimer) clearInterval(successTimer);
-      window.location.href = 'login.html';
+      window.location.href = 'auth-login.html';
     }
   </script>
 
