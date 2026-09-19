@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Payment</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 16px 40px;
+    }
+
+    .payment-wrapper {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* ── PAYMENT AMOUNT ── */
+    .payment-amount {
+      text-align: center;
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 12px;
+    }
+    .payment-amount p {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── QR IMAGE CONTAINER ── */
+    .qr-container {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .qr-container img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── REFERENCE NO (overlay top-right) ── */
+    .ref-no {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.93);
+      border-radius: 8px;
+      padding: 5px 11px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* ── COUNTDOWN ── */
+    .countdown-wrapper {
+      text-align: center;
+      margin: 16px 0 10px;
+    }
+    .countdown-number {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #c0392b;
+      line-height: 1;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    .countdown-label {
+      font-size: 0.74rem;
+      color: #999;
+      margin-top: 5px;
+      letter-spacing: 0.5px;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    /* ── SELESAI BAYARAN BUTTON ── */
+    .btn-selesai-bayaran {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(39,174,96,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .btn-selesai-bayaran:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(39,174,96,0.5);
+    }
+    .btn-selesai-bayaran:active { transform: translateY(0); }
+
+    /* ── UPLOAD SECTION ── */
+    .upload-section {
+      display: none;
+      margin-top: 16px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .upload-section.visible {
+      display: block;
+      animation: slideDown 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .upload-section h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 5px;
+    }
+    .upload-section p.upload-info {
+      font-size: 0.76rem;
+      color: #999;
+      margin-bottom: 16px;
+    }
+    .upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #3498db;
+      border-radius: 12px;
+      padding: 32px 20px;
+      cursor: pointer;
+      background: #f8fbff;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .upload-label:hover {
+      background: #eaf4ff;
+      border-color: #2980b9;
+    }
+    .upload-icon { font-size: 2.6rem; margin-bottom: 10px; }
+    .upload-label span { font-size: 0.88rem; color: #3498db; font-weight: 600; }
+    .upload-label small { font-size: 0.72rem; color: #bbb; margin-top: 5px; }
+    #fileInput { display: none; }
+
+    .upload-error {
+      color: #e74c3c;
+      font-size: 0.78rem;
+      margin-top: 10px;
+      display: none;
+      font-weight: 500;
+    }
+
+    /* ── OVERLAY BACKDROP ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(3px);
+    }
+    .overlay.active { display: flex; }
+
+    /* ── LOADING POPUP ── */
+    .popup-loading {
+      background: #fff;
+      border-radius: 20px;
+      padding: 44px 30px;
+      text-align: center;
+      width: 86%;
+      max-width: 320px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .spinner {
+      width: 54px;
+      height: 54px;
+      border: 5px solid #e8e8e8;
+      border-top-color: #3498db;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 22px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .popup-loading p {
+      font-size: 0.9rem;
+      color: #555;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    /* ── SUCCESS POPUP ── */
+    .popup-success {
+      background: #fff;
+      border-radius: 20px;
+      padding: 44px 30px;
+      text-align: center;
+      width: 86%;
+      max-width: 320px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 2.2rem;
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(39,174,96,0.4);
+    }
+    .popup-success h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 10px;
+    }
+    .popup-success p {
+      font-size: 0.88rem;
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 26px;
+    }
+    .btn-selesai {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(52,152,219,0.4);
+      transition: transform 0.2s;
+    }
+    .btn-selesai:hover { transform: translateY(-2px); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 360px) {
+      .countdown-number { font-size: 2.4rem; }
+      .btn-selesai-bayaran { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="payment-wrapper">
+
+    <!-- Payment Amount -->
+    <div class="payment-amount">
+      <p id="paymentText">Please pay RM100.00 Only</p>
+    </div>
+
+    <!-- QR Image + Reference No Overlay -->
+    <div class="qr-container">
+      <img src="images/qr-page.png" alt="QR Payment" />
+      <div class="ref-no" id="refNo">iP88-00000-DJ</div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown-wrapper">
+      <div class="countdown-number" id="countdownNum">160</div>
+      <div class="countdown-label">saat berbaki</div>
+    </div>
+
+    <!-- Selesai Bayaran Button -->
+    <button class="btn-selesai-bayaran" id="btnSelesaiBayaran" onclick="showUpload()">
+      Selesai Bayaran
+    </button>
+
+    <!-- Upload Section (hidden by default) -->
+    <div class="upload-section" id="uploadSection">
+      <h3>📎 Muat Naik Bukti Bayaran</h3>
+      <p class="upload-info">Format: PNG, JPG, JPEG, PDF &nbsp;|&nbsp; Saiz maks: 5MB</p>
+      <label class="upload-label" for="fileInput">
+        <div class="upload-icon">🖼️</div>
+        <span>Pilih Fail</span>
+        <small>Klik di sini untuk muat naik</small>
+      </label>
+      <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.pdf" onchange="handleFile(this)" />
+      <div class="upload-error" id="uploadError">❌ Format tidak sah atau saiz melebihi 5MB. Cuba lagi.</div>
+    </div>
+
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="overlay" id="overlayLoading">
+    <div class="popup-loading">
+      <div class="spinner"></div>
+      <p>Sedang mengesahkan pembayaran anda.<br>Sila tunggu!</p>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div class="overlay" id="overlaySuccess">
+    <div class="popup-success">
+      <div class="success-icon">✓</div>
+      <h2>Terima Kasih</h2>
+      <p>Bukti pembayaran anda telah berjaya diterima.</p>
+      <button class="btn-selesai" id="btnSelesai" onclick="redirectNow()">
+        Selesai (10)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ── PAYMENT AMOUNT FROM URL ──
+    const params = new URLSearchParams(window.location.search);
+    const paymentAmount = parseInt(params.get('amount')) || 100;
+    document.getElementById('paymentText').textContent =
+      'Please pay RM' + paymentAmount + '.00 Only';
+
+    // ── REFERENCE NUMBER ──
+    const randomDigits = String(Math.floor(10000 + Math.random() * 90000));
+    document.getElementById('refNo').textContent = 'iP88-' + randomDigits + '-DJ';
+
+    // ── MAIN COUNTDOWN (160s) ──
+    let mainCount = 160;
+    const countdownEl = document.getElementById('countdownNum');
+    const mainTimer = setInterval(function () {
+      mainCount--;
+      countdownEl.textContent = mainCount;
+      if (mainCount <= 0) {
+        clearInterval(mainTimer);
+        window.location.href = 'login.html';
+      }
+    }, 1000);
+
+    // ── SHOW UPLOAD SECTION ──
+    function showUpload() {
+      document.getElementById('btnSelesaiBayaran').style.display = 'none';
+      var section = document.getElementById('uploadSection');
+      section.classList.add('visible');
+      section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ── HANDLE FILE SELECTION ──
+    function handleFile(input) {
+      var file = input.files[0];
+      var errorEl = document.getElementById('uploadError');
+      errorEl.style.display = 'none';
+      if (!file) return;
+
+      var allowed = ['image/png', 'image/jpeg', 'application/pdf'];
+      var maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowed.includes(file.type) || file.size > maxSize) {
+        errorEl.style.display = 'block';
+        input.value = '';
+        return;
+      }
+
+      // Valid — terus loading
+      startLoading();
+    }
+
+    // ── LOADING POPUP (6.5s) ──
+    function startLoading() {
+      document.getElementById('overlayLoading').classList.add('active');
+      setTimeout(function () {
+        document.getElementById('overlayLoading').classList.remove('active');
+        showSuccess();
+      }, 6500);
+    }
+
+    // ── SUCCESS POPUP ──
+    function showSuccess() {
+      document.getElementById('overlaySuccess').classList.add('active');
+      startSuccessCountdown();
+    }
+
+    var successCount = 10;
+    var successTimer = null;
+
+    function startSuccessCountdown() {
+      var btn = document.getElementById('btnSelesai');
+      btn.textContent = 'Selesai (' + successCount + ')';
+      successTimer = setInterval(function () {
+        successCount--;
+        btn.textContent = 'Selesai (' + successCount + ')';
+        if (successCount <= 0) {
+          clearInterval(successTimer);
+          redirectNow();
+        }
+      }, 1000);
+    }
+
+    function redirectNow() {
+      if (successTimer) clearInterval(successTimer);
+      window.location.href = 'login.html';
+    }
+  </script>
+
+</body>
+</html>
