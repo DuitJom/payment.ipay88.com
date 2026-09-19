@@ -1,4 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+// SELEPAS (NPM) - Tukar kepada format ini:
+import { initializeApp } from "firebase/app";
 import {
   getAuth,
   setPersistence,
@@ -21,11 +22,9 @@ import {
   signInWithPhoneNumber,
   multiFactor,
   TotpMultiFactorGenerator
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Ditambah: Import isSupported
-import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getMessaging, getToken, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
