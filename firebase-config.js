@@ -1,30 +1,17 @@
 // Firebase Config - Format CDN (dimuat terus oleh browser, tiada bundler diperlukan)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+// auth/app-auth.js
 import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-  GoogleAuthProvider,
-  GithubAuthProvider,
+  auth,
+  authPersistenceReady,
+  googleProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
   sendEmailVerification,
-  reload,
-  updateProfile,
+  sendPasswordResetEmail,
   signOut,
-  onAuthStateChanged,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  multiFactor,
-  TotpMultiFactorGenerator
-} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js";
+  onAuthStateChanged
+} from "../firebase-config.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
