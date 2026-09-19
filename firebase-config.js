@@ -1,5 +1,5 @@
-// SELEPAS (NPM) - Tukar kepada format ini:
-import { initializeApp } from "firebase/app";
+// Firebase Config - Format CDN (dimuat terus oleh browser, tiada bundler diperlukan)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import {
   getAuth,
   setPersistence,
@@ -22,9 +22,9 @@ import {
   signInWithPhoneNumber,
   multiFactor,
   TotpMultiFactorGenerator
-} from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getMessaging, getToken, isSupported } from "firebase/messaging";
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
@@ -80,6 +80,7 @@ async function getNotificationToken() {
   } catch (err) {
     console.error("Ralat mendapatkan token notifikasi:", err);
   }
+  return null;
 }
 
 window.duitjomFirebaseAuth = auth;
