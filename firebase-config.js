@@ -24,10 +24,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// 1. TAMBAH IMPORT UNTUK FIREBASE MESSAGING
-import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
+// Ditambah: Import isSupported
+import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
-// Firebase Web configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
   authDomain: "duitjom-sign-up-in.firebaseapp.com",
@@ -45,16 +44,28 @@ const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch
 });
 const db = getFirestore(app);
 
-// 2. INISIALISASI MESSAGING & VAPID KEY
-const messaging = getMessaging(app);
+// Inisialisasi Messaging secara selamat menggunakan isSupported()
+let messaging = null;
+isSupported().then((supported) => {
+  if (supported) {
+    messaging = getMessaging(app);
+    window.duitjomMessaging = messaging;
+  } else {
+    console.log("FCM tidak disokong pada pelayar ini (cth: mod Incognito atau Safari lama).");
+  }
+}).catch((err) => console.error("Ralat menyemak sokongan FCM:", err));
+
 const VAPID_KEY = "BORAlMubbD_J0GIRGyX9DK4fX7lnjdUHFGmKzpOFlbeKou6hELQX1xzgWhRTnqI6rvlxj1xpIkBXWt5cohDmilc";
 
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
-// 3. FUNGSI UNTUK DAPATKAN FCM TOKEN PENGGUNA
 async function getNotificationToken() {
   try {
+    if (!messaging) {
+      console.log("FCM tidak sedia atau tidak disokong pada pelayar ini.");
+      return null;
+    }
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
@@ -72,10 +83,8 @@ async function getNotificationToken() {
   }
 }
 
-// API global ini digunakan oleh partial auth lama
 window.duitjomFirebaseAuth = auth;
 window.duitjomFirebaseDb = db;
-window.duitjomMessaging = messaging;
 window.getNotificationToken = getNotificationToken;
 
 window.firebaseAuth = {
@@ -100,7 +109,6 @@ window.firebaseAuth = {
   TotpMultiFactorGenerator
 };
 
-// 4. EKSPORT FUNGSI & VARIABLE KEPADA FAIL LAIN
 export {
   app,
   auth,
