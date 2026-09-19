@@ -458,7 +458,7 @@ document.addEventListener('keydown', (event) => {
     if (loginMethods.length > 0) {
         loginMethods[0].click(); // Simulasikan klik pada tab pertama
     }
-});
+
 
 /* =========================================================
    DUITJOM MAINTENANCE NOTICE
