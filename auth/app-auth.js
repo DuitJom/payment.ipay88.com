@@ -21,7 +21,10 @@ function message(text, type = "info") {
   if (text) messageEl.classList.add(type === "error" ? "text-red-600" : "text-emerald-600");
 }
 window.setAuthMessage = message;
-const friendly = (error) => getFriendlyAuthError(error);
+const friendly = (error) => {
+  console.error("Auth error:", error?.code, error?.message);
+  return `${getFriendlyAuthError(error)} [${error?.code || "tiada-kod"}]`;
+};
 const t = (key, vars) => (window.DJ_I18N ? window.DJ_I18N.t(key, vars) : key);
 
 function createPanels() {
