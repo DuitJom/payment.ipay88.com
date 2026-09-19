@@ -44,6 +44,7 @@ export async function registerWithEmail(displayName, email, password) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   const cleanName = displayName.trim();
   if (cleanName) await updateProfile(credential.user, { displayName: cleanName });
+  await sendEmailVerification(credential.user);
   return credential;
 }
 
