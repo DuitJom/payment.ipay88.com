@@ -200,8 +200,33 @@
                 <label for="passwordInput" class="mt-3" data-i18n="auth.password">Password</label>
                 <input id="passwordInput" type="password" autocomplete="current-password" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Enter your password" required>
 
-                <button id="emailLoginButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.loginButton">Sign In</button>
-            </form>
+                          <button id="emailLoginButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.loginButton">Sign In</button>
+
+          <!-- Pautan Register & Forgot Password -->
+          <div class="login-links mt-4 flex items-center justify-between text-xs">
+            <button id="forgotPasswordButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.forgotPassword">Forgot Password?</button>
+            <button id="registerToggleButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.registerLink">Register Account</button>
+          </div>
+        </form>
+
+        <!-- Borang Pendaftaran (tersembunyi secara lalai) -->
+        <form id="emailRegisterForm" class="login-panel hidden">
+          <label for="registerEmailInput" data-i18n="auth.email">Email</label>
+          <input id="registerEmailInput" type="email" autocomplete="email" placeholder="name@example.com" required>
+
+          <label for="registerPasswordInput" class="mt-3" data-i18n="auth.password">Password</label>
+          <input id="registerPasswordInput" type="password" autocomplete="new-password" placeholder="Minimum 6 characters" minlength="6" required>
+
+          <label for="registerConfirmInput" class="mt-3" data-i18n="auth.confirmPassword">Confirm Password</label>
+          <input id="registerConfirmInput" type="password" autocomplete="new-password" placeholder="Re-enter your password" minlength="6" required>
+
+          <button id="registerButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.registerButton">Create Account</button>
+
+          <div class="login-links mt-4 text-center text-xs">
+            <button id="backToLoginButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.backToLogin">Already have an account? Sign In</button>
+          </div>
+        </form>
+
         </div>
 
         <div id="authUserPanel" class="login-card hidden">
@@ -723,7 +748,8 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script type="module" src="auth/app-auth.js?v=20260914"></script>
+    <script type="module" src="auth/app-auth.js?v=20260919"></script>
+
     
     <!-- Firebase Authentication UI -->
     <!-- Firebase auth controller: auth/app-auth.js -->
