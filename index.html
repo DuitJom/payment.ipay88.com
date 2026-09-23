@@ -862,7 +862,8 @@
             }
         })();
     </script>
-    <!-- Start of LiveChat (www.livechat.com) code -->
+    
+<!-- Start of LiveChat (www.livechat.com) code -->
 <script>
     window.__lc = window.__lc || {};
     window.__lc.license = 19949347;
@@ -872,6 +873,18 @@
 </script>
 <noscript><a href="https://www.livechat.com/chat-with/19949347/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
 <!-- End of LiveChat code -->
+
+<script>
+window.addEventListener('load', function () {
+    setTimeout(() => {
+        console.log('LiveChat:', typeof LiveChatWidget);
+
+        if (typeof LiveChatWidget !== 'undefined') {
+            LiveChatWidget.call('maximize');
+        }
+    }, 3000);
+});
+</script>
 
 
 </body>
