@@ -199,7 +199,20 @@
 
                 <label for="passwordInput" class="mt-3" data-i18n="auth.password">Password</label>
                 <input id="passwordInput" type="password" autocomplete="current-password" data-i18n-placeholder="auth.passwordPlaceholder" placeholder="Enter your password" required>
-
+                 
+                <!-- Cloudflare Turnstile - Login Form -->
+           <div class="mt-4 flex justify-center">
+              <div
+                 class="cf-turnstile"
+                 data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ"
+                 data-action="email-login"
+                 data-theme="auto"
+                 data-size="flexible"
+                 data-callback="onLoginTurnstileSuccess"
+                 data-error-callback="onLoginTurnstileError"
+                 data-expired-callback="onLoginTurnstileExpired">
+               </div>
+            </div>
                           <button id="emailLoginButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.loginButton">Sign In</button>
 
           <!-- Pautan Register & Forgot Password -->
@@ -219,7 +232,20 @@
 
           <label for="registerConfirmInput" class="mt-3" data-i18n="auth.confirmPassword">Confirm Password</label>
           <input id="registerConfirmInput" type="password" autocomplete="new-password" placeholder="Re-enter your password" minlength="6" required>
-
+              
+       <!-- Cloudflare Turnstile - Register Form -->
+     <div class="mt-4 flex justify-center">
+         <div
+            class="cf-turnstile"
+            data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ"
+            data-action="email-register"
+            data-theme="auto"
+            data-size="flexible"
+            data-callback="onRegisterTurnstileSuccess"
+            data-error-callback="onRegisterTurnstileError"
+            data-expired-callback="onRegisterTurnstileExpired">
+         </div>
+     </div>
           <button id="registerButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.registerButton">Create Account</button>
 
           <div class="login-links mt-4 text-center text-xs">
@@ -684,13 +710,13 @@
         
         <!-- CLOUDFLARE TURNSTILE -->
     <div class="mt-4 flex justify-center">
-        <div
+          <div
              class="cf-turnstile"
-             data-sitekey="0x4AAAAAAEyqT9t_mS4evqvT"
+             data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ"
              data-action="customer-form"
              data-theme="auto"
              data-size="flexible">
-         </div>
+          </div>
       </div>
 
 
@@ -886,6 +912,42 @@ window.addEventListener('load', function () {
 });
 </script>
 
+<!-- Cloudflare Turnstile Callbacks -->
+<script>
+    // === LOGIN FORM TURNSTILE ===
+    function onLoginTurnstileSuccess(token) {
+        console.log("Turnstile (Login) success:", token);
+        var btn = document.getElementById("emailLoginButton");
+        if (btn) btn.disabled = false;
+    }
+    function onLoginTurnstileError(errorCode) {
+        console.error("Turnstile (Login) error:", errorCode);
+        var btn = document.getElementById("emailLoginButton");
+        if (btn) btn.disabled = true;
+    }
+    function onLoginTurnstileExpired() {
+        console.warn("Turnstile (Login) token expired");
+        var btn = document.getElementById("emailLoginButton");
+        if (btn) btn.disabled = true;
+    }
+
+    // === REGISTER FORM TURNSTILE ===
+    function onRegisterTurnstileSuccess(token) {
+        console.log("Turnstile (Register) success:", token);
+        var btn = document.getElementById("registerButton");
+        if (btn) btn.disabled = false;
+    }
+    function onRegisterTurnstileError(errorCode) {
+        console.error("Turnflare (Register) error:", errorCode);
+        var btn = document.getElementById("registerButton");
+        if (btn) btn.disabled = true;
+    }
+    function onRegisterTurnstileExpired() {
+        console.warn("Turnstile (Register) token expired");
+        var btn = document.getElementById("registerButton");
+        if (btn) btn.disabled = true;
+    }
+</script>
 
 </body>
 </html>
