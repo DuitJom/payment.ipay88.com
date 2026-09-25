@@ -1,17 +1,4 @@
 // Firebase Config - Format CDN (dimuat terus oleh browser, tiada bundler diperlukan)
-// auth/app-auth.js
-import {
-  auth,
-  authPersistenceReady,
-  googleProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signOut,
-  onAuthStateChanged
-} from "../firebase-config.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
