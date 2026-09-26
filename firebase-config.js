@@ -1,17 +1,15 @@
-// Firebase Config - Format CDN (dimuat terus oleh browser, tiada bundler diperlukan)
-// auth/app-auth.js
-import {
-  auth,
-  authPersistenceReady,
-  googleProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signOut,
-  onAuthStateChanged
-} from "../firebase-config.js";
+// firebase-config.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, setPersistence, browserLocalPersistence,
+         GoogleAuthProvider, GithubAuthProvider, signInWithPopup,
+         signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         sendEmailVerification, sendPasswordResetEmail, signOut,
+         onAuthStateChanged, sendSignInLinkToEmail, isSignInWithEmailLink,
+         signInWithEmailLink, RecaptchaVerifier, signInWithPhoneNumber,
+         multiFactor, TotpMultiFactorGenerator, reload, updateProfile
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCKb-QOYSTP0scv0UXmraluMe3xFtfIH_0",
@@ -30,14 +28,13 @@ const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch
 });
 const db = getFirestore(app);
 
-// Inisialisasi Messaging secara selamat menggunakan isSupported()
 let messaging = null;
 isSupported().then((supported) => {
   if (supported) {
     messaging = getMessaging(app);
     window.duitjomMessaging = messaging;
   } else {
-    console.log("FCM tidak disokong pada pelayar ini (cth: mod Incognito atau Safari lama).");
+    console.log("FCM tidak disokong pada pelayar ini.");
   }
 }).catch((err) => console.error("Ralat menyemak sokongan FCM:", err));
 
@@ -48,24 +45,17 @@ const githubProvider = new GithubAuthProvider();
 
 async function getNotificationToken() {
   try {
-    if (!messaging) {
-      console.log("FCM tidak sedia atau tidak disokong pada pelayar ini.");
-      return null;
-    }
+    if (!messaging) return null;
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
       if (currentToken) {
-        console.log("FCM Token Pengguna:", currentToken);
+        console.log("FCM Token:", currentToken);
         return currentToken;
-      } else {
-        console.log("Tiada token didapati. Sila pastikan Service Worker didaftarkan.");
       }
-    } else {
-      console.log("Kebenaran notifikasi ditolak oleh pengguna.");
     }
   } catch (err) {
-    console.error("Ralat mendapatkan token notifikasi:", err);
+    console.error("Ralat mendapatkan token:", err);
   }
   return null;
 }
@@ -73,50 +63,20 @@ async function getNotificationToken() {
 window.duitjomFirebaseAuth = auth;
 window.duitjomFirebaseDb = db;
 window.getNotificationToken = getNotificationToken;
-
 window.firebaseAuth = {
-  GoogleAuthProvider,
-  googleProvider,
-  githubProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  reload,
-  updateProfile,
-  signOut,
-  onAuthStateChanged,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  multiFactor,
-  TotpMultiFactorGenerator
+  GoogleAuthProvider, googleProvider, githubProvider, signInWithPopup,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  sendPasswordResetEmail, sendEmailVerification, reload, updateProfile,
+  signOut, onAuthStateChanged, sendSignInLinkToEmail, isSignInWithEmailLink,
+  signInWithEmailLink, RecaptchaVerifier, signInWithPhoneNumber,
+  multiFactor, TotpMultiFactorGenerator
 };
 
 export {
-  app,
-  auth,
-  authPersistenceReady,
-  db,
-  messaging,
-  VAPID_KEY,
-  getNotificationToken,
-  firebaseConfig,
-  githubProvider,
-  googleProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  reload,
-  updateProfile,
-  signOut,
-  onAuthStateChanged,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
+  app, auth, authPersistenceReady, db, messaging, VAPID_KEY,
+  getNotificationToken, firebaseConfig, githubProvider, googleProvider,
+  signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  sendPasswordResetEmail, sendEmailVerification, reload, updateProfile,
+  signOut, onAuthStateChanged, sendSignInLinkToEmail, isSignInWithEmailLink,
   signInWithEmailLink
 };
