@@ -15,28 +15,29 @@ import {
 } from "../firebase-config.js";
 
 // ===== 2. RUJUKAN ELEMEN HTML (sesuaikan id dengan index.html) =====
-const googleLoginButton   = document.getElementById("googleLoginBtn");
+const googleLoginButton   = document.getElementById("googleLoginButton");
+const emailToggleButton   = document.getElementById("emailToggleButton");
 const emailLoginForm      = document.getElementById("emailLoginForm");
-const emailInput          = document.getElementById("loginEmail");
-const passwordInput       = document.getElementById("loginPassword");
-const forgotPasswordLink  = document.getElementById("forgotPasswordLink");
-const showRegisterLink    = document.getElementById("showRegisterLink");
+const emailInput          = document.getElementById("emailInput");
+const passwordInput       = document.getElementById("passwordInput");
+const forgotPasswordLink  = document.getElementById("forgotPasswordButton");
+const showRegisterLink    = document.getElementById("registerToggleButton");
 const emailRegisterForm   = document.getElementById("emailRegisterForm");
-const registerEmail       = document.getElementById("registerEmail");
-const registerPassword    = document.getElementById("registerPassword");
-const registerConfirm     = document.getElementById("registerConfirmPassword");
-const backToLoginButton   = document.getElementById("backToLoginBtn");
-const logoutButton        = document.getElementById("logoutBtn");
-const loginPanel          = document.getElementById("loginPanel");
-const userPanel           = document.getElementById("userPanel");
-const userInfo            = document.getElementById("userInfo");
+const registerEmail       = document.getElementById("registerEmailInput");
+const registerPassword    = document.getElementById("registerPasswordInput");
+const registerConfirm     = document.getElementById("registerConfirmInput");
+const backToLoginButton   = document.getElementById("backToLoginButton");
+const logoutButton        = document.getElementById("logoutButton");
+const loginPanel          = document.getElementById("authLoginPanel");
+const userPanel           = document.getElementById("authUserPanel");
+const userInfo            = document.getElementById("userDisplay");
 const messageBox          = document.getElementById("authMessage");
 
 // ===== 3. FUNGSI PEMBANTU =====
 function showMessage(text, type = "info") {
   if (!messageBox) return;
   messageBox.textContent = text;
-  messageBox.className = `auth-message ${type}`;
+  messageBox.className = `login-message auth-message ${type}`;
   messageBox.hidden = false;
 }
 
@@ -67,19 +68,33 @@ function friendlyError(error) {
   return map[error?.code] || `Ralat: ${error?.message || error}`;
 }
 
-function showLoginForm() {
-  emailRegisterForm && (emailRegisterForm.hidden = true);
-  emailLoginForm && (emailLoginForm.hidden = false);
+function setPanelVisible(panel, visible) {
+  if (!panel) return;
+  panel.hidden = !visible;
+  panel.classList.toggle("hidden", !visible);
+}
+
+function showLoginForm(focus = false) {
+  setPanelVisible(emailRegisterForm, false);
+  setPanelVisible(emailLoginForm, true);
+  showRegisterLink?.setAttribute("aria-expanded", "false");
+  emailToggleButton?.setAttribute("aria-expanded", "true");
   clearMessage();
+  if (focus) emailInput?.focus({ preventScroll: true });
 }
 
 function showRegisterForm() {
-  emailLoginForm && (emailLoginForm.hidden = true);
-  emailRegisterForm && (emailRegisterForm.hidden = false);
+  setPanelVisible(emailLoginForm, false);
+  setPanelVisible(emailRegisterForm, true);
+  showRegisterLink?.setAttribute("aria-expanded", "true");
+  emailToggleButton?.setAttribute("aria-expanded", "false");
   clearMessage();
+  registerEmail?.focus({ preventScroll: true });
 }
 
 // ===== 4. EVENT LISTENERS =====
+showLoginForm();
+emailToggleButton?.addEventListener("click", () => showLoginForm(true));
 
 // --- (a) Google Sign-In  ← KOD PERTAMA ANDA DI SINI ---
 googleLoginButton?.addEventListener("click", async () => {
@@ -136,7 +151,7 @@ showRegisterLink?.addEventListener("click", (event) => {
 
 backToLoginButton?.addEventListener("click", (event) => {
   event.preventDefault();
-  showLoginForm();
+  showLoginForm(true);
 });
 
 // --- (e) Daftar akaun ---
@@ -158,9 +173,9 @@ emailRegisterForm?.addEventListener("submit", async (event) => {
     await authPersistenceReady;
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await sendEmailVerification(cred.user);
-    showMessage("Akaun berjaya didaftar. E-mel pengesahan telah dihantar.", "success");
     emailRegisterForm.reset();
     showLoginForm();
+    showMessage("Akaun berjaya didaftar. E-mel pengesahan telah dihantar.", "success");
   } catch (error) {
     showMessage(friendlyError(error), "error");
   } finally {
@@ -180,14 +195,15 @@ logoutButton?.addEventListener("click", async () => {
 // ===== 5. PANTAU STATUS LOGIN (paling bawah) =====
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    loginPanel && (loginPanel.hidden = true);
-    userPanel && (userPanel.hidden = false);
+    setPanelVisible(loginPanel, false);
+    setPanelVisible(userPanel, true);
     if (userInfo) {
       userInfo.textContent = `${user.displayName || user.email}${user.emailVerified ? "" : " (e-mel belum disahkan)"}`;
     }
   } else {
-    userPanel && (userPanel.hidden = true);
-    loginPanel && (loginPanel.hidden = false);
-    showLoginForm();
+    setPanelVisible(userPanel, false);
+    setPanelVisible(loginPanel, true);
+    // Preserve a Register form opened while the first auth check was loading.
+    if (emailRegisterForm?.hidden !== false) showLoginForm();
   }
 });
