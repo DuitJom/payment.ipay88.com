@@ -34,13 +34,13 @@
     <!-- External CSS files -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
-    <link rel="stylesheet" href="auth/login.css">
+    <link rel="stylesheet" href="auth/login.css?v=20260926-register-fix">
 
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <!-- Centralized i18n (English default, Chinese) -->
-    <script src="i18n/translations.js"></script>
+    <script src="i18n/translations.js?v=20260926-register-fix"></script>
     <script src="i18n/i18n.js"></script>
 
     <!-- Page transition / loading overlay -->
@@ -88,82 +88,36 @@
     <!-- =========================================================
          DUITJOM MAINTENANCE / IMPORTANT NOTICE
          ========================================================= -->
-    <div
-        id="maintenanceNotificationPopup"
-        class="maintenance-notification-overlay"
-        aria-hidden="true"
-    >
-        <section
-            class="maintenance-popup"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="maintenancePopupTitle"
-            aria-describedby="maintenancePopupMessage"
-            tabindex="-1"
-        >
-            <button
-                id="maintenancePopupCloseX"
-                class="maintenance-popup-close"
-                type="button"
-                aria-label="Tutup notis"
-            >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 6l12 12M18 6L6 18"></path>
-                </svg>
-            </button>
-
-            <div class="maintenance-popup-brand">
-                <img
-                    class="maintenance-popup-logo"
-                    src="IMG_7572.png"
-                    alt="DuitJom"
-                >
-            </div>
-
-            <div class="maintenance-popup-mascot" aria-hidden="true">
-                <svg viewBox="0 0 96 96" role="presentation">
-                    <circle cx="48" cy="48" r="42" class="maintenance-mascot-orbit"></circle>
-                    <path
-                        class="maintenance-mascot-shield"
-                        d="M48 20 70 28v17c0 15-9.7 25.8-22 31-12.3-5.2-22-16-22-31V28l22-8Z"
-                    ></path>
-                    <path
-                        class="maintenance-mascot-headset"
-                        d="M35 48a13 13 0 0 1 26 0v9M35 49h-4a4 4 0 0 0-4 4v5a4 4 0 0 0 4 4h4V49Zm26 0h4a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4h-4V49Zm0 14c-2 5-6 8-13 8"
-                    ></path>
-                    <circle cx="43" cy="47" r="2" class="maintenance-mascot-dot"></circle>
-                    <circle cx="53" cy="47" r="2" class="maintenance-mascot-dot"></circle>
-                </svg>
-            </div>
-
-            <p class="maintenance-popup-kicker">DUITJOM PAYMENT HUB</p>
-            <h2 id="maintenancePopupTitle" class="maintenance-popup-title">NOTIS PENTING</h2>
-
-            <div id="maintenancePopupMessage" class="maintenance-popup-message">
-                <p>Mohon maaf, halaman website “DUiTjOM” sedang diselenggara sistem sementara waktu.</p>
-                <p>Segala urusan atau perkhidmatan akan berhenti sementara.</p>
-                <p>Untuk Pertanyaan atau Pembayaran, Sila Hubungi Pasukan Sokongan - DUiTjOM melalui Email di bawah.</p>
-            </div>
-
-            <div class="maintenance-popup-email">
-                <span class="maintenance-popup-email-label">Email</span>
-                <a href="mailto:support@duitjom.my">support@duitjom.my</a>
-            </div>
-
-            <div class="maintenance-popup-actions">
-                <button id="maintenancePopupClose" type="button" class="maintenance-popup-button maintenance-popup-button-secondary">
-                    Tutup
-                </button>
-                <a
-                    id="maintenancePopupSupport"
-                    class="maintenance-popup-button maintenance-popup-button-primary"
+    <div id="maintenanceNotificationPopup" class="maintenance-notification-overlay" aria-hidden="true">
+        <section class="maintenance-popup" role="dialog" aria-modal="true"
+            aria-labelledby="maintenancePopupTitle" aria-describedby="maintenancePopupMessage"
+            tabindex="-1" lang="ms">
+            <h2 id="maintenancePopupTitle" class="maintenance-sr-only">Notis: Website DuitJom sedang dibaiki</h2>
+            <p id="maintenancePopupMessage" class="maintenance-sr-only">
+                Laman web DuitJom sedang dalam proses pembaikan bagi memberikan pengalaman yang lebih baik kepada anda.
+                Terima kasih atas kesabaran dan sokongan anda. Sebarang perkembangan dan maklumat terkini akan dimaklumkan
+                kepada semua pelanggan dari semasa ke semasa. Hubungi Pasukan Sokongan DuitJom melalui e-mel
+                support@duitjom.my untuk pertanyaan dan bayaran. Layari www.duitjom.com untuk memohon pinjaman.
+            </p>
+            <div class="maintenance-poster">
+                <img class="maintenance-poster-image" src="images/duitjom-welcome-notice.jpg"
+                    width="1024" height="1536" alt="Notis pembaikan laman web DuitJom." fetchpriority="high">
+                <!-- Transparent controls aligned with the buttons printed in the image. -->
+                <button id="maintenancePopupCloseX" class="maintenance-hotspot maintenance-hotspot-close"
+                    type="button" aria-label="Tutup notis" title="Tutup notis"></button>
+                <a class="maintenance-hotspot maintenance-hotspot-email"
                     href="mailto:support@duitjom.my?subject=Pertanyaan%20%2F%20Pembayaran%20DuitJom"
-                >
-                    Hubungi Sekarang
-                </a>
+                    aria-label="E-mel support@duitjom.my" title="E-mel support@duitjom.my"></a>
+                <a class="maintenance-hotspot maintenance-hotspot-website"
+                    href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
+                    aria-label="Layari www.duitjom.com (tab baharu)" title="Layari www.duitjom.com"></a>
+                <a id="maintenancePopupSupport" class="maintenance-hotspot maintenance-hotspot-contact"
+                    href="mailto:support@duitjom.my?subject=Pertanyaan%20%2F%20Pembayaran%20DuitJom"
+                    aria-label="Hubungi Kami melalui e-mel support@duitjom.my" title="Hubungi Kami"></a>
             </div>
         </section>
     </div>
+
 
     <div id="sidebar-container"></div>
     <section id="firebaseAuthContainer" class="login-shell w-full max-w-md mx-auto px-4 pt-2" aria-labelledby="authTitle">
@@ -185,7 +139,7 @@
 
             <div class="login-divider" data-i18n="auth.or">or</div>
 
-            <button id="emailToggleButton" type="button" class="login-provider-button email-toggle-button">
+            <button id="emailToggleButton" type="button" class="login-provider-button email-toggle-button" aria-controls="emailLoginForm" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-[18px] h-[18px]" aria-hidden="true">
                     <rect x="3" y="5" width="18" height="14" rx="2"/>
                     <path stroke-linecap="round" d="M3 7l9 6 9-6"/>
@@ -193,7 +147,7 @@
                 <span data-i18n="auth.emailContinue">Sign in with Email</span>
             </button>
 
-            <form id="emailLoginForm" class="login-panel hidden">
+            <form id="emailLoginForm" class="login-panel hidden" hidden>
                 <label for="emailInput" data-i18n="auth.email">Email</label>
                 <input id="emailInput" type="email" autocomplete="email" data-i18n-placeholder="auth.emailPlaceholder" placeholder="name@example.com" required>
 
@@ -218,12 +172,12 @@
           <!-- Pautan Register & Forgot Password -->
           <div class="login-links mt-4 flex items-center justify-between text-xs">
             <button id="forgotPasswordButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.forgotPassword">Forgot Password?</button>
-            <button id="registerToggleButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.registerLink">Register Account</button>
+            <button id="registerToggleButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.registerLink" aria-controls="emailRegisterForm" aria-expanded="false">Register</button>
           </div>
         </form>
 
         <!-- Borang Pendaftaran (tersembunyi secara lalai) -->
-        <form id="emailRegisterForm" class="login-panel hidden">
+        <form id="emailRegisterForm" class="login-panel hidden" hidden>
           <label for="registerEmailInput" data-i18n="auth.email">Email</label>
           <input id="registerEmailInput" type="email" autocomplete="email" placeholder="name@example.com" required>
 
@@ -774,7 +728,7 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script type="module" src="auth/app-auth.js?v=20260919"></script>
+    <script type="module" src="auth/app-auth.js?v=20260926-register-fix"></script>
 
     
     <!-- Firebase Authentication UI -->
