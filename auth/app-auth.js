@@ -194,6 +194,15 @@ logoutButton?.addEventListener("click", async () => {
   }
 });
 
+window.logoutUser = async function () {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Logout failed:", error);
+    showMessage(friendlyError(error), "error");
+  }
+};
+
 // ===== 5. PANTAU STATUS LOGIN (paling bawah) =====
 onAuthStateChanged(auth, (user) => {
   if (user) {
