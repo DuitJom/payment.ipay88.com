@@ -429,6 +429,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
     // ---------- Logik untuk tab login (jika ada dalam auth-login.html anda) ----------
     // Jika anda mempunyai tab login seperti 'Email', 'Phone', 'TOTP',
     // pastikan logik ini juga ada dalam script.js anda.
@@ -458,6 +459,7 @@ document.addEventListener('keydown', (event) => {
     if (loginMethods.length > 0) {
         loginMethods[0].click(); // Simulasikan klik pada tab pertama
     }
+});
 
 
 /* =========================================================
