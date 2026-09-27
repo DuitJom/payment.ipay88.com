@@ -32,6 +32,8 @@ const loginPanel          = document.getElementById("authLoginPanel");
 const userPanel           = document.getElementById("authUserPanel");
 const userInfo            = document.getElementById("userDisplay");
 const messageBox          = document.getElementById("authMessage");
+const paymentActionPanel  = document.getElementById("btnPembayaranPinjaman");
+const authUserLabel       = document.getElementById("authUserLabel");
 
 // ===== 3. FUNGSI PEMBANTU =====
 function showMessage(text, type = "info") {
@@ -195,15 +197,51 @@ logoutButton?.addEventListener("click", async () => {
 // ===== 5. PANTAU STATUS LOGIN (paling bawah) =====
 onAuthStateChanged(auth, (user) => {
   if (user) {
+
+    // Sembunyikan login form
     setPanelVisible(loginPanel, false);
+
+    // Paparkan panel akaun
     setPanelVisible(userPanel, true);
+
     if (userInfo) {
-      userInfo.textContent = `${user.displayName || user.email}${user.emailVerified ? "" : " (e-mel belum disahkan)"}`;
+      userInfo.textContent =
+        `${user.displayName || user.email}${
+          user.emailVerified
+            ? ""
+            : " (e-mel belum disahkan)"
+        }`;
     }
+
+    // Paparkan butang TERUSKAN selepas login
+    if (paymentActionPanel) {
+      paymentActionPanel.classList.remove("hidden");
+    }
+
+    // Paparkan nama/email pengguna pada panel Teruskan
+    if (authUserLabel) {
+      authUserLabel.textContent =
+        user.displayName || user.email || "";
+    }
+
   } else {
+
+    // User logout
     setPanelVisible(userPanel, false);
     setPanelVisible(loginPanel, true);
-    // Preserve a Register form opened while the first auth check was loading.
-    if (emailRegisterForm?.hidden !== false) showLoginForm();
+
+    // Sembunyikan butang Teruskan semula
+    if (paymentActionPanel) {
+      paymentActionPanel.classList.add("hidden");
+    }
+
+    if (authUserLabel) {
+      authUserLabel.textContent = "";
+    }
+
+    // Preserve register form jika sedang dibuka
+    if (emailRegisterForm?.hidden !== false) {
+      showLoginForm();
+    }
   }
 });
