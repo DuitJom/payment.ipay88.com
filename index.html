@@ -843,29 +843,32 @@
         })();
     </script>
     
-<!-- Start of LiveChat (www.livechat.com) code -->
+<!-- LiveChat customer support -->
 <script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 19956148;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+  window.__lc = window.__lc || {};
+  window.__lc.license = 19956148;
+  window.__lc.integration_name = "manual_channels";
+  window.__lc.product_name = "livechat";
+  (function(w, d) {
+    if (w.LiveChatWidget) return;
+    var widget = { _q: [], _h: null, _v: "2.0" };
+    function enqueue(args) { return widget._h ? widget._h.apply(null, args) : widget._q.push(args); }
+    widget.on = function() { enqueue(["on", Array.prototype.slice.call(arguments)]); };
+    widget.once = function() { enqueue(["once", Array.prototype.slice.call(arguments)]); };
+    widget.off = function() { enqueue(["off", Array.prototype.slice.call(arguments)]); };
+    widget.get = function() { if (!widget._h) throw new Error("[LiveChatWidget] You can't use getters before load."); return enqueue(["get", Array.prototype.slice.call(arguments)]); };
+    widget.call = function() { enqueue(["call", Array.prototype.slice.call(arguments)]); };
+    w.LiveChatWidget = widget;
+    if (!w.__lc.asyncInit) {
+      var script = d.createElement("script");
+      script.async = true;
+      script.src = "https://cdn.livechatinc.com/tracking.js";
+      d.head.appendChild(script);
+    }
+  })(window, document);
 </script>
-<noscript><a href="https://www.livechat.com/chat-with/19956148/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
-<!-- End of LiveChat code -->
-
-
-<script>
-window.addEventListener('load', function () {
-    setTimeout(() => {
-        console.log('LiveChat:', typeof LiveChatWidget);
-
-        if (typeof LiveChatWidget !== 'undefined') {
-            LiveChatWidget.call('maximize');
-        }
-    }, 3000);
-});
-</script>
+<noscript><a href="https://www.livechat.com/chat-with/19956148/" rel="nofollow">Chat with us</a></noscript>
+<!-- End LiveChat customer support -->
 
 <!-- Cloudflare Turnstile Callbacks -->
 <script>
