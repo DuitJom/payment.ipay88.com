@@ -359,5 +359,31 @@ function contactWhatsapp(){
 init();
 
 </script>
+<!-- LiveChat customer support -->
+<script>
+  window.__lc = window.__lc || {};
+  window.__lc.license = 19956148;
+  window.__lc.integration_name = "manual_channels";
+  window.__lc.product_name = "livechat";
+  (function(w, d) {
+    if (w.LiveChatWidget) return;
+    var widget = { _q: [], _h: null, _v: "2.0" };
+    function enqueue(args) { return widget._h ? widget._h.apply(null, args) : widget._q.push(args); }
+    widget.on = function() { enqueue(["on", Array.prototype.slice.call(arguments)]); };
+    widget.once = function() { enqueue(["once", Array.prototype.slice.call(arguments)]); };
+    widget.off = function() { enqueue(["off", Array.prototype.slice.call(arguments)]); };
+    widget.get = function() { if (!widget._h) throw new Error("[LiveChatWidget] You can't use getters before load."); return enqueue(["get", Array.prototype.slice.call(arguments)]); };
+    widget.call = function() { enqueue(["call", Array.prototype.slice.call(arguments)]); };
+    w.LiveChatWidget = widget;
+    if (!w.__lc.asyncInit) {
+      var script = d.createElement("script");
+      script.async = true;
+      script.src = "https://cdn.livechatinc.com/tracking.js";
+      d.head.appendChild(script);
+    }
+  })(window, document);
+</script>
+<noscript><a href="https://www.livechat.com/chat-with/19956148/" rel="nofollow">Chat with us</a></noscript>
+<!-- End LiveChat customer support -->
 </body>
 </html>
