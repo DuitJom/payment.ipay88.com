@@ -616,3 +616,24 @@ body.login-page {
 @media (prefers-reduced-motion: reduce) {
   .login-live-orb, .sidebar-menu { animation: none; transition-duration: .01ms; }
 }
+
+.login-secondary-button {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #0070f3;
+    color: #0070f3;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.login-secondary-button:hover:not(:disabled) {
+    background: #f0f6ff;
+}
+.login-secondary-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
