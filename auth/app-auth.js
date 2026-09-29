@@ -6,27 +6,15 @@ import {
   authPersistenceReady,
   googleProvider,
   signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged
 } from "../firebase-config.js";
 
-// ===== 2. RUJUKAN ELEMEN HTML (sesuaikan id dengan index.html) =====
+// ===== 2. RUJUKAN ELEMEN HTML =====
 const googleLoginButton   = document.getElementById("googleLoginButton");
 const emailToggleButton   = document.getElementById("emailToggleButton");
 const emailLoginForm      = document.getElementById("emailLoginForm");
 const emailInput          = document.getElementById("emailInput");
-const passwordInput       = document.getElementById("passwordInput");
-const forgotPasswordLink  = document.getElementById("forgotPasswordButton");
-const showRegisterLink    = document.getElementById("registerToggleButton");
-const emailRegisterForm   = document.getElementById("emailRegisterForm");
-const registerEmail       = document.getElementById("registerEmailInput");
-const registerPassword    = document.getElementById("registerPasswordInput");
-const registerConfirm     = document.getElementById("registerConfirmInput");
-const backToLoginButton   = document.getElementById("backToLoginButton");
 const logoutButton        = document.getElementById("logoutButton");
 const loginPanel          = document.getElementById("authLoginPanel");
 const userPanel           = document.getElementById("authUserPanel");
@@ -57,12 +45,6 @@ function setBusy(element, busy) {
 
 function friendlyError(error) {
   const map = {
-    "auth/invalid-email": "Format e-mel tidak sah.",
-    "auth/user-not-found": "Akaun tidak dijumpai.",
-    "auth/wrong-password": "Kata laluan salah.",
-    "auth/invalid-credential": "E-mel atau kata laluan salah.",
-    "auth/email-already-in-use": "E-mel ini sudah didaftarkan.",
-    "auth/weak-password": "Kata laluan terlalu lemah (minimum 6 aksara).",
     "auth/popup-closed-by-user": "Tetingkap log masuk ditutup sebelum selesai.",
     "auth/unauthorized-domain": "Domain ini belum dibenarkan dalam Firebase Console.",
     "auth/too-many-requests": "Terlalu banyak percubaan. Cuba lagi sebentar nanti."
@@ -76,29 +58,26 @@ function setPanelVisible(panel, visible) {
   panel.classList.toggle("hidden", !visible);
 }
 
-function showLoginForm(focus = false) {
-  setPanelVisible(emailRegisterForm, false);
-  setPanelVisible(emailLoginForm, true);
-  showRegisterLink?.setAttribute("aria-expanded", "false");
-  emailToggleButton?.setAttribute("aria-expanded", "true");
-  clearMessage();
-  if (focus) emailInput?.focus({ preventScroll: true });
+// ===== 4. SESSION HELPER =====
+function setSession(email) {
+  localStorage.setItem("duitjom_session", JSON.stringify({
+    email: email,
+    provider: "otp",
+    loginAt: Date.now()
+  }));
 }
 
-function showRegisterForm() {
-  setPanelVisible(emailLoginForm, false);
-  setPanelVisible(emailRegisterForm, true);
-  showRegisterLink?.setAttribute("aria-expanded", "true");
-  emailToggleButton?.setAttribute("aria-expanded", "false");
-  clearMessage();
-  registerEmail?.focus({ preventScroll: true });
+function getSession() {
+  try {
+    return JSON.parse(localStorage.getItem("duitjom_session"));
+  } catch { return null; }
 }
 
-// ===== 4. EVENT LISTENERS =====
-showLoginForm();
-emailToggleButton?.addEventListener("click", () => showLoginForm(true));
+function clearSession() {
+  localStorage.removeItem("duitjom_session");
+}
 
-// --- (a) Google Sign-In  ← KOD PERTAMA ANDA DI SINI ---
+// ===== 5. GOOGLE SIGN-IN (kekal Firebase) =====
 googleLoginButton?.addEventListener("click", async () => {
   clearMessage();
   setBusy(googleLoginButton, true);
@@ -112,145 +91,90 @@ googleLoginButton?.addEventListener("click", async () => {
   }
 });
 
-// --- (b) Log masuk e-mel  ← KOD KEDUA ANDA DI SINI (dalam try) ---
+// ===== 6. EMAIL OTP LOGIN (ganti password) =====
 emailLoginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearMessage();
+
+  const email = emailInput.value.trim();
+  if (!email) {
+    showMessage("Sila masukkan alamat e-mel.", "error");
+    return;
+  }
+
+  if (!loginTurnstileToken) {
+    showMessage("Sila lengkapkan pengesahan keselamatan.", "error");
+    return;
+  }
+
   const submitBtn = emailLoginForm.querySelector("button[type=submit]");
   setBusy(submitBtn, true);
+
   try {
-    await authPersistenceReady;
-    await signInWithEmailAndPassword(auth, emailInput.value.trim(), passwordInput.value);
-  } catch (error) {
-    showMessage(friendlyError(error), "error");
+    // Hantar OTP via Worker
+    const data = await sendOTP(email, loginTurnstileToken);
+
+    if (data.success) {
+      // Papar overlay OTP
+      showOTPOverlay(email);
+
+      // Callback selepas OTP disahkan
+      window.onOTPVerified = function() {
+        setSession(email);
+        window.location.href = "/dashboard.html"; // ⚠️ TUKAR ke halaman anda
+      };
+    } else {
+      showMessage(data.message || "Gagal menghantar OTP.", "error");
+    }
+  } catch (err) {
+    showMessage("Ralat sambungan. Sila cuba lagi.", "error");
   } finally {
     setBusy(submitBtn, false);
   }
 });
 
-// --- (c) Lupa kata laluan ---
-forgotPasswordLink?.addEventListener("click", async (event) => {
-  event.preventDefault();
-  clearMessage();
-  const email = emailInput?.value.trim();
-  if (!email) {
-    showMessage("Masukkan e-mel anda dahulu, kemudian klik Forgot Password.", "error");
-    return;
-  }
-  try {
-    await sendPasswordResetEmail(auth, email);
-    showMessage("E-mel set semula kata laluan telah dihantar. Semak peti masuk/spam.", "success");
-  } catch (error) {
-    showMessage(friendlyError(error), "error");
-  }
-});
-
-// --- (d) Tukar ke borang daftar / kembali ---
-showRegisterLink?.addEventListener("click", (event) => {
-  event.preventDefault();
-  showRegisterForm();
-});
-
-backToLoginButton?.addEventListener("click", (event) => {
-  event.preventDefault();
-  showLoginForm(true);
-});
-
-// --- (e) Daftar akaun ---
-emailRegisterForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  clearMessage();
-  const email = registerEmail.value.trim();
-  const pass = registerPassword.value;
-  const confirm = registerConfirm.value;
-
-  if (pass !== confirm) {
-    showMessage("Kata laluan dan pengesahan tidak sepadan.", "error");
-    return;
-  }
-
-  const submitBtn = emailRegisterForm.querySelector("button[type=submit]");
-  setBusy(submitBtn, true);
-  try {
-    await authPersistenceReady;
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    await sendEmailVerification(cred.user);
-    emailRegisterForm.reset();
-    showLoginForm();
-    showMessage("Akaun berjaya didaftar. E-mel pengesahan telah dihantar.", "success");
-  } catch (error) {
-    showMessage(friendlyError(error), "error");
-  } finally {
-    setBusy(submitBtn, false);
-  }
-});
-
-// --- (f) Log keluar ---
+// ===== 7. LOG KELUAR =====
 logoutButton?.addEventListener("click", async () => {
+  clearSession();
   try {
     await signOut(auth);
   } catch (error) {
-    showMessage(friendlyError(error), "error");
+    console.error("Logout error:", error);
   }
 });
 
 window.logoutUser = async function () {
+  clearSession();
   try {
     await signOut(auth);
   } catch (error) {
     console.error("Logout failed:", error);
-    showMessage(friendlyError(error), "error");
   }
 };
 
-// ===== 5. PANTAU STATUS LOGIN (paling bawah) =====
+// ===== 8. PANTAU STATUS LOGIN =====
 onAuthStateChanged(auth, (user) => {
-  if (user) {
+  // Semak Firebase (Google) atau OTP session
+  const otpSession = getSession();
 
-    // Sembunyikan login form
+  if (user || otpSession) {
+    // User logged in
     setPanelVisible(loginPanel, false);
-
-    // Paparkan panel akaun
     setPanelVisible(userPanel, true);
 
-    if (userInfo) {
-      userInfo.textContent =
-        `${user.displayName || user.email}${
-          user.emailVerified
-            ? ""
-            : " (e-mel belum disahkan)"
-        }`;
-    }
+    const displayName = user
+      ? (user.displayName || user.email)
+      : (otpSession?.email || "Pengguna");
 
-    // Paparkan butang TERUSKAN selepas login
-    if (paymentActionPanel) {
-      paymentActionPanel.classList.remove("hidden");
-    }
-
-    // Paparkan nama/email pengguna pada panel Teruskan
-    if (authUserLabel) {
-      authUserLabel.textContent =
-        user.displayName || user.email || "";
-    }
+    if (userInfo) userInfo.textContent = displayName;
+    if (paymentActionPanel) paymentActionPanel.classList.remove("hidden");
+    if (authUserLabel) authUserLabel.textContent = displayName;
 
   } else {
-
-    // User logout
+    // User logged out
     setPanelVisible(userPanel, false);
     setPanelVisible(loginPanel, true);
-
-    // Sembunyikan butang Teruskan semula
-    if (paymentActionPanel) {
-      paymentActionPanel.classList.add("hidden");
-    }
-
-    if (authUserLabel) {
-      authUserLabel.textContent = "";
-    }
-
-    // Preserve register form jika sedang dibuka
-    if (emailRegisterForm?.hidden !== false) {
-      showLoginForm();
-    }
+    if (paymentActionPanel) paymentActionPanel.classList.add("hidden");
+    if (authUserLabel) authUserLabel.textContent = "";
   }
 });
