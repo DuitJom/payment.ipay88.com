@@ -1,6 +1,6 @@
 // auth/app-auth.js
 
-// ===== 1. IMPORT (paling atas) =====
+// ===== 1. IMPORT =====
 import {
   auth,
   authPersistenceReady,
@@ -15,6 +15,7 @@ const googleLoginButton   = document.getElementById("googleLoginButton");
 const emailToggleButton   = document.getElementById("emailToggleButton");
 const emailLoginForm      = document.getElementById("emailLoginForm");
 const emailInput          = document.getElementById("emailInput");
+const magicLinkButton     = document.getElementById("magicLinkButton");
 const logoutButton        = document.getElementById("logoutButton");
 const loginPanel          = document.getElementById("authLoginPanel");
 const userPanel           = document.getElementById("authUserPanel");
@@ -59,12 +60,14 @@ function setPanelVisible(panel, visible) {
 }
 
 // ===== 4. SESSION HELPER =====
-function setSession(email) {
+function setSession(email, provider = "otp") {
+  const isFirstLogin = !localStorage.getItem("duitjom_session");
   localStorage.setItem("duitjom_session", JSON.stringify({
     email: email,
-    provider: "otp",
+    provider: provider,
     loginAt: Date.now()
   }));
+  return isFirstLogin;
 }
 
 function getSession() {
@@ -77,13 +80,38 @@ function clearSession() {
   localStorage.removeItem("duitjom_session");
 }
 
-// ===== 5. GOOGLE SIGN-IN (kekal Firebase) =====
+// ===== 5. WORKER API =====
+const WORKER_URL = "https://e-kyc.duitjom.my";
+
+async function callWorker(endpoint, body) {
+  const res = await fetch(WORKER_URL + endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+}
+
+// ===== 6. HANTAR WELCOME EMAIL =====
+async function sendWelcomeEmail(email, name) {
+  try {
+    await callWorker("/api/welcome", { email: email, name: name });
+  } catch (err) {
+    console.error("Welcome email failed:", err);
+  }
+}
+
+// ===== 7. GOOGLE SIGN-IN =====
 googleLoginButton?.addEventListener("click", async () => {
   clearMessage();
   setBusy(googleLoginButton, true);
   try {
     await authPersistenceReady;
-    await signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider);
+    const email = result.user.email;
+    const name = result.user.displayName || email.split("@")[0];
+    const isFirst = setSession(email, "google");
+    if (isFirst) await sendWelcomeEmail(email, name);
   } catch (error) {
     showMessage(friendlyError(error), "error");
   } finally {
@@ -91,7 +119,7 @@ googleLoginButton?.addEventListener("click", async () => {
   }
 });
 
-// ===== 6. EMAIL OTP LOGIN (ganti password) =====
+// ===== 8. EMAIL OTP LOGIN =====
 emailLoginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearMessage();
@@ -101,7 +129,6 @@ emailLoginForm?.addEventListener("submit", async (event) => {
     showMessage("Sila masukkan alamat e-mel.", "error");
     return;
   }
-
   if (!loginTurnstileToken) {
     showMessage("Sila lengkapkan pengesahan keselamatan.", "error");
     return;
@@ -111,16 +138,18 @@ emailLoginForm?.addEventListener("submit", async (event) => {
   setBusy(submitBtn, true);
 
   try {
-    // Hantar OTP via Worker
-    const data = await sendOTP(email, loginTurnstileToken);
+    const data = await callWorker("/api/send-otp", {
+      email: email,
+      turnstileToken: loginTurnstileToken
+    });
 
     if (data.success) {
-      // Papar overlay OTP
+      showMessage("Kod OTP telah dihantar ke e-mel anda.", "success");
       showOTPOverlay(email);
 
-      // Callback selepas OTP disahkan
-      window.onOTPVerified = function() {
-        setSession(email);
+      window.onOTPVerified = async function() {
+        const isFirst = setSession(email, "otp");
+        if (isFirst) await sendWelcomeEmail(email, email.split("@")[0]);
         window.location.href = "/dashboard.html"; // ⚠️ TUKAR ke halaman anda
       };
     } else {
@@ -133,32 +162,56 @@ emailLoginForm?.addEventListener("submit", async (event) => {
   }
 });
 
-// ===== 7. LOG KELUAR =====
+// ===== 9. MAGIC LINK LOGIN =====
+magicLinkButton?.addEventListener("click", async () => {
+  clearMessage();
+
+  const email = emailInput.value.trim();
+  if (!email) {
+    showMessage("Sila masukkan alamat e-mel dahulu.", "error");
+    return;
+  }
+  if (!loginTurnstileToken) {
+    showMessage("Sila lengkapkan pengesahan keselamatan.", "error");
+    return;
+  }
+
+  setBusy(magicLinkButton, true);
+
+  try {
+    const data = await callWorker("/api/magic-link", {
+      email: email,
+      turnstileToken: loginTurnstileToken
+    });
+
+    if (data.success) {
+      showMessage("Pautan log masuk telah dihantar ke e-mel anda. Semak peti masuk anda.", "success");
+    } else {
+      showMessage(data.message || "Gagal menghantar pautan.", "error");
+    }
+  } catch (err) {
+    showMessage("Ralat sambungan. Sila cuba lagi.", "error");
+  } finally {
+    setBusy(magicLinkButton, false);
+  }
+});
+
+// ===== 10. LOG KELUAR =====
 logoutButton?.addEventListener("click", async () => {
   clearSession();
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("Logout error:", error);
-  }
+  try { await signOut(auth); } catch (e) { console.error(e); }
 });
 
 window.logoutUser = async function () {
   clearSession();
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
+  try { await signOut(auth); } catch (e) { console.error(e); }
 };
 
-// ===== 8. PANTAU STATUS LOGIN =====
+// ===== 11. PANTAU STATUS LOGIN =====
 onAuthStateChanged(auth, (user) => {
-  // Semak Firebase (Google) atau OTP session
   const otpSession = getSession();
 
   if (user || otpSession) {
-    // User logged in
     setPanelVisible(loginPanel, false);
     setPanelVisible(userPanel, true);
 
@@ -169,9 +222,7 @@ onAuthStateChanged(auth, (user) => {
     if (userInfo) userInfo.textContent = displayName;
     if (paymentActionPanel) paymentActionPanel.classList.remove("hidden");
     if (authUserLabel) authUserLabel.textContent = displayName;
-
   } else {
-    // User logged out
     setPanelVisible(userPanel, false);
     setPanelVisible(loginPanel, true);
     if (paymentActionPanel) paymentActionPanel.classList.add("hidden");
