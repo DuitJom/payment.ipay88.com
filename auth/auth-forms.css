@@ -1,0 +1,25 @@
+/* =========================================================
+   DUITJOM — AUTH FORMS SHARED STYLES  (index.html only)
+   Lives on the main login page. Scoped rules so nothing here
+   leaks into the standalone register / forgot-password pages
+   (they load auth/auth-page.css instead).
+   ========================================================= */
+
+/* Keep the two auth entry links visually separated from the last form
+   control, and never let the Turnstile widget collide with the OTP button. */
+.login-card .cf-turnstile {
+  margin-top: 1rem;
+}
+
+/* The OTP / Magic-Link buttons already carry mt-4 from Tailwind; this keeps
+   the spacing correct when Tailwind's CDN build is unavailable. */
+.login-card .login-secondary-button + .login-primary-button,
+.login-card .cf-turnstile + .login-primary-button {
+  margin-top: 1rem;
+}
+
+/* Long e-mail addresses must never stretch the card past the viewport. */
+.login-card .login-subtitle,
+.login-card .auth-switch-link {
+  overflow-wrap: anywhere;
+}

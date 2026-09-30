@@ -637,3 +637,83 @@ body.login-page {
     cursor: not-allowed;
 }
 
+/* =========================================================
+   ALTERNATE ACCOUNT LINKS
+   "Register Account" and "Forget Password" are real anchors
+   (<a href>), never submit buttons, so they keep native link
+   behaviour: keyboard activation, screen-reader link role,
+   middle-click and "open in new tab".
+   ========================================================= */
+.auth-switch-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem 0.5rem;
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eaf0f7;
+  text-align: center;
+}
+
+.auth-switch-link {
+  /* inline-flex + min-height keeps a 44px touch target on mobile */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 0.5rem;
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(37, 99, 235, 0.12);
+}
+
+.auth-switch-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.auth-switch-link:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  text-decoration: underline;
+}
+
+.auth-switch-link:active {
+  color: #1e40af;
+}
+
+.auth-switch-sep {
+  color: #cbd5e1;
+  font-size: 0.7rem;
+  user-select: none;
+}
+
+/* Stack the two links on very narrow screens so labels never wrap awkwardly. */
+@media (max-width: 360px) {
+  .auth-switch-links {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .auth-switch-sep {
+    display: none;
+  }
+
+  .auth-switch-link {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-switch-link {
+    transition: none;
+  }
+}
+

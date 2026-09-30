@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DuitJom - Log Masuk</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="../auth/login.css">
     <!-- Fail JavaScript utama anda -->
     <script src="app-auth.js" defer></script>
     <script src="auth-ui.js" defer></script>
@@ -92,6 +92,13 @@
             <input type="text" placeholder="Kod TOTP" class="login-input">
             <button type="submit" class="login-button">Sahkan</button>
         </div>
+
+        <!-- Pautan akaun lain (anchor, bukan butang submit) -->
+        <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
+            <a class="auth-switch-link" href="../page/register.html">Daftar Akaun</a>
+            <span class="auth-switch-sep" aria-hidden="true">&bull;</span>
+            <a class="auth-switch-link" href="../page/forgot-password.html">Lupa Kata Laluan?</a>
+        </nav>
     </div>
 
     <script>
