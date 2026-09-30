@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
     <link rel="stylesheet" href="auth/login.css?v=20260926-register-fix">
+    <link rel="stylesheet" href="auth/auth-forms.css">
 
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -206,6 +207,18 @@
             <button id="backToLoginButton" type="button" class="login-link-button text-blue-600 hover:underline" data-i18n="auth.backToLogin">Already have an account? Sign In</button>
           </div>
         </form>
+
+            <!-- =========================================================
+                 ALTERNATE ACCOUNT LINKS
+                 Native anchor links (NOT submit buttons) so that keyboard
+                 navigation, screen readers, middle-click and "open in new
+                 tab" all behave the way users expect.
+                 ========================================================= -->
+            <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
+                <a id="registerAccountLink" class="auth-switch-link" href="page/register.html" data-i18n="auth.registerAccountLink">Register Account</a>
+                <span class="auth-switch-sep" aria-hidden="true">&bull;</span>
+                <a id="forgotPasswordLink" class="auth-switch-link" href="page/forgot-password.html" data-i18n="auth.forgotPasswordLink">Forget Password</a>
+            </nav>
 
         </div>
 
@@ -729,6 +742,7 @@
     <!-- Main Scripts -->
     <script src="script.js"></script>
     <script type="module" src="auth/app-auth.js?v=20260926-register-fix"></script>
+    <script type="module" src="auth/auth-forms.js"></script>
 
     
     <!-- Firebase Authentication UI -->
