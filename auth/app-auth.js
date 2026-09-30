@@ -129,7 +129,7 @@ emailLoginForm?.addEventListener("submit", async (event) => {
     showMessage("Sila masukkan alamat e-mel.", "error");
     return;
   }
-  if (!loginTurnstileToken) {
+  if (!window.loginTurnstileToken) {
     showMessage("Sila lengkapkan pengesahan keselamatan.", "error");
     return;
   }
@@ -140,7 +140,7 @@ emailLoginForm?.addEventListener("submit", async (event) => {
   try {
     const data = await callWorker("/api/send-otp", {
       email: email,
-      turnstileToken: loginTurnstileToken
+      turnstileToken: window.loginTurnstileToken
     });
 
     if (data.success) {
