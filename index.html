@@ -860,13 +860,13 @@
 <!-- Cloudflare Turnstile Callbacks + OTP Logic -->
 <script>
     // === GLOBAL TOKEN STORAGE ===
-    let loginTurnstileToken = null;
+    window.loginTurnstileToken = null;
     let registerTurnstileToken = null;
     let pendingAuthEmail = null;
 
     // === LOGIN FORM TURNSTILE ===
     function onLoginTurnstileSuccess(token) {
-        loginTurnstileToken = token;
+        window.loginTurnstileToken = token;
         var btn = document.getElementById("emailLoginButton");
         if (btn) btn.disabled = false;
     }
