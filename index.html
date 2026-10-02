@@ -30,15 +30,15 @@
     <link rel="stylesheet" href="features.css">
     <link rel="stylesheet" href="auth/login.css?v=20261002-email-otp">
     <link rel="stylesheet" href="auth/auth-forms.css">
-    <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-flow">
+    <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-flow-2">
 
-    <script src="auth/otp-turnstile.js?v=20261003-otp-flow"></script>
+    <script src="auth/otp-turnstile.js?v=20261003-otp-flow-2"></script>
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <!-- Centralized i18n (English default, Chinese) -->
-    <script src="i18n/translations.js?v=20261003-otp-flow"></script>
-    <script src="i18n/i18n.js?v=20261003-otp-flow"></script>
+    <script src="i18n/translations.js?v=20261003-otp-flow-2"></script>
+    <script src="i18n/i18n.js?v=20261003-otp-flow-2"></script>
 
     <!-- Page transition / loading overlay -->
     <script src="js/loading-screen.js"></script>
@@ -181,7 +181,7 @@
                  tab" all behave the way users expect.
                  ========================================================= -->
             <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
-                <a id="registerAccountLink" class="auth-switch-link" href="page/register.html" data-i18n="auth.registerAccountLink">Register Account</a>
+                <a id="registerAccountLink" class="auth-switch-link" href="?auth=email&amp;intent=register" data-i18n="auth.registerAccountLink">Register Account</a>
                 <span class="auth-switch-sep" aria-hidden="true">&bull;</span>
                 <a id="forgotPasswordLink" class="auth-switch-link" href="page/forgot-password.html" data-i18n="auth.forgotPasswordLink">Forget Password</a>
             </nav>
@@ -697,7 +697,7 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script type="module" src="auth/app-auth.js?v=20261003-otp-flow"></script>
+    <script type="module" src="auth/app-auth.js?v=20261003-otp-flow-2"></script>
     <script type="module" src="auth/auth-forms.js"></script>
 
     

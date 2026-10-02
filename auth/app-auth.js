@@ -27,7 +27,7 @@ let pendingEmail = null;
 let otpBusy = false;
 let googleBusy = false;
 let actionVersion = 0;
-let resendUntil = 0;
+const resendCooldowns = new Map();
 let resendTimer = null;
 let lastMessage = null;
 let activeIdentity = readSession();
@@ -133,9 +133,12 @@ continueButton?.addEventListener("click", event => {
   }
 });
 
+function cooldownDeadline() {
+  return resendCooldowns.get(emailInput?.value.trim().toLowerCase()) || 0;
+}
 function updateControls() {
   const busy = otpBusy || googleBusy;
-  const coolingDown = Date.now() < resendUntil;
+  const coolingDown = Date.now() < cooldownDeadline();
   if (requestButton) requestButton.disabled = busy || coolingDown || !window.loginTurnstileToken;
   if (verifyButton) verifyButton.disabled = busy || !pendingEmail;
   if (resendButton) {
@@ -156,15 +159,18 @@ function resetTurnstile() {
   updateControls();
 }
 function tickCountdown() {
-  const seconds = Math.max(0, Math.ceil((resendUntil - Date.now()) / 1000));
+  for (const [email, deadline] of resendCooldowns) {
+    if (deadline <= Date.now()) resendCooldowns.delete(email);
+  }
+  const seconds = Math.max(0, Math.ceil((cooldownDeadline() - Date.now()) / 1000));
   if (resendButton) {
     resendButton.textContent = t(seconds ? "auth.resendOtpCountdown" : "auth.resendOtp", { seconds });
   }
   updateControls();
-  if (!seconds && resendTimer) { clearInterval(resendTimer); resendTimer = null; }
+  if (!resendCooldowns.size && resendTimer) { clearInterval(resendTimer); resendTimer = null; }
 }
-function startCountdown() {
-  resendUntil = Date.now() + 60_000;
+function startCountdown(email) {
+  resendCooldowns.set(email, Date.now() + 60_000);
   if (resendTimer) clearInterval(resendTimer);
   tickCountdown();
   resendTimer = setInterval(tickCountdown, 250);
@@ -175,8 +181,8 @@ emailInput?.addEventListener("input", () => {
     pendingEmail = null;
     clearDigits();
     clearMessage();
-    updateControls();
   }
+  tickCountdown();
 });
 function fillDigits(value, start = 0) {
   const digits = value.replace(/[^0-9]/g, "").slice(0, 6 - start);
@@ -230,7 +236,7 @@ async function callWorker(endpoint, body) {
   } finally { clearTimeout(timeout); }
 }
 async function requestOtp() {
-  if (otpBusy || googleBusy || Date.now() < resendUntil) return;
+  if (otpBusy || googleBusy || Date.now() < cooldownDeadline()) return;
   clearMessage();
   const email = emailInput?.value.trim().toLowerCase();
   if (!EMAIL_PATTERN.test(email || "")) {
@@ -247,7 +253,7 @@ async function requestOtp() {
     if (version !== actionVersion) return;
     pendingEmail = email;
     clearDigits();
-    startCountdown();
+    startCountdown(email);
     showMessage("auth.otpSent", "success");
     otpInputs[0]?.focus();
   } catch (error) {
@@ -332,7 +338,10 @@ const firebaseReady = googleButton ? import("../firebase-config.js")
       .then(result => { if (result?.user) handleFirebaseState(result.user); })
       .catch(showError);
   })
-  .catch(error => { firebaseError = error; }) : Promise.resolve();
+  .catch(error => {
+    firebaseError = error;
+    console.error("Google sign-in initialization failed", error);
+  }) : Promise.resolve();
 googleButton?.addEventListener("click", async () => {
   if (otpBusy || googleBusy) return;
   clearMessage();
@@ -356,15 +365,18 @@ function refreshLocale() {
   tickCountdown();
   renderAccount();
   if (lastMessage) showMessage(lastMessage.key, lastMessage.type, lastMessage.vars, lastMessage.literal);
-  document.querySelectorAll("[data-auth-locale]").forEach(select => { select.value = window.DJ_I18N?.getLocale() || "en"; });
 }
-document.querySelectorAll("[data-auth-locale]").forEach(select => {
-  select.addEventListener("change", () => window.DJ_I18N?.setLocale(select.value));
-});
 document.addEventListener("duitjom:locale-changed", refreshLocale);
 window.addEventListener("pageshow", () => { renderAccount(); tickCountdown(); });
 refreshLocale();
 const params = new URLSearchParams(window.location.search);
+if (params.get("intent") === "register") {
+  const title = byId("authTitle");
+  if (title) {
+    title.setAttribute("data-i18n", "auth.registerTitle");
+    title.textContent = t("auth.registerTitle");
+  }
+}
 if (params.get("auth") === "email") openEmailForm();
 if (params.get("step") === "payment" && typeof window.goToPaymentPage === "function") {
   if (canContinue()) window.goToPaymentPage();

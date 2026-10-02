@@ -7,13 +7,15 @@
 
   var STORAGE_KEY = "duitjom_locale";
   var dict = window.DUITJOM_I18N || { defaultLocale: "en", locales: { en: {} } };
+  var currentLocale = null;
 
   function getLocale() {
+    if (currentLocale && dict.locales[currentLocale]) return currentLocale;
     try {
       var stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored && dict.locales[stored]) return stored;
+      if (stored && dict.locales[stored]) return (currentLocale = stored);
     } catch (e) {}
-    return dict.defaultLocale || "en";
+    return (currentLocale = dict.defaultLocale || "en");
   }
 
   function lookup(locale, key) {
@@ -43,6 +45,7 @@
 
   function setLocale(locale) {
     if (!dict.locales[locale]) return;
+    currentLocale = locale;
     try {
       window.localStorage.setItem(STORAGE_KEY, locale);
     } catch (e) {}

@@ -1,4 +1,4 @@
-/* Shared OTP controls for the main portal and standalone email registration. */
+/* OTP controls for the shared email registration and login entry point. */
 [data-email-auth] [hidden],
 [data-email-auth] .hidden { display: none !important; }
 [data-email-auth] .login-otp-fieldset { min-width: 0; padding: 0; border: 0; margin: .7rem 0 0; }
@@ -13,9 +13,4 @@
 [data-email-auth] #userDisplay { overflow-wrap: anywhere; }
 [data-email-auth] #btnPembayaranPinjaman { margin-top: 1rem; }
 [data-email-auth] #authContinueButton { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 3rem; padding: .8rem 1rem; text-decoration: none; font-size: 1rem; }
-[data-email-auth] .auth-message.error { color: #b91c1c; }
-[data-email-auth] .auth-message.success { color: #047857; }
-.auth-locale { display: flex; align-items: center; gap: .5rem; justify-content: flex-end; margin-bottom: 1rem; font-size: .875rem; color: #475569; }
-.auth-locale select { min-height: 2.4rem; max-width: 12rem; padding: .3rem .5rem; border: 1px solid #cbd5e1; border-radius: .5rem; background: #fff; font: inherit; }
-.auth-form .auth-primary { margin-top: .65rem; }
 .auth-note, .auth-subtitle { font-size: .875rem; }

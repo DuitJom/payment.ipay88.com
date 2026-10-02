@@ -1,6 +1,6 @@
 /* =========================================================
    DUITJOM CENTRALIZED TRANSLATION DICTIONARY
-   Default locale: en. Supported: en, zh.
+   Default locale: en. Supported: en, ms, zh.
    ========================================================= */
 window.DUITJOM_I18N = {
   defaultLocale: "en",
@@ -34,32 +34,6 @@ window.DUITJOM_I18N = {
         dataDeletion: "Data Deletion"
       },
       auth: {
-        link: "Send OTP Code",
-        magicLink: "Send OTP Code",
-        otpHelp: "If the code does not arrive, check Spam or Junk and request a new OTP after 60 seconds.",
-        loginHelpBody: "Sign in using an OTP sent to your email. You do not need a password or password-reset link.",
-        loginHelpTitle: "Sign-in Help",
-        continueButton: "Continue",
-        loggedInSubtitle: "Your email is verified. Continue to fill in your customer details.",
-        welcomeBack: "Welcome back, {name}",
-        logoutError: "Sign-out could not finish. Refresh the page and try again.",
-        googleDomainError: "Google sign-in is not configured for this website. Sign in with email OTP or contact support.",
-        googleUnavailable: "Google sign-in could not load. Refresh the page or sign in with email OTP.",
-        timeoutError: "The request took too long. Please try again.",
-        serviceError: "The verification service is unavailable or returned an invalid response. Try again or contact support.",
-        securityError: "The security check could not finish. Refresh the page and try again.",
-        securityRequired: "Complete the security check first.",
-        requestOtpFirst: "Request an OTP for this email first.",
-        otpIncomplete: "Enter the six-digit OTP.",
-        otpVerified: "Email verified. Select Continue to fill in your customer details.",
-        otpSent: "Your OTP has been sent. Check your inbox or spam folder.",
-        otpSubtitle: "Verify your email using a six-digit OTP. No password is required.",
-        otpDigit: "OTP digit {digit}",
-        resendOtpCountdown: "Resend OTP ({seconds}s)",
-        resendOtp: "Resend OTP",
-        otpLabel: "Verification Code (OTP)",
-        verifyOtp: "Verify OTP & Sign In",
-        requestOtp: "Send OTP Code",
         kickerLogin: "SECURE ACCOUNT ACCESS",
         loginTitle: "Sign In",
         loginSubtitle: "Use Google or a six-digit code sent to your email.",
@@ -332,32 +306,6 @@ window.DUITJOM_I18N = {
         dataDeletion: "数据删除"
       },
       auth: {
-        link: "发送验证码",
-        magicLink: "发送验证码",
-        otpHelp: "如果未收到验证码，请检查垃圾邮件文件夹，并在60秒后申请新验证码。",
-        loginHelpBody: "使用发送到邮箱的验证码登录，无需密码或重置密码链接。",
-        loginHelpTitle: "登录帮助",
-        continueButton: "继续",
-        loggedInSubtitle: "邮箱已验证，继续填写客户资料。",
-        welcomeBack: "欢迎回来，{name}",
-        logoutError: "退出登录未完成，请刷新页面后重试。",
-        googleDomainError: "此网站尚未配置 Google 登录，请使用邮箱验证码或联系客服。",
-        googleUnavailable: "Google 登录无法加载，请刷新页面或使用邮箱验证码登录。",
-        timeoutError: "请求超时，请重试。",
-        serviceError: "验证服务暂时不可用或响应无效，请重试或联系客服。",
-        securityError: "安全验证未完成，请刷新页面后重试。",
-        securityRequired: "请先完成安全验证。",
-        requestOtpFirst: "请先为此邮箱申请验证码。",
-        otpIncomplete: "请输入六位验证码。",
-        otpVerified: "邮箱已验证，选择“继续”填写客户资料。",
-        otpSent: "验证码已发送，请检查收件箱或垃圾邮件文件夹。",
-        otpSubtitle: "使用六位验证码验证邮箱，无需密码。",
-        otpDigit: "验证码第{digit}位",
-        resendOtpCountdown: "重新发送验证码（{seconds}秒）",
-        resendOtp: "重新发送验证码",
-        otpLabel: "验证码（OTP）",
-        verifyOtp: "验证并登录",
-        requestOtp: "发送验证码",
         kickerLogin: "安全帐户访问",
         loginTitle: "登录",
         loginSubtitle: "使用 Google 或发送到您邮箱的六位验证码登录。",
@@ -638,32 +586,6 @@ window.DUITJOM_I18N = {
         dataDeletion: "Pemadaman Data"
       },
       auth: {
-        link: "Hantar Kod OTP",
-        magicLink: "Hantar Kod OTP",
-        otpHelp: "Jika kod tidak diterima, semak folder Spam atau Junk dan minta OTP baharu selepas 60 saat.",
-        loginHelpBody: "Log masuk menggunakan kod OTP yang dihantar ke email anda. Tiada kata laluan atau pautan set semula diperlukan.",
-        loginHelpTitle: "Bantuan Log Masuk",
-        continueButton: "Teruskan",
-        loggedInSubtitle: "Email anda telah disahkan. Teruskan untuk mengisi maklumat pelanggan.",
-        welcomeBack: "Selamat datang kembali, {name}",
-        logoutError: "Log keluar tidak dapat diselesaikan. Muat semula halaman dan cuba lagi.",
-        googleDomainError: "Log masuk Google belum dikonfigurasi untuk laman ini. Gunakan OTP email atau hubungi sokongan.",
-        googleUnavailable: "Log masuk Google tidak dapat dimuatkan. Muat semula halaman atau gunakan OTP email.",
-        timeoutError: "Permintaan mengambil masa terlalu lama. Sila cuba lagi.",
-        serviceError: "Perkhidmatan pengesahan tidak tersedia atau memberi respons yang tidak sah. Cuba lagi atau hubungi sokongan.",
-        securityError: "Pengesahan keselamatan tidak dapat diselesaikan. Muat semula halaman dan cuba lagi.",
-        securityRequired: "Sila lengkapkan pengesahan keselamatan dahulu.",
-        requestOtpFirst: "Sila minta kod OTP untuk email ini dahulu.",
-        otpIncomplete: "Sila masukkan kod OTP enam digit.",
-        otpVerified: "Email berjaya disahkan. Tekan Teruskan untuk mengisi maklumat pelanggan.",
-        otpSent: "Kod OTP telah dihantar. Sila semak peti masuk atau folder spam email anda.",
-        otpSubtitle: "Sahkan email anda menggunakan kod OTP enam digit. Tiada kata laluan diperlukan.",
-        otpDigit: "Digit OTP {digit}",
-        resendOtpCountdown: "Hantar Semula OTP ({seconds}s)",
-        resendOtp: "Hantar Semula OTP",
-        otpLabel: "Kod Pengesahan (OTP)",
-        verifyOtp: "Sahkan OTP & Log Masuk",
-        requestOtp: "Hantar Kod OTP",
         kickerLogin: "JAMINAN KESELAMATAN PENGGUNA",
         loginTitle: "Log Masuk ke DuitJom",
         loginSubtitle: "Gunakan Google atau kod enam digit yang dihantar ke email anda.",
@@ -917,3 +839,39 @@ window.DUITJOM_I18N = {
     }
   }
 };
+
+// Email OTP labels: English, Bahasa Malaysia, Chinese. Keep each key in one place.
+(() => {
+  const otpTranslations = {
+    otpHelp: ["If the code does not arrive, check Spam or Junk and request a new OTP after 60 seconds.", "Jika kod tidak diterima, semak folder Spam atau Junk dan minta OTP baharu selepas 60 saat.", "如果未收到验证码，请检查垃圾邮件文件夹，并在60秒后申请新验证码。"],
+    loginHelpBody: ["Sign in using an OTP sent to your email. You do not need a password or password-reset link.", "Log masuk menggunakan kod OTP yang dihantar ke email anda. Tiada kata laluan atau pautan set semula diperlukan.", "使用发送到邮箱的验证码登录，无需密码或重置密码链接。"],
+    loginHelpTitle: ["Sign-in Help", "Bantuan Log Masuk", "登录帮助"],
+    continueButton: ["Continue", "Teruskan", "继续"],
+    loggedInSubtitle: ["Your email is verified. Continue to fill in your customer details.", "Email anda telah disahkan. Teruskan untuk mengisi maklumat pelanggan.", "邮箱已验证，继续填写客户资料。"],
+    welcomeBack: ["Welcome back, {name}", "Selamat datang kembali, {name}", "欢迎回来，{name}"],
+    logoutError: ["Sign-out could not finish. Refresh the page and try again.", "Log keluar tidak dapat diselesaikan. Muat semula halaman dan cuba lagi.", "退出登录未完成，请刷新页面后重试。"],
+    googleDomainError: ["Google sign-in is not configured for this website. Sign in with email OTP or contact support.", "Log masuk Google belum dikonfigurasi untuk laman ini. Gunakan OTP email atau hubungi sokongan.", "此网站尚未配置 Google 登录，请使用邮箱验证码或联系客服。"],
+    googleUnavailable: ["Google sign-in could not load. Refresh the page or sign in with email OTP.", "Log masuk Google tidak dapat dimuatkan. Muat semula halaman atau gunakan OTP email.", "Google 登录无法加载，请刷新页面或使用邮箱验证码登录。"],
+    timeoutError: ["The request took too long. Please try again.", "Permintaan mengambil masa terlalu lama. Sila cuba lagi.", "请求超时，请重试。"],
+    serviceError: ["The verification service is unavailable or returned an invalid response. Try again or contact support.", "Perkhidmatan pengesahan tidak tersedia atau memberi respons yang tidak sah. Cuba lagi atau hubungi sokongan.", "验证服务暂时不可用或响应无效，请重试或联系客服。"],
+    securityError: ["The security check could not finish. Refresh the page and try again.", "Pengesahan keselamatan tidak dapat diselesaikan. Muat semula halaman dan cuba lagi.", "安全验证未完成，请刷新页面后重试。"],
+    securityRequired: ["Complete the security check first.", "Sila lengkapkan pengesahan keselamatan dahulu.", "请先完成安全验证。"],
+    requestOtpFirst: ["Request an OTP for this email first.", "Sila minta kod OTP untuk email ini dahulu.", "请先为此邮箱申请验证码。"],
+    otpIncomplete: ["Enter the six-digit OTP.", "Sila masukkan kod OTP enam digit.", "请输入六位验证码。"],
+    otpVerified: ["Email verified. Select Continue to fill in your customer details.", "Email berjaya disahkan. Tekan Teruskan untuk mengisi maklumat pelanggan.", "邮箱已验证，选择“继续”填写客户资料。"],
+    otpSent: ["Your OTP has been sent. Check your inbox or spam folder.", "Kod OTP telah dihantar. Sila semak peti masuk atau folder spam email anda.", "验证码已发送，请检查收件箱或垃圾邮件文件夹。"],
+    otpSubtitle: ["Verify your email using a six-digit OTP. No password is required.", "Sahkan email anda menggunakan kod OTP enam digit. Tiada kata laluan diperlukan.", "使用六位验证码验证邮箱，无需密码。"],
+    otpDigit: ["OTP digit {digit}", "Digit OTP {digit}", "验证码第{digit}位"],
+    resendOtpCountdown: ["Resend OTP ({seconds}s)", "Hantar Semula OTP ({seconds}s)", "重新发送验证码（{seconds}秒）"],
+    resendOtp: ["Resend OTP", "Hantar Semula OTP", "重新发送验证码"],
+    otpLabel: ["Verification Code (OTP)", "Kod Pengesahan (OTP)", "验证码（OTP）"],
+    verifyOtp: ["Verify OTP & Sign In", "Sahkan OTP & Log Masuk", "验证并登录"],
+    requestOtp: ["Send OTP Code", "Hantar Kod OTP", "发送验证码"],
+  };
+  ["en", "ms", "zh"].forEach((locale, index) => {
+    const auth = window.DUITJOM_I18N.locales[locale].auth;
+    Object.keys(otpTranslations).forEach(key => { auth[key] = otpTranslations[key][index]; });
+    auth.link = auth.requestOtp;
+    auth.magicLink = auth.requestOtp;
+  });
+})();

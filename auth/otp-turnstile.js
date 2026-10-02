@@ -1,4 +1,4 @@
-// Register callbacks before the asynchronous Turnstile API loads on either page.
+// Register callbacks before the asynchronous Turnstile API loads on the portal.
 window.loginTurnstileToken = null;
 window.onLoginTurnstileSuccess = function (token) {
   window.loginTurnstileToken = token;

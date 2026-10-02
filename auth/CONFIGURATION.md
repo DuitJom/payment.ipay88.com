@@ -1,15 +1,15 @@
 # Email OTP authentication and Google sign-in
 
-The active portal uses the same email OTP flow on `index.html` and `page/register.html`. Both pages load `auth/app-auth.js`; registration does not create an email/password Firebase account or send Firebase verification emails. The former password-reset URL now provides a link back to email OTP login.
+The active portal uses one email OTP form on `index.html` for both registration and login. Register links open `?auth=email&intent=register`; the existing `page/register.html` bookmark redirects to that same form. Registration does not create an email/password Firebase account or send Firebase verification emails. The former password-reset URL now provides a link back to email OTP login.
 
 ## Email flow
 
 1. The customer enters an email and completes Turnstile.
 2. The frontend posts `{ email, turnstileToken }` to `https://e-kyc.duitjom.my/api/send-otp`.
 3. The Worker validates Turnstile, creates/stores the OTP and sends it through Mailjet. A successful response is `{ "success": true }`; failures use a non-2xx status or `{ "success": false, "message": "..." }`.
-4. The frontend starts a 60-second resend countdown. Each resend needs a fresh Turnstile token. Server-side rate limits must also apply; the UI timer is not a security boundary.
+4. The frontend starts a 60-second resend countdown per email. Correcting the address can request a new code immediately; switching back to the earlier address retains its cooldown. Each resend needs a fresh Turnstile token. Server-side rate limits must also apply; the UI timer is not a security boundary.
 5. The frontend posts `{ email, otp }` to `/api/verify-otp`. Only a successful verification response displays the account panel and Continue button.
-6. Continue opens the existing customer-details page. Registration's Continue link returns to `index.html?step=payment`, which only opens that page if a valid UI session is available.
+6. Continue opens the existing customer-details page without navigating away from the verified form. This also works when browser storage is unavailable. The old `index.html?step=payment` route remains compatible with a valid remembered UI session.
 
 Mailjet sends the email; it does not generate or validate the application's OTP or establish its authentication session. Mailjet API/Secret keys belong in Worker secrets and must never be added to HTML or frontend JavaScript. The frontend no longer calls `/api/magic-link` or `/api/welcome`.
 
@@ -27,4 +27,4 @@ Google sign-in alone still uses the existing Firebase web configuration in `fire
 
 ## Translation and navigation
 
-BM, English and Chinese labels are in `i18n/translations.js`. OTP messages, request/verify buttons, resend countdown, welcome text and Continue follow the selected language. A missing translation retains the HTML label rather than showing the key. The visible welcome name is the email prefix. `goToPaymentPage()` checks the verified UI state before opening customer details.
+BM, English and Chinese labels are in `i18n/translations.js`. OTP messages, request/verify buttons, resend countdown, welcome text and Continue follow the selected language, including when browser storage is unavailable. A missing translation retains the HTML label rather than showing the key. The visible welcome name is the email prefix. `goToPaymentPage()` checks the verified UI state before opening customer details.
