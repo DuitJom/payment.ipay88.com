@@ -843,6 +843,12 @@ window.DUITJOM_I18N = {
 // Email OTP labels: English, Bahasa Malaysia, Chinese. Keep each key in one place.
 (() => {
   const otpTranslations = {
+    mailDeliveryFailed: ["The OTP email could not be sent. Please try again or contact support.", "Email OTP belum berjaya dihantar. Sila cuba lagi atau hubungi sokongan.", "验证码邮件发送失败，请重试或联系客服。"],
+    otpInvalid: ["The OTP is incorrect or expired. Request a new code if needed.", "Kod OTP salah atau tamat tempoh. Minta kod baharu jika perlu.", "验证码错误或已过期，请按需申请新验证码。"],
+    sessionExpired: ["Your email session could not be confirmed. Sign in again and allow this website's cookies.", "Sesi email tidak dapat disahkan. Sila log masuk semula dan benarkan kuki laman ini.", "无法确认邮箱会话，请重新登录并允许此网站的 Cookie。"],
+    apiBlocked: ["This website could not reach email verification. Please retry or contact support.", "Laman ini tidak dapat mengakses pengesahan email. Sila cuba lagi atau hubungi sokongan.", "网站无法访问邮箱验证，请重试或联系客服。"],
+    rateLimited: ["Too many requests. Try again in {seconds} seconds.", "Terlalu banyak permintaan. Cuba lagi dalam {seconds} saat.", "请求过多，请在 {seconds} 秒后重试。"],
+    otpExpiryHint: ["Your OTP is valid for 5 minutes.", "Kod OTP sah selama 5 minit.", "验证码有效期为5分钟。"],
     otpHelp: ["If the code does not arrive, check Spam or Junk and request a new OTP after 60 seconds.", "Jika kod tidak diterima, semak folder Spam atau Junk dan minta OTP baharu selepas 60 saat.", "如果未收到验证码，请检查垃圾邮件文件夹，并在60秒后申请新验证码。"],
     loginHelpBody: ["Sign in using an OTP sent to your email. You do not need a password or password-reset link.", "Log masuk menggunakan kod OTP yang dihantar ke email anda. Tiada kata laluan atau pautan set semula diperlukan.", "使用发送到邮箱的验证码登录，无需密码或重置密码链接。"],
     loginHelpTitle: ["Sign-in Help", "Bantuan Log Masuk", "登录帮助"],
@@ -859,7 +865,7 @@ window.DUITJOM_I18N = {
     requestOtpFirst: ["Request an OTP for this email first.", "Sila minta kod OTP untuk email ini dahulu.", "请先为此邮箱申请验证码。"],
     otpIncomplete: ["Enter the six-digit OTP.", "Sila masukkan kod OTP enam digit.", "请输入六位验证码。"],
     otpVerified: ["Email verified. Select Continue to fill in your customer details.", "Email berjaya disahkan. Tekan Teruskan untuk mengisi maklumat pelanggan.", "邮箱已验证，选择“继续”填写客户资料。"],
-    otpSent: ["Your OTP has been sent. Check your inbox or spam folder.", "Kod OTP telah dihantar. Sila semak peti masuk atau folder spam email anda.", "验证码已发送，请检查收件箱或垃圾邮件文件夹。"],
+    otpSent: ["Your OTP email request was accepted. Check your inbox or spam folder.", "Permintaan email OTP diterima. Sila semak peti masuk atau folder Spam anda.", "验证码邮件请求已接受，请检查收件箱或垃圾邮件文件夹。"],
     otpSubtitle: ["Verify your email using a six-digit OTP. No password is required.", "Sahkan email anda menggunakan kod OTP enam digit. Tiada kata laluan diperlukan.", "使用六位验证码验证邮箱，无需密码。"],
     otpDigit: ["OTP digit {digit}", "Digit OTP {digit}", "验证码第{digit}位"],
     resendOtpCountdown: ["Resend OTP ({seconds}s)", "Hantar Semula OTP ({seconds}s)", "重新发送验证码（{seconds}秒）"],

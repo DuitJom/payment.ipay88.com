@@ -7,6 +7,7 @@
 [data-email-auth] .login-otp-digits input { width: 100%; min-width: 0; min-height: 2.85rem; padding: .65rem 0; text-align: center; font-size: 1.25rem; font-weight: 700; border: 1px solid #dbe4f0; border-radius: .6rem; background: #f8fafc; color: #0f172a; }
 [data-email-auth] .login-otp-digits input:focus { border-color: #60a5fa; outline: 2px solid #2563eb; outline-offset: 1px; }
 [data-email-auth] .login-otp-resend { text-align: right; margin: .35rem 0 .6rem; }
+[data-email-auth] .login-otp-hint { margin-top: .5rem; color: #64748b; font-size: .875rem; }
 [data-email-auth] .login-otp-resend button { border: 0; padding: .4rem 0; background: transparent; color: #2563eb; font: inherit; font-size: .875rem; text-decoration: underline; cursor: pointer; }
 [data-email-auth] button:disabled { cursor: not-allowed; opacity: .55; }
 [data-email-auth] #emailInput { font-size: 1rem; }

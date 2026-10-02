@@ -1,0 +1,26 @@
+# Copy to wrangler.toml and enter the actual D1 database UUID before deploying.
+name = "duitjom-email-auth"
+main = "otp-worker.js"
+compatibility_date = "2026-10-02"
+workers_dev = false
+
+[vars]
+ALLOWED_ORIGINS = "https://www.duitjom.my,https://duitjom.my"
+TURNSTILE_ACTION = "auth"
+MAIL_FROM_EMAIL = "noreply@duitjom.my"
+MAIL_FROM_NAME = "DuitJom"
+SESSION_TTL_SECONDS = "86400"
+WELCOME_EMAIL_ENABLED = "false"
+
+[[d1_databases]]
+binding = "AUTH_DB"
+database_name = "duitjom-auth"
+database_id = "REPLACE_WITH_YOUR_EXISTING_D1_DATABASE_UUID"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+# Set as encrypted Worker secrets, never here:
+# TURNSTILE_SECRET_KEY, MJ_APIKEY_PUBLIC, MJ_APIKEY_PRIVATE, OTP_PEPPER
+# This example deliberately has no production routes: integrate the handler
+# into the existing e-kyc Worker first, as described in README.md.

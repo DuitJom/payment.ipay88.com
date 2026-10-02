@@ -30,15 +30,15 @@
     <link rel="stylesheet" href="features.css">
     <link rel="stylesheet" href="auth/login.css?v=20261002-email-otp">
     <link rel="stylesheet" href="auth/auth-forms.css">
-    <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-flow-2">
+    <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-worker">
 
-    <script src="auth/otp-turnstile.js?v=20261003-otp-flow-2"></script>
+    <script src="auth/otp-turnstile.js?v=20261003-otp-worker"></script>
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <!-- Centralized i18n (English default, Chinese) -->
-    <script src="i18n/translations.js?v=20261003-otp-flow-2"></script>
-    <script src="i18n/i18n.js?v=20261003-otp-flow-2"></script>
+    <script src="i18n/translations.js?v=20261003-otp-worker"></script>
+    <script src="i18n/i18n.js?v=20261003-otp-worker"></script>
 
     <!-- Page transition / loading overlay -->
     <script src="js/loading-screen.js"></script>
@@ -158,6 +158,7 @@
                         <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 6" autocomplete="off">
                     </div>
                 </fieldset>
+                <p class="login-otp-hint" data-i18n="auth.otpExpiryHint">Kod OTP sah selama 5 minit.</p>
                 <div class="login-otp-resend">
                     <button id="resendOtpButton" type="button" class="login-link-button">Hantar Semula OTP</button>
                 </div>
@@ -697,7 +698,7 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script type="module" src="auth/app-auth.js?v=20261003-otp-flow-2"></script>
+    <script type="module" src="auth/app-auth.js?v=20261003-otp-worker"></script>
     <script type="module" src="auth/auth-forms.js"></script>
 
     

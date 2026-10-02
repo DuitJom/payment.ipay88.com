@@ -24,6 +24,12 @@ let firebase = null;
 let firebaseError = null;
 let hadFirebaseUser = false;
 let pendingEmail = null;
+let pendingChallengeId = null;
+let emailSessionVerified = false;
+let emailSessionExpiresAt = 0;
+let restoringSession = null;
+let continuing = false;
+const workerRequests = new Set();
 let otpBusy = false;
 let googleBusy = false;
 let actionVersion = 0;
@@ -55,7 +61,7 @@ function showError(error) {
     "auth/network-request-failed": "auth.errors.auth/network-request-failed"
   };
   if (error?.message === "TIMEOUT") showMessage("auth.timeoutError", "error");
-  else if (error?.messageKey) showMessage(error.messageKey, "error");
+  else if (error?.messageKey) showMessage(error.messageKey, "error", error.vars || {});
   else if (keys[error?.code]) showMessage(keys[error.code], "error");
   else if (error?.serverMessage) showMessage(error.serverMessage, "error", {}, true);
   else showMessage("auth.genericError", "error");
@@ -74,7 +80,7 @@ function readSession() {
     if (!raw) return null;
     const value = JSON.parse(raw);
     const age = Date.now() - value?.loginAt;
-    if (value?.verified !== true || !EMAIL_PATTERN.test(value?.email || "") ||
+    if (value?.verified !== true || !["otp", "google"].includes(value.provider) || !EMAIL_PATTERN.test(value?.email || "") ||
         !Number.isFinite(value?.loginAt) || age < 0 || age > SESSION_MAX_AGE_MS) {
       clearStoredSession();
       return null;
@@ -90,6 +96,7 @@ function rememberIdentity(email, provider) {
 function canContinue() {
   if (!activeIdentity) return false;
   if (activeIdentity.provider === "google" && !hadFirebaseUser) return false;
+  if (activeIdentity.provider === "otp" && (!emailSessionVerified || Date.now() >= emailSessionExpiresAt)) return false;
   const age = Date.now() - activeIdentity.loginAt;
   return activeIdentity.verified === true && age >= 0 && age <= SESSION_MAX_AGE_MS;
 }
@@ -100,7 +107,7 @@ function renderAccount() {
   visible(loginPanel, !signedIn);
   visible(userPanel, signedIn);
   visible(paymentActionPanel, signedIn);
-  if (continueButton) continueButton.disabled = !signedIn;
+  if (continueButton) continueButton.disabled = !signedIn || continuing;
   if (userDisplay) {
     userDisplay.textContent = signedIn
       ? t("auth.welcomeBack", { name: activeIdentity.email.split("@")[0] }) : "";
@@ -118,6 +125,8 @@ emailToggle?.addEventListener("click", () => {
   if (show) emailInput?.focus();
 });
 window.requestPaymentLogin = () => {
+  emailSessionVerified = false;
+  emailSessionExpiresAt = 0;
   activeIdentity = null;
   clearStoredSession();
   renderAccount();
@@ -125,11 +134,30 @@ window.requestPaymentLogin = () => {
   showMessage("auth.needLoginToPay", "error");
   loginPanel?.scrollIntoView({ block: "center", behavior: "smooth" });
 };
-continueButton?.addEventListener("click", event => {
+continueButton?.addEventListener("click", async event => {
+  event.preventDefault();
+  if (continuing) return;
   if (!canContinue()) { event.preventDefault(); window.requestPaymentLogin(); return; }
-  if (typeof window.goToPaymentPage === "function") {
-    event.preventDefault();
-    window.goToPaymentPage();
+  const version = actionVersion;
+  continuing = true;
+  renderAccount();
+  try {
+    if (activeIdentity.provider === "otp") {
+      const email = activeIdentity.email;
+      const session = await callWorker("/api/session", undefined, "GET");
+      if (version !== actionVersion) return;
+      acceptEmailSession(session, email);
+    }
+    if (typeof window.goToPaymentPage === "function") window.goToPaymentPage();
+  } catch (error) {
+    if (version === actionVersion) {
+      emailSessionVerified = false;
+      renderAccount();
+      openEmailForm();
+      showError(error);
+    }
+  } finally {
+    if (version === actionVersion) { continuing = false; renderAccount(); }
   }
 });
 
@@ -147,6 +175,7 @@ function updateControls() {
   }
   if (googleButton) googleButton.disabled = busy;
   if (logoutButton) logoutButton.disabled = googleBusy;
+  if (continueButton) continueButton.disabled = !canContinue() || continuing;
   if (emailInput) emailInput.readOnly = busy;
   otpInputs.forEach(input => { input.readOnly = busy; });
   emailForm?.setAttribute("aria-busy", String(busy));
@@ -169,8 +198,8 @@ function tickCountdown() {
   updateControls();
   if (!resendCooldowns.size && resendTimer) { clearInterval(resendTimer); resendTimer = null; }
 }
-function startCountdown(email) {
-  resendCooldowns.set(email, Date.now() + 60_000);
+function startCountdown(email, seconds = 60) {
+  resendCooldowns.set(email, Date.now() + seconds * 1000);
   if (resendTimer) clearInterval(resendTimer);
   tickCountdown();
   resendTimer = setInterval(tickCountdown, 250);
@@ -179,6 +208,7 @@ function clearDigits() { otpInputs.forEach(input => { input.value = ""; }); }
 emailInput?.addEventListener("input", () => {
   if (pendingEmail && emailInput.value.trim().toLowerCase() !== pendingEmail) {
     pendingEmail = null;
+    pendingChallengeId = null;
     clearDigits();
     clearMessage();
   }
@@ -215,25 +245,66 @@ otpInputs.forEach((input, index) => {
   });
 });
 
-async function callWorker(endpoint, body) {
+async function callWorker(endpoint, body, method = "POST") {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15_000);
+  workerRequests.add(controller);
+  const timeout = setTimeout(() => controller.abort(), 30_000);
   try {
     const response = await fetch(`${WORKER_URL}${endpoint}`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body), signal: controller.signal
+      method, credentials: "include", headers: method === "GET" ? {} : { "Content-Type": "application/json" },
+      body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal
     });
     let data;
     try { data = await response.json(); }
-    catch { throw { messageKey: "auth.serviceError" }; }
+    catch { throw { messageKey: response.status === 403 ? "auth.apiBlocked" : "auth.serviceError" }; }
     if (!response.ok || data?.success !== true) {
-      throw data?.message ? { serverMessage: data.message } : { messageKey: "auth.serviceError" };
+      console.warn("Email auth request failed", { status: response.status, code: data?.code, requestId: data?.requestId });
+      const messageKeys = {
+        INVALID_EMAIL: "auth.errors.auth/invalid-email", TURNSTILE_REQUIRED: "auth.securityRequired",
+        TURNSTILE_REJECTED: "auth.securityError", TURNSTILE_CONFIG: "auth.securityError",
+        MAILJET_REJECTED: "auth.mailDeliveryFailed", OTP_INVALID: "auth.otpInvalid",
+        SESSION_REQUIRED: "auth.sessionExpired", ORIGIN_REJECTED: "auth.apiBlocked",
+        RATE_LIMITED: "auth.rateLimited", RESEND_COOLDOWN: "auth.rateLimited"
+      };
+      const seconds = Math.min(3600, Math.max(0, Number(data?.retryAfter) || 0));
+      throw { messageKey: messageKeys[data?.code] || "auth.serviceError", retryAfter: seconds, vars: { seconds } };
     }
     return data;
   } catch (error) {
     if (error?.name === "AbortError") throw new Error("TIMEOUT");
     throw error;
-  } finally { clearTimeout(timeout); }
+  } finally { clearTimeout(timeout); workerRequests.delete(controller); }
+}
+function acceptEmailSession(data, expectedEmail) {
+  const email = data?.user?.email;
+  const expiresAt = Number(data?.expiresAt);
+  if (!EMAIL_PATTERN.test(email || "") || (expectedEmail && email !== expectedEmail) ||
+      !Number.isFinite(expiresAt) || expiresAt <= Date.now()) throw { messageKey: "auth.sessionExpired" };
+  emailSessionVerified = true;
+  emailSessionExpiresAt = expiresAt;
+  rememberIdentity(email, "otp");
+}
+function restoreEmailSession() {
+  if (activeIdentity?.provider === "google" || otpBusy || googleBusy) return Promise.resolve();
+  if (restoringSession) return restoringSession;
+  const version = actionVersion;
+  emailSessionVerified = false;
+  renderAccount();
+  restoringSession = (async () => {
+    try {
+      const session = await callWorker("/api/session", undefined, "GET");
+      if (version !== actionVersion || activeIdentity?.provider === "google") return;
+      acceptEmailSession(session);
+    } catch {
+      if (version !== actionVersion || activeIdentity?.provider === "google") return;
+      activeIdentity = null;
+      clearStoredSession();
+    } finally {
+      if (version === actionVersion) renderAccount();
+      restoringSession = null;
+    }
+  })();
+  return restoringSession;
 }
 async function requestOtp() {
   if (otpBusy || googleBusy || Date.now() < cooldownDeadline()) return;
@@ -249,15 +320,22 @@ async function requestOtp() {
   otpBusy = true;
   updateControls();
   try {
-    await callWorker("/api/send-otp", { email, turnstileToken: window.loginTurnstileToken });
+    const result = await callWorker("/api/send-otp", { email, turnstileToken: window.loginTurnstileToken });
     if (version !== actionVersion) return;
+    if (typeof result.challengeId !== "string" || !/^[a-f0-9-]{36}$/.test(result.challengeId)) {
+      throw { messageKey: "auth.serviceError" };
+    }
     pendingEmail = email;
+    pendingChallengeId = result.challengeId;
     clearDigits();
     startCountdown(email);
     showMessage("auth.otpSent", "success");
     otpInputs[0]?.focus();
   } catch (error) {
-    if (version === actionVersion) showError(error);
+    if (version === actionVersion) {
+      if (error.retryAfter) startCountdown(email, error.retryAfter);
+      showError(error);
+    }
   } finally {
     if (version === actionVersion) { otpBusy = false; resetTurnstile(); }
   }
@@ -279,9 +357,12 @@ async function verifyOtp() {
   otpBusy = true;
   updateControls();
   try {
-    await callWorker("/api/verify-otp", { email, otp });
+    await callWorker("/api/verify-otp", { email, otp, challengeId: pendingChallengeId });
     if (version !== actionVersion) return;
-    rememberIdentity(email, "otp");
+    // Confirm the browser accepted the HttpOnly cookie before opening Continue.
+    const session = await callWorker("/api/session", undefined, "GET");
+    if (version !== actionVersion) return;
+    acceptEmailSession(session, email);
     pendingEmail = null;
     clearDigits();
     renderAccount();
@@ -297,6 +378,12 @@ verifyButton?.addEventListener("click", verifyOtp);
 
 async function logout() {
   actionVersion++;
+  for (const controller of workerRequests) controller.abort();
+  const challengeId = pendingChallengeId;
+  pendingChallengeId = null;
+  emailSessionVerified = false;
+  emailSessionExpiresAt = 0;
+  continuing = false;
   activeIdentity = null;
   clearStoredSession();
   pendingEmail = null;
@@ -309,7 +396,13 @@ async function logout() {
   ["mainPage", "firebaseAuthContainer", "siteFooter", "features-container"].forEach(id => byId(id)?.classList.remove("hidden"));
   googleBusy = true;
   updateControls();
-  try { if (firebase) await firebase.signOut(firebase.auth); }
+  try {
+    const results = await Promise.allSettled([
+      callWorker("/api/logout", { challengeId }),
+      firebase ? firebase.signOut(firebase.auth) : Promise.resolve()
+    ]);
+    if (results.some(result => result.status === "rejected")) showMessage("auth.logoutError", "error");
+  }
   catch { showMessage("auth.logoutError", "error"); }
   finally { googleBusy = false; updateControls(); }
 }
@@ -367,7 +460,7 @@ function refreshLocale() {
   if (lastMessage) showMessage(lastMessage.key, lastMessage.type, lastMessage.vars, lastMessage.literal);
 }
 document.addEventListener("duitjom:locale-changed", refreshLocale);
-window.addEventListener("pageshow", () => { renderAccount(); tickCountdown(); });
+window.addEventListener("pageshow", () => { void restoreEmailSession(); tickCountdown(); });
 refreshLocale();
 const params = new URLSearchParams(window.location.search);
 if (params.get("intent") === "register") {
@@ -378,7 +471,9 @@ if (params.get("intent") === "register") {
   }
 }
 if (params.get("auth") === "email") openEmailForm();
-if (params.get("step") === "payment" && typeof window.goToPaymentPage === "function") {
-  if (canContinue()) window.goToPaymentPage();
-  else { openEmailForm(); showMessage("auth.needLoginToPay", "error"); }
-}
+void Promise.all([restoreEmailSession(), firebaseReady]).then(() => {
+  if (params.get("step") === "payment" && typeof window.goToPaymentPage === "function") {
+    if (canContinue()) window.goToPaymentPage();
+    else { openEmailForm(); showMessage("auth.needLoginToPay", "error"); }
+  }
+});
