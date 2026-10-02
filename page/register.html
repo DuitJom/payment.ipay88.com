@@ -18,11 +18,14 @@
     <!-- Auth sub-page styles (same design language as auth/login.css) -->
     <link rel="stylesheet" href="../auth/auth-page.css">
 
+    <script src="../auth/otp-turnstile.js?v=20261003-otp-flow"></script>
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-    <!-- Registration controller -->
-    <script type="module" src="../auth/auth-page.js"></script>
+    <link rel="stylesheet" href="../auth/email-otp.css?v=20261003-otp-flow">
+    <script src="../i18n/translations.js?v=20261003-otp-flow"></script>
+    <script src="../i18n/i18n.js?v=20261003-otp-flow"></script>
+    <script type="module" src="../auth/app-auth.js?v=20261003-otp-flow"></script>
 </head>
 
 <body class="auth-page">
@@ -43,98 +46,63 @@
         </a>
     </header>
 
-    <main class="auth-shell">
-        <article class="auth-card" aria-labelledby="registerTitle">
-            <p class="auth-kicker">Akaun Baru</p>
-            <h1 id="registerTitle" class="auth-title">Daftar Akaun</h1>
-            <p class="auth-subtitle">Cipta akaun DuitJom anda untuk menguruskan pembayaran pinjaman dengan lebih mudah dan selamat.</p>
-
-            <form id="registerForm" class="auth-form" method="post" action="#" novalidate="false">
+    <main class="auth-shell" data-email-auth>
+        <div class="auth-locale">
+            <label for="authLocale" data-i18n="lang.switcherLabel">Bahasa</label>
+            <select id="authLocale" data-auth-locale>
+                <option value="ms">Bahasa Malaysia</option>
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+            </select>
+        </div>
+        <article id="authLoginPanel" class="auth-card" aria-labelledby="registerTitle">
+            <p class="auth-kicker" data-i18n="auth.kickerRegister">AKAUN BARU</p>
+            <h1 id="registerTitle" class="auth-title" data-i18n="auth.registerTitle">Daftar Akaun</h1>
+            <p class="auth-subtitle" data-i18n="auth.otpSubtitle">Sahkan email anda menggunakan kod OTP 6 digit. Tiada kata laluan diperlukan.</p>
+            <form id="emailLoginForm" class="auth-form">
                 <div class="auth-field">
-                    <label class="auth-label" for="registerName">Nama Penuh</label>
-                    <input
-                        class="auth-input"
-                        id="registerName"
-                        name="name"
-                        type="text"
-                        autocomplete="name"
-                        placeholder="Nama seperti dalam kad pengenalan"
-                        required
-                    >
+                    <label class="auth-label" for="emailInput" data-i18n="auth.email">Email</label>
+                    <input class="auth-input" id="emailInput" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" required>
                 </div>
-
-                <div class="auth-field">
-                    <label class="auth-label" for="registerEmail">Alamat E-mel</label>
-                    <input
-                        class="auth-input"
-                        id="registerEmail"
-                        name="email"
-                        type="email"
-                        inputmode="email"
-                        autocomplete="email"
-                        placeholder="name@example.com"
-                        aria-describedby="registerEmailHint"
-                        required
-                    >
-                    <p class="auth-hint" id="registerEmailHint">Kami akan menghantar e-mel pengesahan ke alamat ini.</p>
-                </div>
-
-                <div class="auth-field">
-                    <label class="auth-label" for="registerPassword">Kata Laluan</label>
-                    <input
-                        class="auth-input"
-                        id="registerPassword"
-                        name="password"
-                        type="password"
-                        autocomplete="new-password"
-                        placeholder="Minimum 6 aksara"
-                        minlength="6"
-                        aria-describedby="registerPasswordHint"
-                        required
-                    >
-                    <p class="auth-hint" id="registerPasswordHint">Gunakan sekurang-kurangnya 6 aksara.</p>
-                </div>
-
-                <div class="auth-field">
-                    <label class="auth-label" for="registerConfirm">Sahkan Kata Laluan</label>
-                    <input
-                        class="auth-input"
-                        id="registerConfirm"
-                        name="confirmPassword"
-                        type="password"
-                        autocomplete="new-password"
-                        placeholder="Masukkan semula kata laluan anda"
-                        minlength="6"
-                        required
-                    >
-                </div>
-
-                <!-- Cloudflare Turnstile - Register Form -->
-                <div class="auth-turnstile">
-                    <div
-                        class="cf-turnstile"
-                        data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ"
-                        data-action="register"
-                        data-theme="auto"
-                        data-size="flexible"
-                        data-callback="onRegisterTurnstileSuccess"
-                        data-error-callback="onRegisterTurnstileError"
-                        data-expired-callback="onRegisterTurnstileExpired">
+                <fieldset class="login-otp-fieldset">
+                    <legend data-i18n="auth.otpLabel">Kod Pengesahan (OTP)</legend>
+                    <div class="login-otp-digits">
+                            <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 1" autocomplete="one-time-code">
+                            <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 2" autocomplete="off">
+                            <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 3" autocomplete="off">
+                            <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 4" autocomplete="off">
+                            <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 5" autocomplete="off">
+                            <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 6" autocomplete="off">
                     </div>
+                </fieldset>
+                <div class="login-otp-resend">
+                    <button id="resendOtpButton" type="button">Hantar Semula OTP</button>
                 </div>
-
-                <button id="registerSubmit" class="auth-primary" type="submit">Daftar Akaun</button>
+                <div class="auth-turnstile">
+                    <div id="loginTurnstileWidget" class="cf-turnstile"
+                        data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth"
+                        data-theme="auto" data-size="flexible"
+                        data-callback="onLoginTurnstileSuccess"
+                        data-error-callback="onLoginTurnstileError"
+                        data-expired-callback="onLoginTurnstileExpired"></div>
+                </div>
+                <button id="emailLoginButton" class="auth-primary" type="submit" data-i18n="auth.requestOtp" disabled>Hantar Kod OTP</button>
+                <button id="verifyOtpButton" class="auth-primary" type="button" data-i18n="auth.verifyOtp" disabled>Sahkan OTP &amp; Log Masuk</button>
             </form>
-
-            <p id="registerMessage" class="auth-message" role="status" aria-live="polite" hidden></p>
-
-            <nav class="auth-switch-links" aria-label="Pautan akaun dan kata laluan">
-                <span class="auth-switch-text">Sudah ada akaun?</span>
-                <a class="auth-link" href="../index.html">Log Masuk</a>
-                <span class="auth-switch-sep" aria-hidden="true">&bull;</span>
-                <a class="auth-link" href="forgot-password.html">Lupa Kata Laluan?</a>
+            <nav class="auth-switch-links" aria-label="Pautan log masuk">
+                <a class="auth-link" href="../index.html?auth=email" data-i18n="auth.backToLogin">Kembali ke Log Masuk</a>
             </nav>
         </article>
+        <article id="authUserPanel" class="auth-card hidden" hidden>
+            <p class="auth-kicker" data-i18n="auth.kickerAccount">AKAUN ANDA</p>
+            <h2 id="userDisplay" class="auth-title" aria-live="polite"></h2>
+            <p class="auth-subtitle" data-i18n="auth.loggedInSubtitle">Email anda telah disahkan. Teruskan untuk mengisi maklumat pelanggan.</p>
+            <div id="btnPembayaranPinjaman" hidden>
+                <a id="authContinueButton" class="auth-primary" href="../index.html?step=payment" data-i18n="auth.continueButton">Teruskan</a>
+            </div>
+            <button id="logoutButton" class="auth-secondary" type="button" data-i18n="auth.logoutButton">Log Keluar</button>
+        </article>
+        <p id="authMessage" class="auth-message" role="status" aria-live="polite" hidden></p>
     </main>
 
     <footer class="auth-footer">

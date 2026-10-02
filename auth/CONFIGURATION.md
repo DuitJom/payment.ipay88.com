@@ -1,60 +1,30 @@
-# Firebase Authentication Configuration
+# Email OTP authentication and Google sign-in
 
-Website ini menggunakan Firebase Web SDK melalui ES modules CDN dan kekal serasi dengan GitHub Pages. Tiada Node.js server atau Firebase Admin SDK diperlukan untuk frontend.
+The active portal uses the same email OTP flow on `index.html` and `page/register.html`. Both pages load `auth/app-auth.js`; registration does not create an email/password Firebase account or send Firebase verification emails. The former password-reset URL now provides a link back to email OTP login.
 
-## Firebase Web config yang diperlukan
+## Email flow
 
-Isi nilai ini dalam `firebase-config.js` daripada Firebase Console > Project settings > Your apps > Web app:
+1. The customer enters an email and completes Turnstile.
+2. The frontend posts `{ email, turnstileToken }` to `https://e-kyc.duitjom.my/api/send-otp`.
+3. The Worker validates Turnstile, creates/stores the OTP and sends it through Mailjet. A successful response is `{ "success": true }`; failures use a non-2xx status or `{ "success": false, "message": "..." }`.
+4. The frontend starts a 60-second resend countdown. Each resend needs a fresh Turnstile token. Server-side rate limits must also apply; the UI timer is not a security boundary.
+5. The frontend posts `{ email, otp }` to `/api/verify-otp`. Only a successful verification response displays the account panel and Continue button.
+6. Continue opens the existing customer-details page. Registration's Continue link returns to `index.html?step=payment`, which only opens that page if a valid UI session is available.
 
-- `apiKey` — Web API key
-- `authDomain` — biasanya `<project-id>.firebaseapp.com`
-- `projectId` — Firebase project ID
-- `storageBucket` — bucket Firebase Storage
-- `messagingSenderId` — Firebase Cloud Messaging sender ID
-- `appId` — Web app ID
-- `measurementId` — optional, hanya jika Google Analytics digunakan
+Mailjet sends the email; it does not generate or validate the application's OTP or establish its authentication session. Mailjet API/Secret keys belong in Worker secrets and must never be added to HTML or frontend JavaScript. The frontend no longer calls `/api/magic-link` or `/api/welcome`.
 
-Firebase Web API key bukan password. Jangan masukkan Firebase Admin SDK private key, service-account JSON, OAuth client secret, password atau token ke frontend.
+## Backend requirements and verification limits
 
-## Firebase Console checklist
+The Worker source and deployment are external to this repository and have not been changed. Its existing endpoint contract is reused; real email delivery and OTP verification still need to be confirmed against that deployment.
 
-1. Create atau pilih Firebase project.
-2. Add Web app dan salin Web config ke `firebase-config.js`.
-3. Authentication > Sign-in method: aktifkan Email/Password dan Google.
-4. Authentication > Settings > Authorized domains: tambah semua domain sebenar, contohnya:
-   - `duitjom.my`
-   - `www.duitjom.my` jika digunakan
-   - domain GitHub Pages sebenar jika masih digunakan
-   - `localhost` untuk ujian tempatan
-5. Authentication > Templates: semak email verification dan password reset.
-6. Authentication > Sign-in method > Email link: aktifkan passwordless email link jika Magic Link digunakan.
-7. Firestore Database: create database dan pilih lokasi yang sesuai.
-8. Firestore Rules: gunakan sekurang-kurangnya konsep berikut sebelum menyimpan profile:
+The Worker must enforce allowed origins/CORS, server-side Turnstile verification, per-email/IP resend and attempt limits, code expiry, single use, and rejection of invalid codes. Protected operations must validate a server-issued authentication session/token. The legacy `duitjom_session` entry is only remembered UI state and must not be treated as authorization. When localStorage is unavailable, a successful verification still enables Continue during that page visit, but the UI session cannot survive navigation/reload. No persistent customer profile or Firebase email account is created by this frontend.
 
-```text
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read, write: if request.auth != null
-        && request.auth.uid == userId
-        && request.auth.token.email_verified == true;
-    }
-  }
-}
-```
+If Cloudflare challenge HTML is returned on an API request, frontend `fetch()` cannot treat it as the JSON API response. Diagnose the API-specific Cloudflare rules while retaining API protections; do not remove Turnstile validation.
 
-Password tidak pernah disimpan dalam Firestore. Firebase Auth ialah sumber kebenaran identity; Firestore hanya menyimpan profile/application data pada `users/{uid}`.
+## Google
 
-## Flow yang tersedia
+Google sign-in alone still uses the existing Firebase web configuration in `firebase-config.js`. Enable the Google provider and authorize `duitjom.my` and `www.duitjom.my` in Firebase. No email/password Firebase APIs are invoked by the active email flow. A restored, unverified Firebase user must not hide the OTP form or unlock Continue.
 
-- Email + Password: register, login, logout.
-- Email verification: hantar, hantar semula, reload status `emailVerified`.
-- Forgot password: password reset email.
-- Google login: popup Firebase; profile disimpan selepas pengguna verified.
-- Magic Link: foundation menggunakan `sendSignInLinkToEmail` dan `signInWithEmailLink`; email sementara sahaja disimpan di localStorage untuk melengkapkan link.
-- Payment page: dilindungi di UI oleh auth state dan `emailVerified`. Untuk data sebenar, Firestore Rules/backend juga mesti menguatkuasakan pemeriksaan ini.
+## Translation and navigation
 
-## Nota GitHub Pages
-
-Pastikan laman dihidangkan melalui HTTPS. Untuk custom domain, domain itu mesti berada dalam Authorized domains Firebase dan URL redirect Magic Link mesti sepadan dengan URL laman yang digunakan.
+BM, English and Chinese labels are in `i18n/translations.js`. OTP messages, request/verify buttons, resend countdown, welcome text and Continue follow the selected language. A missing translation retains the HTML label rather than showing the key. The visible welcome name is the email prefix. `goToPaymentPage()` checks the verified UI state before opening customer details.
