@@ -717,3 +717,17 @@ body.login-page {
   }
 }
 
+
+/* Inline email verification: six boxes fit comfortably on a narrow phone. */
+#firebaseAuthContainer .login-otp-fieldset { min-width: 0; padding: 0; border: 0; margin: .7rem 0 0; }
+#firebaseAuthContainer .login-otp-fieldset legend,
+#firebaseAuthContainer #emailLoginForm label { font-size: .875rem; font-weight: 700; color: #334155; margin-bottom: .5rem; }
+#firebaseAuthContainer .login-otp-digits { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .4rem; }
+#firebaseAuthContainer .login-otp-digits input { min-width: 0; padding: .65rem 0; text-align: center; font-size: 1.25rem; font-weight: 700; border-radius: .6rem; }
+#firebaseAuthContainer #emailInput { font-size: 1rem; }
+#firebaseAuthContainer .login-otp-resend { text-align: right; margin: .2rem 0 .4rem; }
+#firebaseAuthContainer .login-otp-resend button { font-size: .875rem; text-decoration: underline; }
+#firebaseAuthContainer button:disabled { cursor: not-allowed; opacity: .55; transform: none; }
+#firebaseAuthContainer .login-message { font-size: .875rem; }
+#firebaseAuthContainer .login-message.error { color: #b91c1c; }
+#firebaseAuthContainer .login-message.success { color: #047857; }

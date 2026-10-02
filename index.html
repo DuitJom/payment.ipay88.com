@@ -28,7 +28,7 @@
     <!-- External CSS files -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
-    <link rel="stylesheet" href="auth/login.css?v=20260926-register-fix">
+    <link rel="stylesheet" href="auth/login.css?v=20261002-email-otp">
     <link rel="stylesheet" href="auth/auth-forms.css">
 
     <!-- Cloudflare Turnstile API -->
@@ -143,32 +143,34 @@
             </button>
 
             <form id="emailLoginForm" class="login-panel hidden" hidden>
-    <label for="emailInput" data-i18n="auth.email">E-mel</label>
-    <input id="emailInput" type="email" autocomplete="email" data-i18n-placeholder="auth.emailPlaceholder" placeholder="name@example.com" required>
-
-    <!-- Cloudflare Turnstile - Login Form -->
-    <div class="mt-4 flex justify-center">
-        <div class="cf-turnstile"
-             data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ"
-             data-action="auth"
-             data-theme="auto"
-             data-size="flexible"
-             data-callback="onLoginTurnstileSuccess"
-             data-error-callback="onLoginTurnstileError"
-             data-expired-callback="onLoginTurnstileExpired">
-        </div>
-    </div>
-
-    <!-- Butang Minta OTP -->
-    <button id="emailLoginButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.requestOtp" disabled>
-        Minta Kod OTP
-    </button>
-
-    <!-- Butang Magic Link -->
-    <button id="magicLinkButton" type="button" class="login-secondary-button mt-2" data-i18n="auth.magicLink">
-        Hantar Pautan Log Masuk
-    </button>
-</form>
+                <label for="emailInput">Email</label>
+                <input id="emailInput" type="email" autocomplete="email" placeholder="name@example.com" required>
+                <fieldset class="login-otp-fieldset">
+                    <legend>Kod Pengesahan (OTP)</legend>
+                    <div class="login-otp-digits">
+                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 1" autocomplete="one-time-code">
+                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 2" autocomplete="off">
+                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 3" autocomplete="off">
+                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 4" autocomplete="off">
+                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 5" autocomplete="off">
+                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 6" autocomplete="off">
+                    </div>
+                </fieldset>
+                <div class="login-otp-resend">
+                    <button id="resendOtpButton" type="button" class="login-link-button">Hantar Semula OTP</button>
+                </div>
+                <div class="mt-4 flex justify-center">
+                    <div id="loginTurnstileWidget" class="cf-turnstile"
+                         data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth"
+                         data-theme="auto" data-size="flexible"
+                         data-callback="onLoginTurnstileSuccess"
+                         data-error-callback="onLoginTurnstileError"
+                         data-expired-callback="onLoginTurnstileExpired"></div>
+                </div>
+                <button id="emailLoginButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.requestOtp" disabled>Minta Kod OTP</button>
+                <button id="verifyOtpButton" type="button" class="login-primary-button" disabled>Sahkan OTP &amp; Log Masuk</button>
+                <button id="magicLinkButton" type="button" class="login-secondary-button mt-2" data-i18n="auth.magicLink">Hantar Pautan Log Masuk</button>
+            </form>
 
 
         <!-- Borang Pendaftaran (tersembunyi secara lalai) -->
@@ -735,7 +737,7 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script type="module" src="auth/app-auth.js?v=20260926-register-fix"></script>
+    <script type="module" src="auth/app-auth.js?v=20261002-email-otp"></script>
     <script type="module" src="auth/auth-forms.js"></script>
 
     
@@ -856,25 +858,25 @@
     // === GLOBAL TOKEN STORAGE ===
     window.loginTurnstileToken = null;
     let registerTurnstileToken = null;
-    let pendingAuthEmail = null;
 
     // === LOGIN FORM TURNSTILE ===
     function onLoginTurnstileSuccess(token) {
         window.loginTurnstileToken = token;
         var btn = document.getElementById("emailLoginButton");
         if (btn) btn.disabled = false;
+        window.updateLoginOtpControls?.();
     }
     function onLoginTurnstileError(errorCode) {
         console.error("Turnstile (Login) error:", errorCode);
-        loginTurnstileToken = null;
+        window.loginTurnstileToken = null;
         var btn = document.getElementById("emailLoginButton");
         if (btn) btn.disabled = true;
+        window.updateLoginOtpControls?.();
     }
     function onLoginTurnstileExpired() {
         console.warn("Turnstile (Login) token expired");
-        loginTurnstileToken = null;
-        var btn = document.getElementById("emailLoginButton");
-        if (btn) btn.disabled = true;
+        window.loginTurnstileToken = null;
+        window.updateLoginOtpControls?.();
     }
 
     // === REGISTER FORM TURNSTILE ===
@@ -896,72 +898,6 @@
         if (btn) btn.disabled = true;
     }
 
-    // === OTP FUNCTIONS ===
-    const WORKER_URL = "https://e-kyc.duitjom.my";
-
-    async function sendOTP(email, turnstileToken) {
-        const res = await fetch(WORKER_URL + "/api/send-otp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, turnstileToken: turnstileToken })
-        });
-        return await res.json();
-    }
-
-    async function verifyOTP(email, otp) {
-        const res = await fetch(WORKER_URL + "/api/verify-otp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, otp: otp })
-        });
-        return await res.json();
-    }
-
-    function showOTPOverlay(email) {
-        pendingAuthEmail = email;
-        document.getElementById("otpOverlay").style.display = "flex";
-        document.getElementById("otpInput").value = "";
-        document.getElementById("otpInput").focus();
-    }
-
-    function hideOTPOverlay() {
-        document.getElementById("otpOverlay").style.display = "none";
-    }
-
-    async function submitOTP() {
-        const otp = document.getElementById("otpInput").value;
-        if (!otp || otp.length !== 6) {
-            document.getElementById("otpMessage").textContent = "Sila masukkan kod OTP 6 digit.";
-            return;
-        }
-        document.getElementById("otpMessage").textContent = "Sahkan...";
-        const data = await verifyOTP(pendingAuthEmail, otp);
-        if (data.success) {
-            hideOTPOverlay();
-            if (typeof onOTPVerified === "function") onOTPVerified();
-        } else {
-            document.getElementById("otpMessage").textContent = data.message || "OTP salah.";
-        }
-    }
-
-    async function resendOTP() {
-        if (!loginTurnstileToken) {
-            document.getElementById("otpMessage").textContent = "Sila lengkapkan pengesahan keselamatan dahulu.";
-            return;
-        }
-        document.getElementById("otpMessage").textContent = "Menghantar semula...";
-        const data = await sendOTP(pendingAuthEmail, loginTurnstileToken);
-        if (data.success) {
-            document.getElementById("otpMessage").textContent = "OTP baharu telah dihantar.";
-        } else {
-            document.getElementById("otpMessage").textContent = data.message || "Gagal menghantar semula.";
-        }
-    }
-
-    function closeOTPOverlay() {
-        hideOTPOverlay();
-        pendingAuthEmail = null;
-    }
 </script>
 
 <!-- Start of LiveChat (www.livechat.com) code -->
