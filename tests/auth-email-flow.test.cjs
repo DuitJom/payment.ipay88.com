@@ -70,7 +70,8 @@ async function setup(options = {}) {
   const support = await import(pathToFileURL(path.join(root, "workers/email-auth/test-support.js")));
   globalThis.fetch = providerFetch; Date.now = () => clock; console.log = () => {};
   const env = options.env || support.testEnvironment(), jar = options.jar || { value: "" };
-  const state = { ...support.providerState(), calls: [], transitions: 0, signOuts: 0, intervals: new Map(), settled: 0 };
+  const state = { ...support.providerState(), calls: [], transitions: 0, signOuts: 0, intervals: new Map(), settled: 0,
+    apiOffline: !!options.apiOffline };
   state.provider = support.providerMock(state);
   providers.set(env.TURNSTILE_SECRET_KEY, state); providers.set(env.MJ_APIKEY_PUBLIC, state);
   const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
@@ -86,7 +87,7 @@ async function setup(options = {}) {
   const fetch = async (url, init) => {
     const route = new URL(url).pathname;
     state.calls.push({ route, credentials: init.credentials, body: init.body ? JSON.parse(init.body) : null });
-    if (options.apiOffline) throw new TypeError("simulated API unavailable");
+    if (state.apiOffline) throw new TypeError("simulated API unavailable");
     if (route === "/api/verify-otp" && state.verificationGate) await state.verificationGate;
     const headers = { ...init.headers, Origin: "https://www.duitjom.my", "CF-Connecting-IP": "203.0.113.10" };
     if (init.credentials === "include" && jar.value) headers.Cookie = jar.value;
@@ -213,4 +214,23 @@ test("Google remains independent of an email Worker outage", async () => {
   await h.window.logoutUser();
   assert.equal(h.state.signOuts, 1);
   assert.equal(h.window.canContinueToPayment(), false);
+});
+test("failed OTP connection explains the error and can retry with a fresh security token", async () => {
+  const h = await setup({ apiOffline: true });
+  await h.send();
+  assert.equal(h.get("authMessage").textContent,
+    "This website could not reach email verification. Please retry or contact support.");
+  assert.equal(h.state.mailjetCalls.length, 0);
+  assert.equal(h.window.canContinueToPayment(), false);
+  assert.equal(h.get("verifyOtpButton").disabled, true);
+  assert.equal(h.window.loginTurnstileToken, null);
+  assert.equal(h.get("emailLoginForm").getAttribute("aria-busy"), "false");
+  h.window.DJ_I18N.setLocale("ms");
+  assert.equal(h.get("authMessage").textContent,
+    "Laman ini tidak dapat mengakses pengesahan email. Sila cuba lagi atau hubungi sokongan.");
+  h.state.apiOffline = false;
+  await h.send();
+  assert.equal(h.state.mailjetCalls.length, 1);
+  await h.verify();
+  assert.equal(h.window.canContinueToPayment(), true);
 });

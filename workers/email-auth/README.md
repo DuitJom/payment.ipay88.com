@@ -4,6 +4,8 @@ Modul `otp-worker.js` menggantikan pengendali OTP lama, mengesahkan keputusan Tu
 
 ## 1. Pasang backend dahulu
 
+Pilih integrasi pada Worker sedia ada melalui langkah 1–6 di bawah, atau pemasangan Worker berasingan pada bahagian **Pilihan manual: Worker berasingan**. Kedua-duanya mesti melayani empat endpoint pada `e-kyc.duitjom.my` sebelum frontend digunakan.
+
 1. Gunakan Worker sedia ada yang melayani `https://e-kyc.duitjom.my`. Tambah fail `otp-worker.js` sebagai modul. Jangan menggantikan keseluruhan Worker yang mempunyai API pelanggan/pembayaran lain dengan entry point standalone ini.
 2. Tambah atau kekalkan binding D1 bernama `AUTH_DB`. Jalankan [`schema.sql`](./schema.sql) pada database tersebut. Ia menambah jadual `email_*`; jadual lama `auth_challenges` kekal. Gunakan database production yang betul, bukan database ujian.
 3. Masukkan tetapan di bawah. Secret mesti berada dalam Cloudflare Worker, bukan frontend, GitHub atau mesej chat.
@@ -48,6 +50,34 @@ ctx.waitUntil(Promise.all([drainWelcomeEmails(env), cleanupEmailAuth(env)]));
 6. Deploy Worker yang telah digabungkan, kemudian deploy frontend PR ini. Frontend baharu memerlukan `challengeId`, `/api/session` dan `/api/logout`; deploy frontend sebelum backend siap boleh menyebabkan login gagal.
 
 [`wrangler.example.toml`](./wrangler.example.toml) menunjukkan binding dan nama tetapan. Ia tiada route production dan mempunyai UUID D1 placeholder. Gabungkan tetapan dengan konfigurasi Worker sebenar; jangan deploy contoh tanpa menukar nama Worker/database dan menyemak route. Potongan Worker asal tidak menunjukkan entry point, helper atau konfigurasi penuh, jadi fail itu belum boleh digantikan secara automatik dengan selamat.
+
+### Pilihan manual: Worker berasingan
+
+Jika anda sudah mencipta Worker `duitjom-email-auth`, tampal keseluruhan `otp-worker.js` sebagai entry point, termasuk `export default` di hujungnya. Tambah binding `AUTH_DB`, jalankan `schema.sql` dan isi secret/variable dalam jadual di atas **pada Worker baharu itu**. Deploy versi tersebut.
+
+Frontend tetap memanggil `https://e-kyc.duitjom.my`. Alamat `workers.dev` Worker baharu tidak digunakan oleh frontend. Pada Worker baharu, buka **Settings → Domains & Routes → Add → Route**, pilih zone `duitjom.my` dan tambah setiap pattern di bawah:
+
+| Route pattern | Worker |
+| --- | --- |
+| `https://e-kyc.duitjom.my/api/send-otp*` | `duitjom-email-auth` |
+| `https://e-kyc.duitjom.my/api/verify-otp*` | `duitjom-email-auth` |
+| `https://e-kyc.duitjom.my/api/session*` | `duitjom-email-auth` |
+| `https://e-kyc.duitjom.my/api/logout*` | `duitjom-email-auth` |
+
+Hostname `e-kyc.duitjom.my` mesti mempunyai rekod DNS proxied dalam zone Cloudflare yang aktif. Empat Routes ini memindahkan laluan auth kepada Worker baharu sambil membiarkan API lain pada konfigurasi sedia ada. Routes mengambil keutamaan berbanding Custom Domain pada hostname yang sama. Rujukan: [Cloudflare Routes](https://developers.cloudflare.com/workers/configuration/routing/routes/).
+
+Tetapkan `ALLOWED_ORIGINS` tepat kepada `https://www.duitjom.my,https://duitjom.my` tanpa slash hujung. Untuk kerja welcome/pembersihan, tambah Cron Trigger `*/5 * * * *` pada Worker baharu.
+
+### Apabila Minta Kod OTP memaparkan ralat sambungan
+
+Kod frontend sebelum pembaikan memaparkan `Something went wrong. Please try again.` apabila `fetch` ditolak tanpa respons yang boleh dibaca. Selepas pembaikan, ia memaparkan ralat sambungan pengesahan email dalam bahasa pilihan. Ini meliputi kemungkinan masalah rangkaian, DNS, TLS atau CORS; mesej itu sahaja tidak menentukan punca.
+
+1. Pada Worker yang sepatutnya melayani OTP, semak **Domains & Routes**. Jika menggunakan Worker berasingan, pastikan keempat-empat Routes di atas menunjuk kepadanya. Semak juga binding/secret pada Worker tersebut, bukan pada Worker lain.
+2. Buka log Worker dan cuba sekali lagi dari portal. Jika log handler email auth muncul, gunakan `code` dan `requestId` untuk membezakan kegagalan Turnstile, Mailjet, kuota atau konfigurasi. Jika log tidak muncul, semak route, DNS dan Cloudflare Security Events dahulu.
+3. Jika menggunakan DevTools, permintaan preflight `OPTIONS /api/send-otp` dari portal mesti menerima 204 dengan `Access-Control-Allow-Origin` sepadan dan `Access-Control-Allow-Credentials: true`. Selepas itu, POST mesti menerima JSON, termasuk bagi respons ralat. Jangan cuba mengatasi CORS dengan `mode: no-cors`: frontend memerlukan JSON dan cookie sesi.
+4. Jika Security Events membuktikan rule tertentu mencabar API/preflight, semak skop rule tersebut. `OPTIONS` tidak membawa cookie clearance, jadi Challenge Page boleh menyekatnya sebelum Worker. Kekalkan Turnstile server dan rate limit dalam Worker. Rujukan: [Cloudflare challenge troubleshooting](https://developers.cloudflare.com/cloudflare-challenges/troubleshooting/).
+
+Amaran console untuk kegagalan sambungan hanya mengandungi endpoint dan kaedah HTTP. Selepas cubaan gagal, frontend keluar daripada keadaan sibuk dan membersihkan token Turnstile supaya cubaan seterusnya menggunakan token baharu. Jangan kongsi OTP, cookie atau secret ketika menyemak log.
 
 ## 2. Cari punca 403 Turnstile
 
@@ -139,7 +169,7 @@ node --test workers/email-auth/otp-worker.test.js
 node --experimental-vm-modules --test tests/auth-email-flow.test.cjs
 ```
 
-15 ujian backend dan 5 ujian gabungan lulus. SQL/transaction dijalankan pada SQLite sebenar dan HMAC/cookie/session menggunakan kod Worker sebenar. Pelayar/Firebase serta respons Turnstile/Mailjet disimulasikan; tiada email sebenar dihantar oleh ujian ini.
+15 ujian backend dan 6 ujian gabungan lulus. SQL/transaction dijalankan pada SQLite sebenar dan HMAC/cookie/session menggunakan kod Worker sebenar. Pelayar/Firebase serta respons Turnstile/Mailjet disimulasikan; tiada email sebenar dihantar oleh ujian ini. Ujian gabungan turut memastikan kegagalan sambungan memaparkan ralat yang diterjemah dan login boleh dicuba semula dengan token keselamatan baharu selepas sambungan pulih.
 
 Selepas deployment backend dan frontend, jalankan aliran sebenar ini menggunakan email ujian yang anda kawal:
 

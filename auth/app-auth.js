@@ -272,6 +272,12 @@ async function callWorker(endpoint, body, method = "POST") {
     return data;
   } catch (error) {
     if (error?.name === "AbortError") throw new Error("TIMEOUT");
+    if (error?.name === "TypeError") {
+      // Fetch rejects without a readable response for network/CORS failures.
+      // Log only the route and method, never the email, OTP or Turnstile token.
+      console.warn("Email auth connection failed", { endpoint, method });
+      throw { messageKey: "auth.apiBlocked" };
+    }
     throw error;
   } finally { clearTimeout(timeout); workerRequests.delete(controller); }
 }
