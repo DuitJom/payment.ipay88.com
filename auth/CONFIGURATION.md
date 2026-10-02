@@ -4,7 +4,7 @@ The portal uses one email OTP form on `index.html` for registration and login. R
 
 ## Required deployment order
 
-Install the email auth module and additive D1 schema in the existing `e-kyc.duitjom.my` Worker **before deploying this frontend**. The frontend now requires the challenge ID and server session endpoints; the former `{ success: true }`-only Worker contract is insufficient. The full existing Worker source/configuration was not provided, so unrelated backend APIs are preserved through module integration and still need their own authorization review.
+Install the email auth module and additive D1 schema **before deploying this frontend**. Either integrate the handler into the existing `e-kyc.duitjom.my` Worker, or deploy a separate `duitjom-email-auth` Worker and assign its four auth Routes on that hostname as described in the Malay guide. Creating a new Worker without those Routes does not change the API used by the portal. The frontend now requires the challenge ID and server session endpoints; the former `{ success: true }`-only Worker contract is insufficient. The full existing Worker source/configuration was not provided, so unrelated backend APIs still need their own authorization review.
 
 See [the Malay deployment and debugging guide](../workers/email-auth/README.md) for secrets, Turnstile/Mailjet checks, route integration and real inbox verification. `wrangler.example.toml` is a configuration example, not a production deployment: it has a placeholder database UUID and no production routes. Code and simulated tests do not establish real Mailjet delivery.
 
@@ -19,6 +19,8 @@ See [the Malay deployment and debugging guide](../workers/email-auth/README.md) 
 7. `POST /api/logout` receives `{ challengeId }` when available and the cookie. It cancels the current challenge, revokes the session and expires the cookie. The frontend cancels outstanding requests and clears its state as well.
 
 The Worker requires exact allowed origins and `Access-Control-Allow-Credentials: true`, handles OPTIONS before auth, and returns no-store responses. Production origins are `https://www.duitjom.my` and `https://duitjom.my`; the API is on the same HTTPS site. A Vercel preview is a different site and needs deliberately configured staging authentication to test real cookies/Turnstile. Cloudflare challenge HTML on an API fetch is surfaced as an API blocking error.
+
+A rejected fetch with no readable response (network, DNS, TLS or CORS failure) shows the translated email-verification connection error. It cannot establish which of those causes occurred. A timeout keeps its separate message. The console warning records only the endpoint/method; it does not record email, OTP, cookies or Turnstile tokens. After a failed OTP send the form leaves its busy state and clears the security token, so a retry uses a fresh token.
 
 Mailjet API/Secret keys and OTP_PEPPER remain server secrets. No frontend magic-link or welcome endpoint is invoked. An optional welcome email is queued by the Worker only after successful verification and can be retried by cron. The D1 profile is a verified email record, not a completed customer/E-KYC profile.
 
