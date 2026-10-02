@@ -1,6 +1,6 @@
 /* =========================================================
    DUITJOM CENTRALIZED TRANSLATION DICTIONARY
-   Default locale: en. Supported: en, zh.
+   Default locale: en. Supported: en, ms, zh.
    ========================================================= */
 window.DUITJOM_I18N = {
   defaultLocale: "en",
@@ -36,7 +36,7 @@ window.DUITJOM_I18N = {
       auth: {
         kickerLogin: "SECURE ACCOUNT ACCESS",
         loginTitle: "Sign In",
-        loginSubtitle: "Use Google, GitHub, or your email and password.",
+        loginSubtitle: "Use Google or a six-digit code sent to your email.",
         googleContinue: "Continue with Google",
         githubContinue: "Continue with GitHub",
         emailContinue: "Sign in with Email",
@@ -52,7 +52,7 @@ window.DUITJOM_I18N = {
         loggedInTitle: "Signed In Successfully",
         logoutButton: "Log Out",
         forgotPassword: "Forgot Password?",
-        forgotPasswordLink: "Forget Password",
+        forgotPasswordLink: "Need Help Signing In?",
         registerAccount: "Create Account",
         registerAccountLink: "Register Account",
         registerLink: "Register",
@@ -84,7 +84,7 @@ window.DUITJOM_I18N = {
         magicLinkSent: "A magic link has been sent. Please check your inbox.",
         magicLinkEmailRequired: "An email address is required to complete the magic link.",
         verificationResent: "The verification email has been resent. The link will bring you back to this site automatically.",
-        needLoginToPay: "Please sign in and verify your email before making a payment.",
+        needLoginToPay: "Sign in with Google or verify your email OTP before continuing.",
         genericError: "Something went wrong. Please try again.",
         errors: {
           "auth/invalid-credential": "Incorrect email or password.",
@@ -308,7 +308,7 @@ window.DUITJOM_I18N = {
       auth: {
         kickerLogin: "安全帐户访问",
         loginTitle: "登录",
-        loginSubtitle: "使用 Google、GitHub，或您的电子邮件与密码登录。",
+        loginSubtitle: "使用 Google 或发送到您邮箱的六位验证码登录。",
         googleContinue: "使用 Google 继续",
         githubContinue: "使用 GitHub 继续",
         emailContinue: "使用电子邮件登录",
@@ -324,7 +324,7 @@ window.DUITJOM_I18N = {
         loggedInTitle: "登录成功",
         logoutButton: "登出",
         forgotPassword: "忘记密码？",
-        forgotPasswordLink: "忘记密码",
+        forgotPasswordLink: "需要登录帮助？",
         registerAccount: "注册账户",
         registerAccountLink: "注册账户",
         registerLink: "注册",
@@ -356,7 +356,7 @@ window.DUITJOM_I18N = {
         magicLinkSent: "魔术链接已发送，请查看您的收件箱。",
         magicLinkEmailRequired: "需要电子邮件才能完成魔术链接登录。",
         verificationResent: "验证邮件已重新发送，点击链接后将自动返回本网站。",
-        needLoginToPay: "请先登录并验证电子邮件后再进行付款。",
+        needLoginToPay: "请使用 Google 登录或验证邮箱验证码后继续。",
         genericError: "发生错误，请再试一次。",
         errors: {
           "auth/invalid-credential": "电子邮件或密码不正确。",
@@ -588,7 +588,7 @@ window.DUITJOM_I18N = {
       auth: {
         kickerLogin: "JAMINAN KESELAMATAN PENGGUNA",
         loginTitle: "Log Masuk ke DuitJom",
-        loginSubtitle: "Sila pilih kaedah log masuk pilihan anda untuk meneruskan ke akaun DuitJom.",
+        loginSubtitle: "Gunakan Google atau kod enam digit yang dihantar ke email anda.",
         googleContinue: "Teruskan dengan Google",
         githubContinue: "Teruskan dengan GitHub",
         emailContinue: "Log masuk dengan E-mel",
@@ -604,7 +604,7 @@ window.DUITJOM_I18N = {
         loggedInTitle: "Berjaya Log Masuk",
         logoutButton: "Log Keluar",
         forgotPassword: "Lupa Kata Laluan?",
-        forgotPasswordLink: "Lupa Kata Laluan",
+        forgotPasswordLink: "Perlukan Bantuan Log Masuk?",
         registerAccount: "Daftar Akaun",
         registerAccountLink: "Daftar Akaun",
         registerLink: "Daftar",
@@ -636,7 +636,7 @@ window.DUITJOM_I18N = {
         magicLinkSent: "Pautan sihir telah dihantar. Sila semak kotak masuk anda.",
         magicLinkEmailRequired: "Alamat e-mel diperlukan untuk melengkapkan pautan sihir.",
         verificationResent: "E-mel pengesahan telah dihantar semula. Pautan akan membawa anda kembali ke tapak ini secara automatik.",
-        needLoginToPay: "Sila log masuk dan sahkan e-mel anda sebelum membuat pembayaran.",
+        needLoginToPay: "Log masuk dengan Google atau sahkan OTP email sebelum meneruskan.",
         genericError: "Sesuatu tidak kena. Sila cuba lagi.",
         errors: {
           "auth/invalid-credential": "E-mel atau kata laluan tidak betul.",
@@ -839,3 +839,45 @@ window.DUITJOM_I18N = {
     }
   }
 };
+
+// Email OTP labels: English, Bahasa Malaysia, Chinese. Keep each key in one place.
+(() => {
+  const otpTranslations = {
+    mailDeliveryFailed: ["The OTP email could not be sent. Please try again or contact support.", "Email OTP belum berjaya dihantar. Sila cuba lagi atau hubungi sokongan.", "验证码邮件发送失败，请重试或联系客服。"],
+    otpInvalid: ["The OTP is incorrect or expired. Request a new code if needed.", "Kod OTP salah atau tamat tempoh. Minta kod baharu jika perlu.", "验证码错误或已过期，请按需申请新验证码。"],
+    sessionExpired: ["Your email session could not be confirmed. Sign in again and allow this website's cookies.", "Sesi email tidak dapat disahkan. Sila log masuk semula dan benarkan kuki laman ini.", "无法确认邮箱会话，请重新登录并允许此网站的 Cookie。"],
+    apiBlocked: ["This website could not reach email verification. Please retry or contact support.", "Laman ini tidak dapat mengakses pengesahan email. Sila cuba lagi atau hubungi sokongan.", "网站无法访问邮箱验证，请重试或联系客服。"],
+    rateLimited: ["Too many requests. Try again in {seconds} seconds.", "Terlalu banyak permintaan. Cuba lagi dalam {seconds} saat.", "请求过多，请在 {seconds} 秒后重试。"],
+    otpExpiryHint: ["Your OTP is valid for 5 minutes.", "Kod OTP sah selama 5 minit.", "验证码有效期为5分钟。"],
+    otpHelp: ["If the code does not arrive, check Spam or Junk and request a new OTP after 60 seconds.", "Jika kod tidak diterima, semak folder Spam atau Junk dan minta OTP baharu selepas 60 saat.", "如果未收到验证码，请检查垃圾邮件文件夹，并在60秒后申请新验证码。"],
+    loginHelpBody: ["Sign in using an OTP sent to your email. You do not need a password or password-reset link.", "Log masuk menggunakan kod OTP yang dihantar ke email anda. Tiada kata laluan atau pautan set semula diperlukan.", "使用发送到邮箱的验证码登录，无需密码或重置密码链接。"],
+    loginHelpTitle: ["Sign-in Help", "Bantuan Log Masuk", "登录帮助"],
+    continueButton: ["Continue", "Teruskan", "继续"],
+    loggedInSubtitle: ["Your email is verified. Continue to fill in your customer details.", "Email anda telah disahkan. Teruskan untuk mengisi maklumat pelanggan.", "邮箱已验证，继续填写客户资料。"],
+    welcomeBack: ["Welcome back, {name}", "Selamat datang kembali, {name}", "欢迎回来，{name}"],
+    logoutError: ["Sign-out could not finish. Refresh the page and try again.", "Log keluar tidak dapat diselesaikan. Muat semula halaman dan cuba lagi.", "退出登录未完成，请刷新页面后重试。"],
+    googleDomainError: ["Google sign-in is not configured for this website. Sign in with email OTP or contact support.", "Log masuk Google belum dikonfigurasi untuk laman ini. Gunakan OTP email atau hubungi sokongan.", "此网站尚未配置 Google 登录，请使用邮箱验证码或联系客服。"],
+    googleUnavailable: ["Google sign-in could not load. Refresh the page or sign in with email OTP.", "Log masuk Google tidak dapat dimuatkan. Muat semula halaman atau gunakan OTP email.", "Google 登录无法加载，请刷新页面或使用邮箱验证码登录。"],
+    timeoutError: ["The request took too long. Please try again.", "Permintaan mengambil masa terlalu lama. Sila cuba lagi.", "请求超时，请重试。"],
+    serviceError: ["The verification service is unavailable or returned an invalid response. Try again or contact support.", "Perkhidmatan pengesahan tidak tersedia atau memberi respons yang tidak sah. Cuba lagi atau hubungi sokongan.", "验证服务暂时不可用或响应无效，请重试或联系客服。"],
+    securityError: ["The security check could not finish. Refresh the page and try again.", "Pengesahan keselamatan tidak dapat diselesaikan. Muat semula halaman dan cuba lagi.", "安全验证未完成，请刷新页面后重试。"],
+    securityRequired: ["Complete the security check first.", "Sila lengkapkan pengesahan keselamatan dahulu.", "请先完成安全验证。"],
+    requestOtpFirst: ["Request an OTP for this email first.", "Sila minta kod OTP untuk email ini dahulu.", "请先为此邮箱申请验证码。"],
+    otpIncomplete: ["Enter the six-digit OTP.", "Sila masukkan kod OTP enam digit.", "请输入六位验证码。"],
+    otpVerified: ["Email verified. Select Continue to fill in your customer details.", "Email berjaya disahkan. Tekan Teruskan untuk mengisi maklumat pelanggan.", "邮箱已验证，选择“继续”填写客户资料。"],
+    otpSent: ["Your OTP email request was accepted. Check your inbox or spam folder.", "Permintaan email OTP diterima. Sila semak peti masuk atau folder Spam anda.", "验证码邮件请求已接受，请检查收件箱或垃圾邮件文件夹。"],
+    otpSubtitle: ["Verify your email using a six-digit OTP. No password is required.", "Sahkan email anda menggunakan kod OTP enam digit. Tiada kata laluan diperlukan.", "使用六位验证码验证邮箱，无需密码。"],
+    otpDigit: ["OTP digit {digit}", "Digit OTP {digit}", "验证码第{digit}位"],
+    resendOtpCountdown: ["Resend OTP ({seconds}s)", "Hantar Semula OTP ({seconds}s)", "重新发送验证码（{seconds}秒）"],
+    resendOtp: ["Resend OTP", "Hantar Semula OTP", "重新发送验证码"],
+    otpLabel: ["Verification Code (OTP)", "Kod Pengesahan (OTP)", "验证码（OTP）"],
+    verifyOtp: ["Verify OTP & Sign In", "Sahkan OTP & Log Masuk", "验证并登录"],
+    requestOtp: ["Send OTP Code", "Hantar Kod OTP", "发送验证码"],
+  };
+  ["en", "ms", "zh"].forEach((locale, index) => {
+    const auth = window.DUITJOM_I18N.locales[locale].auth;
+    Object.keys(otpTranslations).forEach(key => { auth[key] = otpTranslations[key][index]; });
+    auth.link = auth.requestOtp;
+    auth.magicLink = auth.requestOtp;
+  });
+})();

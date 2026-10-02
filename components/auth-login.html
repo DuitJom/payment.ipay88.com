@@ -1,158 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DuitJom - Log Masuk</title>
-    <link rel="stylesheet" href="../auth/login.css">
-    <!-- Fail JavaScript utama anda -->
-    <script src="app-auth.js" defer></script>
-    <script src="auth-ui.js" defer></script>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Log Masuk - DuitJom</title>
+    <script>
+        // Keep old login links on the shared email OTP / Google entry point.
+        window.location.replace("../index.html?auth=email");
+    </script>
 </head>
 <body>
-
-    <!-- =========================================================
-         POPUP NOTIS PENYELENGGARAAN (BARU)
-         ========================================================= -->
-    <div id="maintenanceNotificationPopup" class="notification-overlay">
-        <div class="notification-popup-content">
-            <div class="close-icon-container">
-                <span class="close-popup-button" id="closePopupButtonX">&times;</span>
-            </div>
-       <div class="popup-logo-placeholder">
-           <img 
-              src="../IMG_7572.png" 
-              alt="DuitJom Logo" 
-              class="popup-logo"
-           >
-       </div>
-            <h2 class="popup-title">⚙ NOTIS PENTING</h2>
-            <h3 class="popup-subtitle">Laman DuitJom.my Sedang Dalam Penyelenggaraan</h3>
-            <hr class="popup-divider">
-            <p class="popup-paragraph">Pelanggan yang dihormati,</p>
-            <p class="popup-paragraph">Website DuitJom.my sedang menjalani kerja-kerja penyelenggaraan dan penambahbaikan bagi memastikan pengalaman penggunaan yang lebih selamat, lancar dan berkualiti.</p>
-            <p class="popup-paragraph">Buat sementara waktu, sesetengah fungsi mungkin tidak dapat digunakan seperti biasa.</p>
-            <p class="popup-paragraph">Untuk sebarang urusan pembayaran atau pertanyaan, sila hubungi Pasukan Sokongan DuitJom melalui:</p>
-            <p class="popup-contact-email">✉ support@duitjom.my</p>
-            <p class="popup-paragraph">Pasukan kami akan membantu anda sebaik mungkin.</p>
-            <div class="popup-actions">
-                <button type="button" class="popup-action-button close-btn" id="closeButtonBottom">Tutup</button>
-                <a href="mailto:support@duitjom.my" class="popup-action-button support-btn">Hubungi Support</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- =========================================================
-         DUITJOM AUTH BANNER — fintech design (light, high-contrast)
-         ========================================================= -->
-    <div class="auth-banner">
-        <h1>Selamat Datang ke DuitJom</h1>
-        <p>Log masuk atau daftar untuk menguruskan kewangan anda.</p>
-        <img src="https://duitjom.my/images/banner-placeholder.png" alt="DuitJom Banner" class="banner-image">
-    </div>
-
-    <!-- =========================================================
-         DUITJOM AUTH LOGIN CONTAINER — main login form
-         ========================================================= -->
-    <div id="auth-login-container">
-        <!-- Google Sign-In Button -->
-        <button type="button" class="login-provider-button">
-            <img src="https://duitjom.my/images/google-icon.png" alt="Google" style="width:20px; height:20px; margin-right: 8px;">
-            Log Masuk dengan Google
-        </button>
-
-        <!-- Separator atau pilihan lain -->
-        <div style="text-align: center; margin: 1.5rem 0; color: #cbd5e1; font-size: 0.875rem;">
-            ATAU
-        </div>
-
-        <!-- Tab Kaedah Log Masuk (Email/Phone/TOTP) -->
-        <div class="login-methods">
-            <button type="button" class="login-method active" data-method="email">E-mel</button>
-            <button type="button" class="login-method" data-method="phone">Telefon</button>
-            <button type="button" class="login-method" data-method="totp">TOTP</button>
-        </div>
-
-        <!-- Panel Log Masuk E-mel -->
-        <div id="email-login-panel" class="login-panel">
-            <input type="email" placeholder="Alamat E-mel" class="login-input">
-            <input type="password" placeholder="Kata Laluan" class="login-input">
-            <button type="submit" class="login-button">Log Masuk</button>
-            <a href="#" class="magic-link">Hantar Pautan Ajaib</a>
-        </div>
-
-        <!-- Panel Log Masuk Telefon (tersembunyi secara lalai) -->
-        <div id="phone-login-panel" class="login-panel hidden">
-            <input type="tel" placeholder="Nombor Telefon" class="login-input">
-            <button type="submit" class="login-button">Hantar OTP</button>
-        </div>
-
-        <!-- Panel Log Masuk TOTP (tersembunyi secara lalai) -->
-        <div id="totp-login-panel" class="login-panel hidden">
-            <input type="text" placeholder="Kod TOTP" class="login-input">
-            <button type="submit" class="login-button">Sahkan</button>
-        </div>
-
-        <!-- Pautan akaun lain (anchor, bukan butang submit) -->
-        <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
-            <a class="auth-switch-link" href="../page/register.html">Daftar Akaun</a>
-            <span class="auth-switch-sep" aria-hidden="true">&bull;</span>
-            <a class="auth-switch-link" href="../page/forgot-password.html">Lupa Kata Laluan?</a>
-        </nav>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const popupOverlay = document.getElementById('maintenanceNotificationPopup');
-            const closeButtonX = document.getElementById('closePopupButtonX');
-            const closeButtonBottom = document.getElementById('closeButtonBottom');
-
-            // Fungsi untuk membuka popup
-            function openPopup() {
-                popupOverlay.style.display = 'flex';
-            }
-
-            // Fungsi untuk menutup popup
-            function closePopup() {
-                popupOverlay.style.display = 'none';
-            }
-
-            // Buka popup secara automatik apabila halaman dimuatkan
-            openPopup();
-
-            // Tutup popup apabila butang 'x' diklik
-            closeButtonX.addEventListener('click', closePopup);
-
-            // Tutup popup apabila butang 'Tutup' di bahagian bawah diklik
-            closeButtonBottom.addEventListener('click', closePopup);
-
-            // Tutup popup apabila klik di luar kandungan popup
-            popupOverlay.addEventListener('click', function(event) {
-                if (event.target === popupOverlay) {
-                    closePopup();
-                }
-            });
-
-            // Logik untuk tab log masuk yang sedia ada
-            const loginMethods = document.querySelectorAll('.login-method');
-            const loginPanels = document.querySelectorAll('.login-panel');
-
-            loginMethods.forEach(methodButton => {
-                methodButton.addEventListener('click', function() {
-                    // Buang kelas 'active' dari semua butang kaedah
-                    loginMethods.forEach(btn => btn.classList.remove('active'));
-                    // Tambah kelas 'active' pada butang yang diklik
-                    this.classList.add('active');
-
-                    // Sembunyikan semua panel
-                    loginPanels.forEach(panel => panel.classList.add('hidden'));
-
-                    // Paparkan panel yang berkaitan
-                    const targetMethod = this.dataset.method;
-                    document.getElementById(`${targetMethod}-login-panel`).classList.remove('hidden');
-                });
-            });
-        });
-    </script>
+    <p>Log masuk menggunakan pengesahan email OTP atau Google.</p>
+    <a href="../index.html?auth=email">Buka borang log masuk DuitJom</a>
 </body>
 </html>
