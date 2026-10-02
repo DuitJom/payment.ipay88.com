@@ -29,6 +29,9 @@ CREATE TABLE IF NOT EXISTS email_auth_sessions (
   expires_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS email_auth_sessions_expiry ON email_auth_sessions(expires_at);
+CREATE INDEX IF NOT EXISTS email_auth_sessions_challenge ON email_auth_sessions(challenge_id);
+CREATE INDEX IF NOT EXISTS email_otp_challenges_expiry ON email_otp_challenges(expires_at);
+CREATE INDEX IF NOT EXISTS email_auth_rate_limits_window ON email_auth_rate_limits(window_start);
 CREATE TABLE IF NOT EXISTS email_auth_outbox (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL REFERENCES email_auth_users(email),
