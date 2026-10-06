@@ -1,364 +1,150 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Sentry -->
-<script
-  src="https://js.sentry-cdn.com/5ff72752bc39b49369bd3128c7f9d072.min.js"
-  crossorigin="anonymous"
-></script>
-
-<title>DuitJom - Bank Selection</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-  async
-  defer>
-</script>
-<style>
-  *{font-family:Inter,sans-serif}
-  @keyframes spin{to{transform:rotate(360deg)}}
- .animate-spin{animation:spin 1s linear infinite}
- .bg-pattern{
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
-    background-size: 24px 24px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1745b5">
+  <title>DuitJom — Pilihan Bank &amp; Pembayaran QR</title>
+  <script src="https://js.sentry-cdn.com/5ff72752bc39b49369bd3128c7f9d072.min.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="payment.css?v=20261007">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen">
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6M8 12h12"/></symbol>
+    <symbol id="icon-next" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="icon-bank" viewBox="0 0 24 24"><path d="m3 8 9-5 9 5M3 9h18M5 10v8m7-8v8m7-8v8M3 21h18"/></symbol>
+    <symbol id="icon-qr" viewBox="0 0 24 24"><path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h2v2h-2zM21 15v3m-3 3h3M12 3v3m0 6h3m-3 3v6M3 12h3m15 0h-3"/></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+    <symbol id="icon-expand" viewBox="0 0 24 24"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M12 16V4m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
+  </svg>
 
-<!-- ====== PAGE 1: BANK SELECTION ====== -->
-<div id="selectionPage" class="min-h-screen">
-  <div class="max-w-[480px] mx-auto bg-[#F8FAFC] min-h-screen relative pb-[120px]">
-    <div class="sticky top-0 z-20 bg-[#F8FAFC]/80 backdrop-blur-xl px-5 h-[56px] flex items-center justify-between">
-      <button onclick="history.back()" class="w-9 h-9 rounded-full bg-white border flex items-center justify-center">←</button>
-      <span class="text-[14px] font-semibold">Pilihan Pembayaran</span>
-      <div class="w-9"></div>
-    </div>
+  <div id="selectionPage" class="payment-page">
+    <div class="payment-shell">
+      <header class="page-nav">
+        <button type="button" onclick="history.back()" class="icon-button" aria-label="Kembali ke maklumat pelanggan"><svg class="icon"><use href="#icon-arrow"/></svg></button>
+        <a href="../index.html" class="brand"><span class="brand-mark">D</span>DuitJom<span class="brand-dot"></span></a>
+        <span class="nav-label">PEMBAYARAN</span>
+      </header>
 
-    <div class="px-5 pt-2">
-      <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4 shadow-sm">
-  <div class="grid grid-cols-2 gap-3 text-[12px]">
-    <div>
-      <p class="text-slate-400 text-[10px] font-semibold uppercase tracking-wide">No. Ref</p>
-      <p id="noRefDisplay" class="font-bold text-slate-800 mt-0.5 tracking-wide">—</p>
-    </div>
-    <div class="text-right">
-      <p class="text-slate-400 text-[10px] font-semibold uppercase tracking-wide">Tarikh & Masa</p>
-      <p id="realtimeClock" class="font-semibold text-slate-700 mt-0.5">—</p>
-    </div>
-  </div>
-</div>
-
-      <div class="bg-white rounded-[20px] border p-5">
-        <div class="flex justify-between">
-          <div><p class="text-[11px] text-slate-400">Nama Pelanggan</p><p id="namaDisplay" class="font-semibold">Ahmad Bin Ali</p></div>
-          <div class="text-right"><p class="text-[11px] text-slate-400">ID Loan</p><p id="idDisplay" class="font-semibold">DJ-2024-8841</p></div>
+      <main class="selection-content">
+        <div class="page-heading">
+          <span class="eyebrow">LANGKAH 01 / 02</span>
+          <h1>Pilih cara anda<br>membayar.</h1>
+          <p>Pilih bank atau e-wallet untuk meneruskan.</p>
         </div>
-        <div class="text-center mt-4"><p class="text-[11px] text-slate-400">Jumlah Bayaran</p><p class="text-[28px] font-bold">RM <span id="jumlahDisplay">350</span>.00</p></div>
-      </div>
 
-      <div class="mt-6 bg-slate-100 rounded-full p-1 flex gap-1">
-        <button onclick="switchTab('duitnow')" id="tab-duitnow" class="flex-1 h-[36px] rounded-full bg-[#0F172A] text-white">DuitNow</button>
-        <button onclick="switchTab('online')" id="tab-online" class="flex-1 h-[36px] rounded-full text-slate-600">Online Banking</button>
-        <button onclick="switchTab('transfer')" id="tab-transfer" class="flex-1 h-[36px] rounded-full text-slate-600">Bank Transfer</button>
-      </div>
+        <section class="amount-card" aria-label="Ringkasan bayaran">
+          <div class="amount-card-top"><span>JUMLAH BAYARAN</span><span class="amount-card-icon"><svg class="icon"><use href="#icon-bank"/></svg></span></div>
+          <p class="amount-value"><span class="currency">RM</span> <span id="jumlahDisplay">350.00</span></p>
+          <div class="customer-details">
+            <div><span>Nama pelanggan</span><strong id="namaDisplay">Ahmad Bin Ali</strong></div>
+            <div><span>ID Loan</span><strong id="idDisplay">DJ-2024-8841</strong></div>
+          </div>
+        </section>
 
-      <div class="mt-5">
-        <p class="text-[13px] font-medium mb-2">Pilih Bank / E-Wallet</p>
-        <button onclick="toggleDropdown()" id="dropdownBtn" class="w-full h-[56px] bg-white border rounded-[14px] px-4 flex justify-between items-center"><span id="dropdownText" class="text-slate-400">-- Sila Pilih --</span>▼</button>
-        <div id="dropdownList" class="hidden absolute z-30 mt-2 w-full bg-white rounded-[16px] border shadow-xl"><div id="bankListContainer"></div></div>
-        <div id="selectedCard" class="hidden mt-4 bg-[#0F172A] rounded-[16px] p-4 flex items-center gap-3 text-white">
-          <div id="selectedLogo" class="w-[48px] h-[48px] rounded-[12px] bg-white flex items-center justify-center font-bold"></div>
-          <div class="flex-1"><p id="selectedName" class="font-semibold"></p><p id="selectedOwner" class="text-[11px] text-white/50"></p></div>
-          <div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center">✓</div>
+        <div class="reference-row">
+          <div><span>No. rujukan</span><strong id="noRefDisplay">—</strong></div>
+          <div><span>Tarikh &amp; masa</span><strong id="realtimeClock">—</strong></div>
         </div>
-      </div>
+
+        <section class="method-card" aria-labelledby="methodTitle">
+          <div class="section-title"><span class="section-icon"><svg class="icon"><use href="#icon-bank"/></svg></span><div><h2 id="methodTitle">Kaedah pembayaran</h2><p>Pilih kaedah yang sesuai untuk anda.</p></div></div>
+          <div class="method-tabs" role="tablist" aria-label="Kaedah pembayaran">
+            <button type="button" onclick="switchTab('duitnow')" id="tab-duitnow" role="tab" aria-selected="true" aria-controls="bankPanel" class="method-tab is-active">DuitNow</button>
+            <button type="button" onclick="switchTab('online')" id="tab-online" role="tab" aria-selected="false" aria-controls="bankPanel" class="method-tab">Online Banking</button>
+            <button type="button" onclick="switchTab('transfer')" id="tab-transfer" role="tab" aria-selected="false" aria-controls="bankPanel" class="method-tab">Bank Transfer</button>
+          </div>
+          <div id="bankPanel" role="tabpanel" aria-labelledby="tab-duitnow">
+            <p id="bankPickerLabel" class="field-label">Pilih bank / e-wallet</p>
+            <button type="button" onclick="toggleDropdown()" id="dropdownBtn" class="bank-picker" aria-haspopup="dialog" aria-controls="dropdownList" aria-expanded="false" aria-labelledby="bankPickerLabel dropdownText">
+              <span id="dropdownText" class="placeholder">Sila pilih bank atau e-wallet</span>
+              <svg class="icon picker-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
+            </button>
+            <div id="selectedCard" class="selected-card" hidden aria-live="polite">
+              <div id="selectedLogo" class="bank-logo"></div>
+              <div class="selected-details"><strong id="selectedName"></strong><span id="selectedOwner"></span></div>
+              <span class="selected-check"><svg class="icon"><use href="#icon-check"/></svg></span>
+            </div>
+            <p id="methodHint" class="method-hint">Pilihan akan ditutup secara automatik selepas anda memilih bank.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="action-footer">
+        <div class="turnstile-wrap">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAEyqT9t_mS4evqvT" data-action="bank-selection" data-theme="light" data-size="flexible"></div>
+        </div>
+        <button type="button" id="continueBtn" onclick="goToQR()" disabled class="primary-button"><span id="continueText">Pilih bank untuk teruskan</span><svg class="icon"><use href="#icon-next"/></svg></button>
+        <p class="footer-caption">Semak maklumat bayaran sebelum meneruskan.</p>
+      </footer>
     </div>
+  </div>
 
-    <div class="fixed bottom-0 left-0 right-0 p-5 bg-[#F8FAFC]">
-
-  <!-- CLOUDFLARE TURNSTILE -->
-  <div class="mb-3 flex justify-center">
-    <div
-      class="cf-turnstile"
-      data-sitekey="0x4AAAAAAEyqT9t_mS4evqvT"
-      data-action="bank-selection"
-      data-theme="auto"
-      data-size="flexible">
+  <div id="qrPage" class="payment-page qr-page" hidden>
+    <div class="payment-shell qr-shell">
+      <header class="page-nav">
+        <button type="button" onclick="backToSelection()" class="icon-button" aria-label="Kembali ke pilihan bank"><svg class="icon"><use href="#icon-arrow"/></svg></button>
+        <a href="../index.html" class="brand"><span class="brand-mark">D</span>DuitJom<span class="brand-dot"></span></a>
+        <span class="nav-label">BAYARAN QR</span>
+      </header>
+      <main>
+        <div class="page-heading qr-heading"><span class="eyebrow">LANGKAH 02 / 02</span><h1>Imbas. Bayar. Selesai.</h1><p>Gunakan aplikasi bank atau e-wallet pilihan anda.</p></div>
+        <section class="qr-card" aria-label="Pembayaran QR">
+          <div class="qr-card-top"><span class="qr-kicker"><svg class="icon"><use href="#icon-qr"/></svg>KOD QR PEMBAYARAN</span><span class="timer-pill" aria-label="Masa berbaki"><svg class="icon"><use href="#icon-clock"/></svg><span id="countdown">1:59</span></span></div>
+          <p class="qr-amount"><span>RM</span> <strong id="qrJumlah">350.00</strong></p>
+          <p class="qr-amount-label">Jumlah yang perlu dibayar</p>
+          <div class="qr-bank"><span id="qrLogo" class="bank-logo small"></span><span><strong id="qrBankName"></strong><span id="qrOwnerName"></span></span></div>
+          <button type="button" id="qrImageButton" class="qr-image-button" onclick="openQRPreview()" aria-label="Besarkan dan muat turun gambar QR" aria-haspopup="dialog" aria-controls="qrPreview">
+            <img id="qrImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Kod QR pembayaran asal DuitJom" decoding="async">
+            <span class="qr-image-caption"><svg class="icon"><use href="#icon-expand"/></svg>Tekan QR untuk besarkan &amp; muat turun</span>
+          </button>
+          <a id="qrDownloadButton" class="download-button" href="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" download="DuitJom-QR.jpeg"><svg class="icon"><use href="#icon-download"/></svg>Muat turun QR</a>
+          <div class="qr-reference"><span>No. rujukan</span><strong id="qrRefDisplay">—</strong><span id="qrAccountNo"></span></div>
+          <div class="time-track" aria-hidden="true"><span id="countdownProgress"></span></div>
+        </section>
+        <div class="qr-instructions"><span class="instruction-number">1</span><p>Simpan QR dan buka aplikasi bank anda.</p><span class="instruction-number">2</span><p>Imbas / pilih QR, kemudian semak jumlah bayaran.</p><span class="instruction-number">3</span><p>Lampirkan resit selepas bayaran dibuat.</p></div>
+        <section class="receipt-card" aria-labelledby="receiptTitle">
+          <div class="section-title"><span class="section-icon"><svg class="icon"><use href="#icon-upload"/></svg></span><div><h2 id="receiptTitle">Resit pembayaran</h2><p>Lampirkan bukti bayaran anda di sini.</p></div></div>
+          <label class="receipt-picker" for="fileInput"><svg class="icon"><use href="#icon-upload"/></svg><strong>Pilih fail resit</strong><span id="fileName">PNG, JPG atau PDF · Maksimum 5MB</span><input type="file" id="fileInput" accept="image/png,image/jpeg,application/pdf" onchange="onFileSelected(this)"></label>
+          <p id="fileError" class="form-error" role="alert" hidden></p>
+          <button type="button" id="uploadBtn" onclick="startUpload()" disabled class="primary-button">Muat naik resit<svg class="icon"><use href="#icon-next"/></svg></button>
+        </section>
+        <button type="button" onclick="backToSelection()" class="text-button cancel-button">Batal &amp; kembali ke pilihan bank</button>
+      </main>
     </div>
   </div>
 
-    <button
-      id="continueBtn"
-      onclick="goToQR()"
-      disabled
-      class="w-full h-[56px] rounded-[16px] bg-slate-200">
-      Seterusnya
-    </button>
+  <dialog id="dropdownList" class="bank-dialog" aria-labelledby="bankDialogTitle">
+    <div class="dialog-heading"><div><span class="eyebrow">PILIHAN PEMBAYARAN</span><h2 id="bankDialogTitle">Pilih bank / e-wallet</h2></div><button type="button" onclick="closeDropdown()" class="icon-button" aria-label="Tutup pilihan bank"><svg class="icon"><use href="#icon-close"/></svg></button></div>
+    <div id="bankListContainer" class="bank-list"></div>
+    <p class="bank-dialog-footer">Tekan nama bank untuk memilih.</p>
+  </dialog>
 
-   </div>     ← tutup .fixed bottom-0
-     </div>   ← TAMBAH INI (tutup max-w-[480px])
-   </div>     ← TAMBAH INI (tutup #selectionPage)
+  <dialog id="qrPreview" class="qr-preview-dialog" aria-labelledby="qrPreviewTitle">
+    <div class="dialog-heading"><div><span class="eyebrow">QR PEMBAYARAN</span><h2 id="qrPreviewTitle">Paparan QR besar</h2></div><button type="button" onclick="closeQRPreview()" class="icon-button" aria-label="Tutup paparan QR"><svg class="icon"><use href="#icon-close"/></svg></button></div>
+    <div id="qrPreviewViewport" class="qr-preview-viewport" tabindex="0" aria-label="Gambar QR besar. Leret untuk melihat gambar penuh."><img id="qrPreviewImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Gambar penuh kod QR pembayaran asal DuitJom"></div>
+    <p class="preview-hint">Leret untuk lihat gambar penuh. Muat turun bermula apabila QR ditekan.</p>
+    <a id="qrDownloadLink" class="primary-button" href="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" download="DuitJom-QR.jpeg"><svg class="icon"><use href="#icon-download"/></svg>Muat turun QR sekali lagi</a>
+  </dialog>
 
+  <dialog id="transferModal" class="support-dialog" aria-labelledby="transferTitle">
+    <span class="dialog-emblem"><svg class="icon"><use href="#icon-bank"/></svg></span><h2 id="transferTitle">Bank Transfer</h2><p>Sila hubungi Sokongan DuitJom untuk maklumat pembayaran melalui pindahan bank.</p>
+    <div class="dialog-actions"><button type="button" onclick="closeTransferModal()" class="secondary-button">Tutup</button><button type="button" onclick="contactWhatsapp()" class="primary-button">Hubungi sokongan</button></div>
+  </dialog>
 
+  <dialog id="verifyModal" class="support-dialog" aria-labelledby="verifyTitle">
+    <div id="verifyLoading"><div class="spinner"></div><h2 id="verifyTitle">Pengesahan bayaran sedang dilakukan</h2><p>Sila tunggu sebentar.</p></div>
+    <div id="verifySuccess" hidden><span class="dialog-emblem success"><svg class="icon"><use href="#icon-check"/></svg></span><h2>Terima kasih!</h2><p>Fail berjaya dimuat naik.</p><button type="button" onclick="goToLogin()" class="primary-button">Kembali ke halaman utama</button></div>
+  </dialog>
 
-<!-- QR PAGE -->
-<div id="qrPage" class="hidden min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative">
-  <div class="absolute inset-0 opacity-20" style="background-image:url('https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800'); background-size:cover;"></div>
-  <div class="relative z-10 max-w-[480px] mx-auto min-h-screen px-5 py-6">
-    <div class="flex justify-between text-white mb-6">
-      <button onclick="backToSelection()" class="w-9 h-9 rounded-full bg-white/10">←</button>
-      <div class="bg-white/10 px-3 py-1.5 rounded-full text-[12px]">Masa Tamat: <span id="countdown">1:59</span></div>
-    </div>
-    <div class="bg-white rounded-[24px] p-6">
-      <div class="text-center">
-        <div id="qrLogo" class="w-[64px] h-[64px] rounded-[16px] mx-auto flex items-center justify-center font-bold text-white mb-3"></div>
-        <h2 id="qrBankName" class="font-bold text-[18px]"></h2>
-        <p id="qrOwnerName" class="font-semibold text-[14px]"></p>
-        <p id="qrAccountNo" class="text-[13px] font-mono bg-slate-100 px-3 py-1 rounded-full inline-block mt-1"></p>
-        <p class="mt-5 text-[28px] font-bold">RM <span id="qrJumlah">350</span>.00</p>
-        <img id="qrImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Kod QR DuitNow DuitJom" class="w-[200px] h-[200px] mx-auto mt-5 border-2 border-dashed p-3 rounded-[16px] object-contain">
-      </div>
-      <div class="mt-6">
-        <label class="border-2 border-dashed rounded-[14px] p-6 flex flex-col items-center cursor-pointer">
-          <span id="fileName" class="text-[11px] text-slate-400">PNG, JPG atau PDF</span>
-          <input type="file" id="fileInput" class="hidden" onchange="onFileSelected(this)">
-        </label>
-        <button id="uploadBtn" onclick="startUpload()" disabled class="w-full mt-3 h-[48px] rounded-[12px] bg-slate-200">Muat Naik Resit</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modals -->
-<div id="transferModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-5"><div class="absolute inset-0 bg-slate-900/40" onclick="closeTransferModal()"></div><div class="relative bg-white rounded-[24px] p-7 w-full max-w-[380px] text-center"><p>Sila hubungi Sokongan DuitJom untuk Bank Transfer</p><div class="grid grid-cols-2 gap-3 mt-7"><button onclick="closeTransferModal()" class="h-[46px] bg-black text-white rounded-[12px]">Tutup</button><button onclick="contactWhatsapp()" class="h-[46px] bg-[#16A34A] text-white rounded-[12px]">Hubungi</button></div></div></div>
-<div id="verifyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-5"><div class="absolute inset-0 bg-slate-900/60"></div><div class="relative bg-white rounded-[24px] p-8 w-full max-w-[360px] text-center"><div id="verifyLoading"><div class="w-12 h-12 border-4 border-slate-200 border-t-black rounded-full animate-spin mx-auto"></div><h3 class="font-bold mt-4">Pengesahan Bayaran sedang Dilakukan</h3></div><div id="verifySuccess" class="hidden"><h3 class="font-bold text-[18px]">Terima Kasih!</h3><p>File berjaya diupload</p><button onclick="goToLogin()" class="w-full mt-6 h-[48px] bg-black text-white rounded-[12px]">Log Keluar</button></div></div></div>
-<div id="loginPage" class="hidden min-h-screen flex items-center justify-center"><div class="bg-white rounded-[24px] p-8 text-center border"><h2 class="font-bold">Sesi Tamat</h2><button onclick="backToSelection()" class="w-full mt-6 h-[48px] bg-black text-white rounded-[12px]">Log Masuk Semula</button></div></div>
-
-<script>
-// 15 BANK - TUKAR LOGO DISINI
-const BANKS = [
-  {id:'tng', name:"Touch 'n Go eWallet", cat:'duitnow', initials:'TNG', color:'#1E88E5', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9011'},
-  {id:'maybank_qr', name:'Maybank QRPay', cat:'duitnow', initials:'MBB', color:'#FFCC00', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9012'},
-  {id:'rhb_qr', name:'RHB QRPay', cat:'duitnow', initials:'RHB', color:'#005EB8', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9013'},
-  {id:'cimb_qr', name:'CIMB QRPay', cat:'duitnow', initials:'CIMB', color:'#E30613', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9014'},
-  {id:'boost', name:'Boost', cat:'duitnow', initials:'BST', color:'#000', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9015'},
-  {id:'grabpay', name:'GrabPay', cat:'duitnow', initials:'GRAB', color:'#00B14F', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1234 5678 9016'},
-  {id:'cimb_online', name:'CIMB Clicks', cat:'online', initials:'CIMB', color:'#E30613', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'8604 1234 5678'},
-  {id:'muamalat', name:'Bank Muamalat', cat:'online', initials:'MMLT', color:'#0D6E3F', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1401 1234 5678'},
-  {id:'public_bank', name:'Public Bank', cat:'online', initials:'PBB', color:'#D50000', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'3810 1234 5678'},
-  {id:'bsn', name:'BSN Bank', cat:'online', initials:'BSN', color:'#003A8C', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1410 1234 5678'},
-  {id:'ambank', name:'AmBank', cat:'online', initials:'AM', color:'#C41230', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'8881 1234 5678'},
-  {id:'alliance', name:'Alliance Bank', cat:'online', initials:'ALB', color:'#002B6A', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'1201 1234 5678'},
-  {id:'ocbc', name:'OCBC Bank', cat:'online', initials:'OCBC', color:'#E60012', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'7071 1234 5678'},
-  {id:'maybank2u', name:'Maybank2u', cat:'online', initials:'MB2U', color:'#FFCC00', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'5123 1234 5678'},
-  {id:'hongleong', name:'Hong Leong Bank', cat:'online', initials:'HLB', color:'#0A4AA6', logoUrl:'', owner:'DuitJom Sdn Bhd', acc:'0390 1234 5678'},
-];
-let activeTab='duitnow',selectedBank=null,countdownInterval=null,timeLeft=119;
-
-function generateNoRef() {
-  let ref = sessionStorage.getItem('dj_noref');
-  if (!ref) {
-    const digits = Math.floor(10000000 + Math.random() * 90000000);
-    ref = 'iP8-' + digits + '-DJO';
-    sessionStorage.setItem('dj_noref', ref);
-  }
-  return ref;
-}
-
-function startRealtimeClock() {
-  function updateClock() {
-    const now = new Date();
-    const options = {
-      day: 'numeric', month: 'long', year: 'numeric',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-      hour12: true
-    };
-    const el = document.getElementById('realtimeClock');
-    if (el) el.textContent = now.toLocaleString('ms-MY', options);
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-}
-
-function init(){
-  const p = new URLSearchParams(window.location.search);
-
-  if(p.get('nama')){
-    document.getElementById('namaDisplay').textContent = p.get('nama');
-  }
-  if(p.get('id')){
-    document.getElementById('idDisplay').textContent = p.get('id');
-  }
-  if(p.get('jumlah')){
-    document.getElementById('jumlahDisplay').textContent = p.get('jumlah');
-    document.getElementById('qrJumlah').textContent = p.get('jumlah');
-  }
-
-  // No. Ref auto-generate
-  const noRefEl = document.getElementById('noRefDisplay');
-  if (noRefEl) noRefEl.textContent = generateNoRef();
-
-  // Jam realtime
-  startRealtimeClock();
-
-  renderBankList();
-}
-
-
-function switchTab(tab){
-activeTab=tab;
-document.getElementById('tab-duitnow').className=tab==='duitnow'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
-document.getElementById('tab-online').className=tab==='online'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
-document.getElementById('tab-transfer').className=tab==='transfer'?'flex-1 h-[36px] rounded-full bg-[#0F172A] text-white':'flex-1 h-[36px] rounded-full text-slate-600';
-
-if(tab==='transfer')
-document.getElementById('transferModal').classList.remove('hidden');
-
-renderBankList();
-document.getElementById('dropdownList').classList.add('hidden');
-}
-
-function toggleDropdown(){
-document.getElementById('dropdownList').classList.toggle('hidden');
-}
-
-function renderBankList(){
-const c=document.getElementById('bankListContainer');
-const list=BANKS.filter(b=>b.cat===activeTab);
-
-c.innerHTML=list.map(b=>`
-<button onclick="selectBank('${b.id}')" class="w-full px-4 h-[60px] flex items-center justify-between hover:bg-slate-50 text-left">
-<div class="flex items-center gap-3">
-<div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[11px] text-white" style="background:${b.color}">
-${b.initials}
-</div>
-<div>
-<span class="text-[14px] font-medium">${b.name}</span>
-</div>
-</div>
-<div class="w-5 h-5 rounded-full border flex items-center justify-center">
-${selectedBank?.id===b.id?'✓':''}
-</div>
-</button>
-`).join('');
-}
-
-function selectBank(id){
-
-selectedBank=BANKS.find(b=>b.id===id);
-
-document.getElementById('dropdownText').textContent=selectedBank.name;
-
-document.getElementById('selectedCard').classList.remove('hidden');
-
-document.getElementById('selectedLogo').style.background=selectedBank.color;
-document.getElementById('selectedLogo').textContent=selectedBank.initials;
-
-document.getElementById('selectedName').textContent=selectedBank.name;
-document.getElementById('selectedOwner').textContent=selectedBank.owner;
-
-const btn=document.getElementById('continueBtn');
-
-btn.disabled=false;
-
-btn.className='w-full h-[56px] rounded-[16px] bg-[#0F172A] text-white';
-
-btn.textContent=
-`Seterusnya • RM ${document.getElementById('jumlahDisplay').textContent}.00`;
-}
-
-function goToQR(){
-if(!selectedBank)return;
-
-document.getElementById('selectionPage').classList.add('hidden');
-document.getElementById('qrPage').classList.remove('hidden');
-
-document.getElementById('qrBankName').textContent=selectedBank.name;
-document.getElementById('qrOwnerName').textContent=selectedBank.owner;
-document.getElementById('qrAccountNo').textContent=selectedBank.acc;
-document.getElementById('qrJumlah').textContent=
-document.getElementById('jumlahDisplay').textContent;
-
-document.getElementById('qrLogo').style.background=selectedBank.color;
-document.getElementById('qrLogo').textContent=selectedBank.initials;
-
-document.getElementById('qrImage').src='../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg';
-
-startCountdown();
-}
-
-function backToSelection(){
-clearInterval(countdownInterval);
-
-document.getElementById('qrPage').classList.add('hidden');
-document.getElementById('loginPage').classList.add('hidden');
-document.getElementById('selectionPage').classList.remove('hidden');
-document.getElementById('verifyModal').classList.add('hidden');
-
-timeLeft=119;
-}
-
-function startCountdown(){
-  clearInterval(countdownInterval); // ← TAMBAH BARIS INI
-  timeLeft=119;
-  countdownInterval=setInterval(()=>{
-timeLeft--;
-
-document.getElementById('countdown').textContent=
-`${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
-
-if(timeLeft<=0){
-clearInterval(countdownInterval);
-alert('Masa tamat');
-backToSelection();
-}
-
-},1000);
-}
-
-function onFileSelected(input){
-
-if(input.files.length>0){
-
-document.getElementById('fileName').textContent=input.files[0].name;
-
-document.getElementById('uploadBtn').disabled=false;
-
-document.getElementById('uploadBtn').className=
-'w-full mt-3 h-[48px] rounded-[12px] bg-[#0F172A] text-white';
-}
-}
-
-function startUpload(){
-  document.getElementById('verifyModal').classList.remove('hidden');
-  setTimeout(()=>{
-    document.getElementById('verifyLoading').classList.add('hidden');
-    document.getElementById('verifySuccess').classList.remove('hidden');
-  }, 5000);  // ← 5 saat
-}
-
-function goToLogin(){
-  document.getElementById('verifyModal').classList.add('hidden');
-  // Redirect ke halaman login utama
-  window.location.href = '../index.html';
-}
-
-function closeTransferModal(){
-  document.getElementById('transferModal').classList.add('hidden');
-}
-
-function contactWhatsapp(){
-  window.open(`https://wa.me/601168462807?text=PMDuitJom`,'_blank');
-}
-
-init();
-
-</script>
+  <p id="pageNotice" class="page-notice" role="status" hidden></p>
+  <script src="payment.js?v=20261007"></script>
 <!-- LiveChat customer support -->
 <script>
   window.__lc = window.__lc || {};
@@ -385,5 +171,6 @@ init();
 </script>
 <noscript><a href="https://www.livechat.com/chat-with/19956148/" rel="nofollow">Chat with us</a></noscript>
 <!-- End LiveChat customer support -->
+
 </body>
 </html>
