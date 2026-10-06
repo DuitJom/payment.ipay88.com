@@ -39,7 +39,7 @@ export function testEnvironment() {
     TURNSTILE_SECRET_KEY: `test-only-turnstile-secret-${id}`,
     MJ_APIKEY_PUBLIC: `test-only-mailjet-key-${id}`,
     MJ_APIKEY_PRIVATE: `test-only-mailjet-secret-${id}`,
-    MAIL_FROM_EMAIL: "noreply@duitjom.my",
+    MAIL_FROM_EMAIL: "no-reply@duitjom.my",
     MAIL_FROM_NAME: "DuitJom",
     ALLOWED_ORIGINS: "https://www.duitjom.my,https://duitjom.my",
     TURNSTILE_ACTION: "auth",
