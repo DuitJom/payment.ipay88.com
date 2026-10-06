@@ -1,0 +1,165 @@
+/* DuitJom welcome popup: real controls remain visible while the poster scrolls. */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: radial-gradient(ellipse at 15% 10%, #0478bd88, transparent 65%),
+    linear-gradient(145deg, #062c50e8, #09243bde 60%, #007f918c);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overscroll-behavior: contain;
+}
+.welcome-overlay[aria-hidden="false"] { display: flex; }
+body.welcome-popup-open { overflow: hidden; }
+.welcome-popup {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 440px);
+  max-height: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #ffffffb3;
+  border-radius: 24px;
+  background: #fff;
+  color: #072d4b;
+  box-shadow: 0 30px 90px #02182d66;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: left;
+}
+.welcome-popup:focus { outline: none; }
+.welcome-popup * { box-sizing: border-box; }
+.welcome-topbar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+  padding: 8px 14px 8px 22px;
+  border-bottom: 1px solid #e5f1f7;
+  background: #fff;
+}
+.welcome-brand { font-size: 23px; font-weight: 850; letter-spacing: -1px; }
+.welcome-brand span { color: #079bda; }
+.welcome-close-x,
+.welcome-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border: 1px solid #fee2e2;
+  border-radius: 14px;
+  background: #fff1f2;
+  color: #dc2626;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.welcome-close-x:hover { background: #ffe4e6; }
+.welcome-close-x svg,
+.welcome-copy svg { width: 22px; height: 22px; }
+.welcome-content {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.welcome-artwork { background: #f1faff; }
+.welcome-artwork[hidden] { display: none; }
+.welcome-poster {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  max-height: min(32vh, 300px);
+  max-height: min(32dvh, 300px);
+  object-fit: contain;
+  margin: 0;
+  border: 0;
+}
+.welcome-details { padding: 22px; background: #fff; }
+.welcome-support-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+.welcome-support-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: #e7f6ff;
+  color: #067ab9;
+}
+.welcome-support-icon svg { width: 25px; height: 25px; }
+.welcome-support-heading h2 { margin: 0; font-size: 19px; font-weight: 800; line-height: 1.4; }
+.welcome-support-heading h2 span { white-space: nowrap; color: #0085c6; }
+.welcome-label { margin: 0 0 3px; color: #64758b; font-size: 13px; }
+.welcome-email-row { display: flex; align-items: center; gap: 8px; }
+.welcome-email { min-width: 0; color: #063453; font-size: 18px; font-weight: 750; overflow-wrap: anywhere; }
+.welcome-copy { margin-left: auto; border-color: #d1eaf7; background: #eef9ff; color: #047bb7; }
+.welcome-copy:hover { background: #dff3ff; }
+.welcome-copy-status { min-height: 18px; margin: 3px 0 10px; color: #177044; font-size: 12px; line-height: 1.5; }
+.welcome-application { padding: 14px 16px; border: 1px solid #d8edf9; border-radius: 16px; background: #f0f9ff; }
+.welcome-application-title { margin: 0 0 5px; font-size: 14px; font-weight: 800; }
+.welcome-application #welcomePopupMessage { margin: 0; color: #547085; font-size: 13px; line-height: 1.7; }
+.welcome-application a { display: inline-flex; align-items: center; gap: 6px; color: #047cb9; font-size: 16px; font-weight: 750; }
+.welcome-application a svg { width: 15px; height: 15px; }
+.welcome-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid #e0edf6;
+  background: #fff;
+}
+.welcome-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.welcome-button-close { flex: 0 0 110px; border-color: #dde8f0; background: #f2f6fa; color: #37556c; font-variant-numeric: tabular-nums; }
+.welcome-button-close:hover { background: #e6eff7; }
+.welcome-button-support { flex: 1; background: linear-gradient(115deg, #059bda, #056cb7); color: #fff; box-shadow: 0 5px 12px #027fc51f; }
+.welcome-button-support:hover { background: #056cb7; }
+.welcome-button-support svg { flex: 0 0 auto; width: 19px; height: 19px; }
+.welcome-popup :is(button, a):focus-visible { outline: 3px solid #089fdc; outline-offset: 3px; }
+.welcome-copy-buffer { position: fixed; left: -9999px; top: 0; opacity: 0; }
+@media (min-width: 760px) and (min-height: 600px) {
+  .welcome-popup { width: min(100%, 810px); }
+  .welcome-content { display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
+  .welcome-details { padding: 26px; }
+  .welcome-poster { max-height: min(68vh, 560px); max-height: min(68dvh, 560px); }
+  .welcome-without-image { grid-template-columns: 1fr; }
+  .welcome-actions { justify-content: flex-end; padding-inline: 24px; }
+  .welcome-button-support { flex: 0 1 220px; }
+}
+@media (max-width: 359px) {
+  .welcome-details { padding: 18px; }
+  .welcome-support-heading h2 { font-size: 17px; }
+  .welcome-email { font-size: 16px; }
+  .welcome-actions { gap: 8px; padding: 12px; }
+  .welcome-button { padding-inline: 10px; font-size: 12px; }
+  .welcome-button-close { flex-basis: 94px; }
+  .welcome-button-support svg { display: none; }
+}
