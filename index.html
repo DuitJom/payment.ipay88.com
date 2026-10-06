@@ -28,7 +28,8 @@
     <!-- External CSS files -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
-    <link rel="stylesheet" href="auth/login.css?v=20261002-email-otp">
+    <link rel="stylesheet" href="auth/login.css?v=20261006-welcome">
+    <link rel="stylesheet" href="css/welcome-popup.css?v=20261006-welcome">
     <link rel="stylesheet" href="auth/auth-forms.css">
     <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-worker">
 
@@ -82,35 +83,67 @@
         </div>
     </header>
 
-    <!-- =========================================================
-         DUITJOM MAINTENANCE / IMPORTANT NOTICE
-         ========================================================= -->
-    <div id="maintenanceNotificationPopup" class="maintenance-notification-overlay" aria-hidden="true">
-        <section class="maintenance-popup" role="dialog" aria-modal="true"
-            aria-labelledby="maintenancePopupTitle" aria-describedby="maintenancePopupMessage"
+    <!-- DuitJom welcome popup -->
+    <div id="welcomePopup" class="welcome-overlay" aria-hidden="true">
+        <section class="welcome-popup" role="dialog" aria-modal="true"
+            aria-labelledby="welcomePopupTitle" aria-describedby="welcomePopupMessage"
             tabindex="-1" lang="ms">
-            <h2 id="maintenancePopupTitle" class="maintenance-sr-only">Notis: Website DuitJom sedang dibaiki</h2>
-            <p id="maintenancePopupMessage" class="maintenance-sr-only">
-                Laman web DuitJom sedang dalam proses pembaikan bagi memberikan pengalaman yang lebih baik kepada anda.
-                Terima kasih atas kesabaran dan sokongan anda. Sebarang perkembangan dan maklumat terkini akan dimaklumkan
-                kepada semua pelanggan dari semasa ke semasa. Hubungi Pasukan Sokongan DuitJom melalui e-mel
-                support@duitjom.my untuk pertanyaan dan bayaran. Layari www.duitjom.com untuk memohon pinjaman.
-            </p>
-            <div class="maintenance-poster">
-                <img class="maintenance-poster-image" src="images/duitjom-welcome-notice.jpg"
-                    width="1024" height="1536" alt="Notis pembaikan laman web DuitJom." fetchpriority="high">
-                <!-- Transparent controls aligned with the buttons printed in the image. -->
-                <button id="maintenancePopupCloseX" class="maintenance-hotspot maintenance-hotspot-close"
-                    type="button" aria-label="Tutup notis" title="Tutup notis"></button>
-                <a class="maintenance-hotspot maintenance-hotspot-email"
-                    href="mailto:support@duitjom.my?subject=Pertanyaan%20%2F%20Pembayaran%20DuitJom"
-                    aria-label="E-mel support@duitjom.my" title="E-mel support@duitjom.my"></a>
-                <a class="maintenance-hotspot maintenance-hotspot-website"
-                    href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer"
-                    aria-label="Layari www.duitjom.com (tab baharu)" title="Layari www.duitjom.com"></a>
-                <a id="maintenancePopupSupport" class="maintenance-hotspot maintenance-hotspot-contact"
-                    href="mailto:support@duitjom.my?subject=Pertanyaan%20%2F%20Pembayaran%20DuitJom"
-                    aria-label="Hubungi Kami melalui e-mel support@duitjom.my" title="Hubungi Kami"></a>
+            <div class="welcome-topbar">
+                <span class="welcome-brand">Duit<span>jom</span></span>
+                <button id="welcomePopupCloseX" class="welcome-close-x" type="button"
+                    aria-label="Tutup popup" title="Tutup popup">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                        <path d="m6 6 12 12M18 6 6 18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="welcome-content">
+                <div class="welcome-artwork">
+                    <img id="welcomePopupImage" class="welcome-poster" src="images/4602E986-7085-4B0D-B540-AF33DA5C2EAF.png"
+                        width="1024" height="1536" alt="Sistem Pembayaran Baharu DuitJom. Mudah, selamat dan untuk semua."
+                        fetchpriority="high" decoding="async">
+                </div>
+                <div class="welcome-details">
+                    <div class="welcome-support-heading">
+                        <span class="welcome-support-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M4 13v-2a8 8 0 0 1 16 0v2M4 12H3v6h4v-6H4Zm16 0h1v6h-4v-6h3Zm0 6a4 4 0 0 1-4 4h-3"/>
+                            </svg>
+                        </span>
+                        <h2 id="welcomePopupTitle">Hubungi Sokongan <span>24/7</span></h2>
+                    </div>
+                    <p class="welcome-label">Email :</p>
+                    <div class="welcome-email-row">
+                        <a id="welcomePopupEmail" class="welcome-email" href="mailto:support@duitjom.my">support@duitjom.my</a>
+                        <button id="welcomePopupCopyEmail" class="welcome-copy" type="button"
+                            aria-label="Salin emel support@duitjom.my" title="Salin emel">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <rect x="8" y="8" width="12" height="13" rx="2"/>
+                                <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p id="welcomePopupCopyStatus" class="welcome-copy-status" role="status" aria-live="polite"></p>
+                    <div class="welcome-application">
+                        <p class="welcome-application-title">Mohon Pinjaman :</p>
+                        <p id="welcomePopupMessage">Sila layari laman web rasmi di
+                            <a id="welcomePopupWebsite" href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer">www.duitjom.com
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M14 4h6v6m0-6L10 14M20 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4"/>
+                                </svg>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-actions">
+                <button id="welcomePopupClose" class="welcome-button welcome-button-close" type="button">Tutup 10s</button>
+                <a id="welcomePopupSupport" class="welcome-button welcome-button-support" href="mailto:support@duitjom.my">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/>
+                    </svg>
+                    Hubungi Sokongan
+                </a>
             </div>
         </section>
     </div>
@@ -698,6 +731,7 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
+    <script src="js/welcome-popup.js?v=20261006-welcome"></script>
     <script type="module" src="auth/app-auth.js?v=20261003-otp-worker"></script>
     <script type="module" src="auth/auth-forms.js"></script>
 
