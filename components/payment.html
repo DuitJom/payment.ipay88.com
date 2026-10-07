@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1745b5">
-  <title>DuitJom — Pilihan Bank &amp; Pembayaran QR</title>
+  <title>R-Cash — Pilihan Bank &amp; Pembayaran QR</title>
   <script src="https://js.sentry-cdn.com/5ff72752bc39b49369bd3128c7f9d072.min.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="payment.css?v=20261007">
@@ -28,14 +28,14 @@
     <div class="payment-shell">
       <header class="page-nav">
         <button type="button" onclick="history.back()" class="icon-button" aria-label="Kembali ke maklumat pelanggan"><svg class="icon"><use href="#icon-arrow"/></svg></button>
-        <a href="../index.html" class="brand"><span class="brand-mark">D</span>DuitJom<span class="brand-dot"></span></a>
+        <a href="../index.html" class="brand"><span class="brand-mark">D</span>R-Cash<span class="brand-dot"></span></a>
         <span class="nav-label">PEMBAYARAN</span>
       </header>
 
       <main class="selection-content">
         <div class="page-heading">
           <span class="eyebrow">LANGKAH 01 / 02</span>
-          <h1>Pilih cara anda<br>membayar.</h1>
+          <h1>Pilih carap<br>Pembayaran.</h1>
           <p>Pilih bank atau e-wallet untuk meneruskan.</p>
         </div>
 
@@ -44,10 +44,9 @@
           <p class="amount-value"><span class="currency">RM</span> <span id="jumlahDisplay">350.00</span></p>
           <div class="customer-details">
             <div><span>Nama pelanggan</span><strong id="namaDisplay">Ahmad Bin Ali</strong></div>
-            <div><span>ID Loan</span><strong id="idDisplay">DJ-2024-8841</strong></div>
+            <div><span>ID Loan</span><strong id="idDisplay">DJ-3000-0000</strong></div>
           </div>
         </section>
-
         <div class="reference-row">
           <div><span>No. rujukan</span><strong id="noRefDisplay">—</strong></div>
           <div><span>Tarikh &amp; masa</span><strong id="realtimeClock">—</strong></div>
@@ -90,7 +89,7 @@
     <div class="payment-shell qr-shell">
       <header class="page-nav">
         <button type="button" onclick="backToSelection()" class="icon-button" aria-label="Kembali ke pilihan bank"><svg class="icon"><use href="#icon-arrow"/></svg></button>
-        <a href="../index.html" class="brand"><span class="brand-mark">D</span>DuitJom<span class="brand-dot"></span></a>
+        <a href="../index.html" class="brand"><span class="brand-mark">D</span>R-Cash<span class="brand-dot"></span></a>
         <span class="nav-label">BAYARAN QR</span>
       </header>
       <main>
@@ -101,10 +100,10 @@
           <p class="qr-amount-label">Jumlah yang perlu dibayar</p>
           <div class="qr-bank"><span id="qrLogo" class="bank-logo small"></span><span><strong id="qrBankName"></strong><span id="qrOwnerName"></span></span></div>
           <button type="button" id="qrImageButton" class="qr-image-button" onclick="openQRPreview()" aria-label="Besarkan dan muat turun gambar QR" aria-haspopup="dialog" aria-controls="qrPreview">
-            <img id="qrImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Kod QR pembayaran asal DuitJom" decoding="async">
+            <img id="qrImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Kod QR pembayaran asal R-Cash" decoding="async">
             <span class="qr-image-caption"><svg class="icon"><use href="#icon-expand"/></svg>Tekan QR untuk besarkan &amp; muat turun</span>
           </button>
-          <a id="qrDownloadButton" class="download-button" href="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" download="DuitJom-QR.jpeg"><svg class="icon"><use href="#icon-download"/></svg>Muat turun QR</a>
+          <a id="qrDownloadButton" class="download-button" href="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" download="R-Cash-QR.jpeg"><svg class="icon"><use href="#icon-download"/></svg>Muat turun QR</a>
           <div class="qr-reference"><span>No. rujukan</span><strong id="qrRefDisplay">—</strong><span id="qrAccountNo"></span></div>
           <div class="time-track" aria-hidden="true"><span id="countdownProgress"></span></div>
         </section>
@@ -128,13 +127,13 @@
 
   <dialog id="qrPreview" class="qr-preview-dialog" aria-labelledby="qrPreviewTitle">
     <div class="dialog-heading"><div><span class="eyebrow">QR PEMBAYARAN</span><h2 id="qrPreviewTitle">Paparan QR besar</h2></div><button type="button" onclick="closeQRPreview()" class="icon-button" aria-label="Tutup paparan QR"><svg class="icon"><use href="#icon-close"/></svg></button></div>
-    <div id="qrPreviewViewport" class="qr-preview-viewport" tabindex="0" aria-label="Gambar QR besar. Leret untuk melihat gambar penuh."><img id="qrPreviewImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Gambar penuh kod QR pembayaran asal DuitJom"></div>
+    <div id="qrPreviewViewport" class="qr-preview-viewport" tabindex="0" aria-label="Gambar QR besar. Leret untuk melihat gambar penuh."><img id="qrPreviewImage" src="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" alt="Gambar penuh kod QR pembayaran asal R-Cash"></div>
     <p class="preview-hint">Leret untuk lihat gambar penuh. Muat turun bermula apabila QR ditekan.</p>
-    <a id="qrDownloadLink" class="primary-button" href="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" download="DuitJom-QR.jpeg"><svg class="icon"><use href="#icon-download"/></svg>Muat turun QR sekali lagi</a>
+    <a id="qrDownloadLink" class="primary-button" href="../F534F3AA-ACF5-40DB-BEF0-7300EC9FA735.jpeg" download="R-Cash-QR.jpeg"><svg class="icon"><use href="#icon-download"/></svg>Muat turun QR sekali lagi</a>
   </dialog>
 
   <dialog id="transferModal" class="support-dialog" aria-labelledby="transferTitle">
-    <span class="dialog-emblem"><svg class="icon"><use href="#icon-bank"/></svg></span><h2 id="transferTitle">Bank Transfer</h2><p>Sila hubungi Sokongan DuitJom untuk maklumat pembayaran melalui pindahan bank.</p>
+    <span class="dialog-emblem"><svg class="icon"><use href="#icon-bank"/></svg></span><h2 id="transferTitle">Bank Transfer</h2><p>Sila hubungi Sokongan R-Cash untuk maklumat pembayaran melalui pindahan bank.</p>
     <div class="dialog-actions"><button type="button" onclick="closeTransferModal()" class="secondary-button">Tutup</button><button type="button" onclick="contactWhatsapp()" class="primary-button">Hubungi sokongan</button></div>
   </dialog>
 
