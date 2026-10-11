@@ -1,6 +1,7 @@
 // =====================================================
 // GLOBAL STATE
 // =====================================================
+let sidebarCloseTimer = null;
 let timerInstance = null;
 let namaPelangganGlobal = "";
 let djCustomerIdGlobal = "";
@@ -25,6 +26,7 @@ function openSidebar() {
         return;
     }
 
+    clearTimeout(sidebarCloseTimer);
     window.sidebarOpenPending = false;
     document.body.style.overflowY = 'hidden';
     overlay.classList.remove('hidden');
@@ -48,7 +50,7 @@ function closeSidebar() {
     overlay.setAttribute('aria-hidden', 'true');
     toggle?.setAttribute('aria-expanded', 'false');
     menu.classList.add('translate-x-full');
-    setTimeout(() => {
+    sidebarCloseTimer = setTimeout(() => {
         overlay.classList.add('hidden');
     }, 300);
 }
@@ -340,10 +342,12 @@ function sidebarHomeAction() {
 
 function aboutUsAction() {
     closeSidebar();
+    window.location.href = "page/about-us.html";
 }
 
 function blogAction() {
     closeSidebar();
+    window.location.href = "page/blog.html";
 }
 
 function applyNowAction() {
@@ -389,7 +393,7 @@ function closeEmailPopup() {
     overlay.classList.replace('opacity-100', 'opacity-0');
     popupBox.classList.remove('scale-100', 'opacity-100');
     popupBox.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
+    sidebarCloseTimer = setTimeout(() => {
         overlay.classList.add('hidden');
         popup.classList.add('hidden');
         popup.classList.remove('flex');
@@ -461,3 +465,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+// Touch-friendly language menu; hover alone is insufficient on phones.
+document.getElementById('languageToggle')?.addEventListener('click', () => {
+  const menu = document.getElementById('languageMenu');
+  const open = menu.classList.toggle('is-open');
+  document.getElementById('languageToggle').setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('click', event => {
+  if (!event.target.closest('#languageToggle')) {
+    document.getElementById('languageMenu')?.classList.remove('is-open');
+    document.getElementById('languageToggle')?.setAttribute('aria-expanded', 'false');
+  }
+});

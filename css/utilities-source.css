@@ -1,0 +1,4 @@
+/* Build: npx tailwindcss@3.4.17 -c scripts/tailwind.config.cjs -i css/utilities-source.css -o css/utilities.css --minify */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -27,7 +27,7 @@ function system() {
     const response = await worker.fetch(request, env, context);
     return { response, data: await response.json(), request };
   }
-  const send = (email = "customer@example.com", token) => call("/api/send-otp", { email, turnstileToken: token || `test-token-${++requestNumber}` });
+  const send = (email = "customer@example.com", token) => call("/api/send-otp", { email, intent: "register", profile: {fullName:"Test Customer",mykad:"000000-00-0000",phone:"+60123456789"}, turnstileToken: token || `test-token-${++requestNumber}` });
   const verify = (email, otp, challengeId) => call("/api/verify-otp", { email, otp, challengeId });
   return { env, state, call, send, verify, jobs, advance: seconds => { clock += seconds * 1000; } };
 }
@@ -144,7 +144,7 @@ test("30/hour IP quota is enforced separately across different emails", async ()
   assert.equal((await s.send("person30@example.com")).response.status, 429);
   assert.equal(s.state.mailjetCalls.length, 30);
 });
-test("invalid, absent, expired and consumed codes have the same public failure", async () => {
+test("invalid and absent codes match; expired codes return the requested expiry status", async () => {
   const s = system(); const sent = await s.send();
   const otp = latestOtp(s.state);
   const bad = otp === "000000" ? "000001" : "000000";
@@ -154,7 +154,7 @@ test("invalid, absent, expired and consumed codes have the same public failure",
   assert.equal(wrong.data.message, absent.data.message);
   s.advance(301);
   const expired = await s.verify("customer@example.com", otp, sent.data.challengeId);
-  assert.equal(expired.data.message, wrong.data.message);
+  assert.equal(expired.data.code, "OTP_EXPIRED");
   assert.equal(count(s, "email_auth_sessions"), 0);
 });
 test("five attempts, including a correct fifth attempt, and no sixth attempt", async () => {
@@ -220,4 +220,39 @@ test("optional welcome queue only follows verification; it retries without break
   assert.equal(row().attempts, 3);
   assert.equal(row().status, "failed");
   assert.equal(count(s, "email_auth_sessions"), 1);
+});
+
+test('explicit login rejects an unregistered email and registration requires a profile', async () => {
+  const s = system();
+  const login = await s.call('/api/send-otp', { email:'new@example.com', intent:'login', turnstileToken:'new-login' });
+  assert.equal(login.data.code, 'ACCOUNT_NOT_FOUND');
+  assert.equal(s.state.mailjetCalls.length, 0);
+  const signup = await s.call('/api/send-otp', { email:'new@example.com', intent:'register', turnstileToken:'new-signup' });
+  assert.equal(signup.data.code, 'INVALID_PROFILE');
+});
+test('registration persists verified profile; existing users cannot register again', async () => {
+  const s = system(), email = 'profile@example.com';
+  const profile = { fullName:'Test Customer', mykad:'000000-00-0000', phone:'+60123456789' };
+  const sent = await s.call('/api/send-otp', { email, intent:'register', profile, turnstileToken:'profile' });
+  assert.equal(sent.data.authFlowVersion, 2);
+  assert.equal(count(s, 'email_auth_users'), 0);
+  const verified = await s.verify(email, latestOtp(s.state), sent.data.challengeId);
+  assert.equal(verified.data.user.fullName, profile.fullName);
+  s.advance(61);
+  const duplicate = await s.call('/api/send-otp', { email, intent:'register', profile, turnstileToken:'duplicate' });
+  assert.equal(duplicate.data.code, 'ACCOUNT_EXISTS');
+});
+test('login link is single-use, server-bound, and cannot be verified as an OTP', async () => {
+  const s = system(), email = 'links@example.com';
+  s.env.AUTH_DB.sqlite.prepare('INSERT INTO email_auth_users(email, created_at) VALUES (?, ?)').run(email, 1);
+  const sent = await s.call('/api/send-link', { email, intent:'login', turnstileToken:'link' });
+  assert.equal(sent.data.success, true);
+  const text = s.state.mailjetCalls.at(-1).Messages[0].TextPart;
+  const url = new URL(text.match(/https:\/\/[^\s]+/)[0]);
+  const params = new URLSearchParams(url.hash.slice(1)), token = params.get('token');
+  assert.match(token, /^[a-f0-9]{64}$/);
+  assert.equal((await s.verify(email, '123456', sent.data.challengeId)).data.code, 'OTP_INVALID');
+  const done = await s.call('/api/verify-link', { email, token, challengeId:sent.data.challengeId });
+  assert.equal(done.data.success, true);
+  assert.equal((await s.call('/api/verify-link', { email, token, challengeId:sent.data.challengeId })).data.success, false);
 });

@@ -11,7 +11,7 @@
     overlay.dataset.initialized = "true";
 
     const previousFocus = document.activeElement;
-    const deadline = Date.now() + 30000;
+    const deadline = Date.now() + 60000;
     let interval = null;
     let autoClose = null;
     let isOpen = true;
@@ -39,7 +39,7 @@
     document.body.classList.add("welcome-popup-open");
     updateCountdown();
     interval = window.setInterval(updateCountdown, 1000);
-    autoClose = window.setTimeout(closePopup, 30000);
+    autoClose = window.setTimeout(closePopup, 60000);
     window.requestAnimationFrame(function () {
       if (isOpen) closeX.focus({ preventScroll: true });
     });
@@ -74,6 +74,28 @@
     });
     window.addEventListener("pageshow", updateCountdown);
     window.addEventListener("pagehide", closePopup);
+
+    popup.querySelectorAll('[data-copy]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const value = button.dataset.copy;
+        const status = document.getElementById('welcomeCopyStatus');
+        try {
+          try {
+            if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable');
+            await navigator.clipboard.writeText(value);
+          } catch {
+            const input = document.createElement('textarea');
+            input.value = value;
+            input.style.cssText = 'position:fixed;left:0;top:0;opacity:0';
+            popup.append(input); input.focus(); input.select();
+            input.setSelectionRange(0, value.length);
+            const copied = document.execCommand('copy'); input.remove(); button.focus();
+            if (!copied) throw new Error('copy failed');
+          }
+          status.textContent = 'Berjaya disalin: ' + value;
+        } catch { status.textContent = 'Tidak dapat menyalin. Sila salin secara manual: ' + value; }
+      });
+    });
 
     const poster = document.getElementById("welcomePopupImage");
     function hideFailedPoster() {

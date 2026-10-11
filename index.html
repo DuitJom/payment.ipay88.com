@@ -6,9 +6,9 @@
     <script async src="https://cdn.webdecoy.com/bot-detection/v1/bot-detection.min.js" data-aid="c7ecc7f5-4af2-410e-9df7-b0f3e794fff7" data-sid="4cec1b6c-fdd2-4230-bf77-d286d7f77e4e" data-endpoint="https://ingest.webdecoy.com/api/v1/detect/public"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      
+
     <link rel="preconnect" href="https://challenges.cloudflare.com">
-      
+
     <title>DuitJom - Secure Digital Loan Repayment Portal</title>
 
     <!-- Google Identity Services Script -->
@@ -22,24 +22,25 @@
     <meta property="og:image:height" content="630">
     <meta name="robots" content="noimageindex">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/utilities.css?v=20261012">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- External CSS files -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
-    <link rel="stylesheet" href="auth/login.css?v=20261011-welcome">
-    <link rel="stylesheet" href="css/welcome-popup.css?v=20261011-welcome">
+    <link rel="stylesheet" href="auth/login.css?v=20261012">
+    <link rel="stylesheet" href="css/welcome-popup.css?v=20261012">
     <link rel="stylesheet" href="auth/auth-forms.css">
-    <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-worker">
+    <link rel="stylesheet" href="css/portal-refresh.css?v=20261012">
+    <link rel="stylesheet" href="auth/email-otp.css?v=20261012">
 
-    <script src="auth/otp-turnstile.js?v=20261003-otp-worker"></script>
+    <script src="auth/otp-turnstile.js?v=20261012"></script>
     <!-- Cloudflare Turnstile API -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <!-- Centralized i18n (English default, Chinese) -->
-    <script src="i18n/translations.js?v=20261003-otp-worker"></script>
-    <script src="i18n/i18n.js?v=20261003-otp-worker"></script>
+    <script src="i18n/translations.js?v=20261012"></script>
+    <script src="i18n/i18n.js?v=20261012"></script>
 
     <!-- Page transition / loading overlay -->
     <script src="js/loading-screen.js"></script>
@@ -52,13 +53,13 @@
         <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <img src="IMG_6715.png" alt="DuitJom Logo" class="h-8 object-contain" onerror="this.outerHTML='<span class=\'font-semibold text-xl text-slate-800\'>Duit<span class=\'text-blue-400\'>Jom</span></span>'">
-                <span class="font-semibold text-sm text-slate-800 hidden sm:inline">Payment Hub</span>
+                <span class="font-semibold text-sm text-slate-800 hidden sm:inline" data-i18n="nav.paymentHub">Payment Hub</span>
             </div>
 
             <div class="flex items-center gap-3">
                 <!-- Language Switcher -->
-                <div class="relative inline-block text-left group">
-                    <button type="button" class="flex items-center gap-1.5 text-[10px] font-medium text-gray-700 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-100 transition" data-i18n-aria-label="lang.switcherLabel" aria-haspopup="true">
+                <div class="relative inline-block text-left group" id="languageMenu">
+                    <button type="button" class="flex items-center gap-1.5 text-[10px] font-medium text-gray-700 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-100 transition" data-i18n-aria-label="lang.switcherLabel" aria-haspopup="true" id="languageToggle" aria-expanded="false">
                         <span class="lang-current-flag">🇺🇸</span> <span class="lang-current-label">English</span> <i class="fas fa-chevron-down text-[9px] text-gray-400"></i>
                     </button>
                     <!-- Dropdown -->
@@ -77,7 +78,7 @@
 
                 <!-- Hamburger Button -->
                 <button id="sidebarToggleButton" type="button" onclick="openSidebar(event)" class="text-gray-500 hover:text-black transition" data-i18n-aria-label="nav.menu" aria-label="Open menu" aria-controls="sidebarMenu" aria-expanded="false">
-                    <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
             </div>
         </div>
@@ -98,19 +99,23 @@
                 </button>
             </div>
             <h2 id="welcomePopupTitle" class="welcome-sr-only">Notis penyelenggaraan DuitJom</h2>
-            <p id="welcomePopupMessage" class="welcome-sr-only">Laman web sedang dinaik taraf. Hubungi kami melalui email atau WhatsApp. Popup ditutup secara automatik selepas 30 saat.</p>
+            <p id="welcomePopupMessage" class="welcome-sr-only">Laman web sedang dinaik taraf. Hubungi kami melalui email atau WhatsApp. Popup ditutup secara automatik selepas 60 saat.</p>
+            <p id="welcomeCopyStatus" class="welcome-copy-status" role="status" aria-live="polite"></p>
             <div class="welcome-content">
                 <div class="welcome-artwork">
-                    <img id="welcomePopupImage" class="welcome-poster" src="images/IMG_0181.jpeg"
-                        width="843" height="1264" alt="Notis: Laman web DuitJom sedang dalam penyelenggaraan. Terima kasih atas kesabaran dan sokongan anda."
+                    <img id="welcomePopupImage" class="welcome-poster" src="images/IMG_0189.png"
+                        width="1024" height="1536" alt="Notis: Laman web DuitJom sedang dalam penyelenggaraan. Terima kasih atas kesabaran dan sokongan anda."
                         fetchpriority="high" decoding="async">
                     <p class="welcome-image-fallback" hidden>Laman web DuitJom sedang dinaik taraf. Terima kasih atas kesabaran anda.</p>
                     <a id="welcomePopupWhatsApp" class="welcome-hotspot welcome-whatsapp"
                         href="https://wa.me/601168462807" target="_blank" rel="noopener noreferrer"
                         aria-label="Hubungi WhatsApp agent 01168462807" title="Hubungi WhatsApp"><span class="welcome-sr-only">Hubungi WhatsApp</span></a>
-                    <button id="welcomePopupClose" class="welcome-hotspot welcome-poster-close" type="button">Tutup 30s</button>
+<button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-email" data-copy="support@duitjom.my" aria-label="Salin support@duitjom.my"><span class="welcome-sr-only">Salin support@duitjom.my</span></button>
+<button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-com" data-copy="www.duitjom.com" aria-label="Salin www.duitjom.com"><span class="welcome-sr-only">Salin www.duitjom.com</span></button>
+<button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-my" data-copy="www.duitjom.my" aria-label="Salin www.duitjom.my"><span class="welcome-sr-only">Salin www.duitjom.my</span></button>
+                    <button id="welcomePopupClose" class="welcome-hotspot welcome-poster-close" type="button">Tutup 60s</button>
                     <a id="welcomePopupSupport" class="welcome-hotspot welcome-poster-email"
-                        href="mailto:support@duitjom.my" aria-label="Hubungi Kami melalui email support@duitjom.my"
+                        href="mailto:support@duitjom.my?subject=Hi%20PM-PerlukanBantuan&amp;body=Hi%20PM-PerlukanBantuan" aria-label="Hubungi Kami melalui email support@duitjom.my"
                         title="Hubungi Kami"><span class="welcome-sr-only">Hubungi Kami</span></a>
                 </div>
             </div>
@@ -122,10 +127,17 @@
     <section data-email-auth id="firebaseAuthContainer" class="login-shell w-full max-w-md mx-auto px-4 pt-2" aria-labelledby="authTitle">
         <div class="login-live-background" aria-hidden="true"><span class="login-live-orb login-live-orb-one"></span><span class="login-live-orb login-live-orb-two"></span><span class="login-live-orb login-live-orb-three"></span></div>
         <div id="authLoginPanel" class="login-card">
-            <p class="login-kicker" data-i18n="auth.kickerLogin">JAMINAN KESELAMATAN PENGGUNA</p>
-            <h2 id="authTitle" class="login-title" data-i18n="auth.loginTitle">Log Masuk ke DuitJom</h2>
-            <p class="login-subtitle" data-i18n="auth.loginSubtitle">Sila pilih kaedah log masuk pilihan anda untuk meneruskan ke akaun DuitJom.</p>
-
+            <img class="entry-logo" src="IMG_6715.png" alt="DuitJom">
+            <p class="login-kicker" data-i18n="auth.kickerLogin">PENGESAHAN</p>
+            <h2 id="authTitle" class="login-title" data-i18n="auth.chooseTitle">Sila Pilih Kaedah untuk Meneruskan</h2>
+            <p id="authSubtitle" class="login-subtitle" data-i18n="auth.chooseSubtitle">Sila pilih salah satu pilihan berikut berdasarkan status akaun anda.</p>
+            <div id="authChooser" class="auth-choice-grid">
+                <button type="button" data-auth-intent="login" class="account-choice"><strong data-i18n="auth.loginChoice">LOG MASUK</strong><span data-i18n="auth.loginChoiceBody">Untuk pelanggan yang telah mempunyai akaun berdaftar.</span></button>
+                <button type="button" data-auth-intent="register" class="account-choice"><strong data-i18n="auth.registerChoice">DAFTAR AKAUN</strong><span data-i18n="auth.registerChoiceBody">Untuk pelanggan baharu yang ingin mendaftar akaun.</span></button>
+            </div>
+            <div id="authEntry" hidden>
+                <button type="button" id="authBackButton" class="login-link-button" data-i18n="auth.backChoices">Kembali ke pilihan akaun</button>
+                <div id="loginProviders">
             <button id="googleLoginButton" type="button" class="login-provider-button">
                 <svg class="google-provider-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
                     <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.22z"/>
@@ -136,19 +148,30 @@
                 <span data-i18n="auth.googleContinue">Continue with Google</span>
             </button>
 
-            <div class="login-divider" data-i18n="auth.or">or</div>
-
-            <button id="emailToggleButton" type="button" class="login-provider-button email-toggle-button" aria-controls="emailLoginForm" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-[18px] h-[18px]" aria-hidden="true">
-                    <rect x="3" y="5" width="18" height="14" rx="2"/>
-                    <path stroke-linecap="round" d="M3 7l9 6 9-6"/>
-                </svg>
-                <span data-i18n="auth.emailContinue">Sign in with Email</span>
-            </button>
-
-            <form id="emailLoginForm" class="login-panel hidden" hidden>
-                <label for="emailInput" data-i18n="auth.email">Email</label>
-                <input id="emailInput" type="email" autocomplete="email" placeholder="name@example.com" required>
+                <button id="magicToggleButton" type="button" class="login-provider-button" data-i18n="auth.magicLink">Log in with Magic Link</button>
+                <button id="emailToggleButton" type="button" class="login-provider-button" aria-controls="emailLoginForm" aria-expanded="true" data-i18n="auth.emailContinue">Log Masuk dengan E-mel</button>
+                </div>
+                <form id="emailLoginForm" class="login-panel">
+                    <fieldset id="registrationFields" hidden disabled>
+                        <label for="registerName" data-i18n="auth.fullName">Nama penuh</label>
+                        <input id="registerName" autocomplete="name" maxlength="120" required data-i18n-placeholder="auth.namePlaceholder">
+                        <label for="registerIC" data-i18n="auth.identityNumber">Nombor Kad Pengenalan</label>
+                        <input id="registerIC" inputmode="numeric" autocomplete="off" maxlength="14" pattern="[0-9]{6}-[0-9]{2}-[0-9]{4}" placeholder="000000-00-0000" required>
+                        <label for="registerPhone" data-i18n="auth.phone">Nombor Telefon</label>
+                        <div class="registration-phone"><span>🇲🇾 +60</span><input id="registerPhone" type="tel" inputmode="tel" autocomplete="tel-national" pattern="1[0-9]{8,9}" maxlength="15" placeholder="123456789" required></div>
+                    </fieldset>
+                    <label for="emailInput" data-i18n="auth.email">Alamat e-mel</label>
+                    <input id="emailInput" type="email" autocomplete="email" required data-i18n-placeholder="auth.emailPlaceholder">
+                <div class="mt-4 flex justify-center">
+                    <div id="loginTurnstileWidget" class="cf-turnstile"
+                         data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth"
+                         data-theme="auto" data-size="flexible"
+                         data-callback="onLoginTurnstileSuccess"
+                         data-error-callback="onLoginTurnstileError"
+                         data-expired-callback="onLoginTurnstileExpired"></div>
+                </div>
+                    <button id="emailLoginButton" type="submit" class="login-primary-button" data-i18n="auth.continueButton">TERUSKAN</button>
+                    <div id="otpSection" hidden>
                 <fieldset class="login-otp-fieldset">
                     <legend data-i18n="auth.otpLabel">Kod Pengesahan (OTP)</legend>
                     <div class="login-otp-digits">
@@ -160,34 +183,17 @@
                         <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 6" autocomplete="off">
                     </div>
                 </fieldset>
-                <p class="login-otp-hint" data-i18n="auth.otpExpiryHint">Kod OTP sah selama 5 minit.</p>
-                <div class="login-otp-resend">
-                    <button id="resendOtpButton" type="button" class="login-link-button">Hantar Semula OTP</button>
-                </div>
-                <div class="mt-4 flex justify-center">
-                    <div id="loginTurnstileWidget" class="cf-turnstile"
-                         data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth"
-                         data-theme="auto" data-size="flexible"
-                         data-callback="onLoginTurnstileSuccess"
-                         data-error-callback="onLoginTurnstileError"
-                         data-expired-callback="onLoginTurnstileExpired"></div>
-                </div>
-                <button id="emailLoginButton" type="submit" class="login-primary-button mt-4" data-i18n="auth.requestOtp" disabled>Hantar Kod OTP</button>
-                <button id="verifyOtpButton" type="button" class="login-primary-button" data-i18n="auth.verifyOtp" disabled>Sahkan OTP &amp; Log Masuk</button>
-            </form>
-
-
-            <!-- =========================================================
-                 ALTERNATE ACCOUNT LINKS
-                 Native anchor links (NOT submit buttons) so that keyboard
-                 navigation, screen readers, middle-click and "open in new
-                 tab" all behave the way users expect.
-                 ========================================================= -->
-            <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
-                <a id="registerAccountLink" class="auth-switch-link" href="?auth=email&amp;intent=register" data-i18n="auth.registerAccountLink">Register Account</a>
-                <span class="auth-switch-sep" aria-hidden="true">&bull;</span>
-                <a id="forgotPasswordLink" class="auth-switch-link" href="page/forgot-password.html" data-i18n="auth.forgotPasswordLink">Forget Password</a>
-            </nav>
+                    <div class="login-otp-resend"><button id="resendOtpButton" type="button" class="login-link-button" disabled></button></div>
+                    <button id="verifyOtpButton" type="button" class="login-primary-button" data-i18n="auth.verifyOtp" disabled>Sahkan OTP</button>
+                    </div>
+                </form>
+                <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
+                    <span id="registerPrompt"><span data-i18n="auth.noAccount">Not have an account?</span> <a id="registerAccountLink" href="?intent=register" data-auth-intent="register" data-i18n="auth.registerShort">Register</a>.</span>
+                    <a id="forgotPasswordLink" href="page/forgot-password.html" data-i18n="auth.forgotPasswordLink">Forgot Password</a>
+                    <a id="loginAccountLink" href="?intent=login" data-auth-intent="login" data-i18n="auth.loginChoice" hidden>LOG MASUK</a>
+                </nav>
+            </div>
+            <button id="accountSwitchNotice" type="button" class="login-link-button" hidden></button>
 
         </div>
 
@@ -207,7 +213,7 @@
     <!-- =========================================================
          MAIN PAGE — DIPERBAIKI
          ========================================================= -->
-     <div id="mainPage" 
+     <div id="mainPage"
          class="flex flex-col min-h-screen justify-between">
 
      <main class="max-w-md mx-auto px-4 py-4 text-center flex-grow flex flex-col justify-center items-center">
@@ -431,7 +437,7 @@
                 </div>
             </section>
         </div>
-        
+
     </main>
 
     <!-- FEATURES: dimuatkan di antara halaman utama dan footer hitam -->
@@ -459,7 +465,7 @@
                  alt="Codacy Code Quality">
         </a>
     </p>
-    
+
     <!-- SonarQube Cloud Quality Badge -->
     <p class="mt-3">
     <a href="https://sonarcloud.io/summary/new_code?id=DuitJom_payment.ipay88.com"
@@ -520,7 +526,55 @@
 </div>
 
 <!-- PAYMENT PAGE (Borang Maklumat Diri) -->
-<div id="paym…979 tokens truncated…/>
+<div id="paymentPage" class="hidden flex-col min-h-screen bg-white -mt-[72px] pt-[72px]">
+<main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
+    <div class="w-full flex flex-col items-center text-center mb-6">
+        <div class="relative w-28 h-28 mb-4 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-[32px] bg-gradient-to-br from-blue-100 via-sky-50 to-cyan-100 blur-xl opacity-80"></div>
+            <div class="relative w-24 h-24 rounded-[28px] bg-white/70 backdrop-blur-xl border border-white/90 shadow-[0_15px_40px_rgba(37,99,235,0.12)] flex items-center justify-center overflow-hidden">
+                <img src="IMG_6715.png" alt="Logo DuitJom" class="w-[82px] h-[82px] object-contain">
+            </div>
+        </div>
+        <p class="text-slate-500 font-medium text-xs max-w-xs leading-relaxed" data-i18n="home.paymentIntro">
+            Complete your details to continue safely to the next step.
+        </p>
+    </div>
+
+    <div class="w-full flex items-center gap-4 py-5 border-t border-b border-slate-100">
+        <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="w-7 h-7 text-blue-500" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
+            </svg>
+        </div>
+        <div class="flex-1 text-left">
+            <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mb-1" data-i18n="home.paymentRequired">Required Information</p>
+            <h3 class="text-sm font-extrabold text-slate-900 leading-snug" data-i18n="home.paymentHeading">Please fill in your details</h3>
+            <p class="text-[10px] text-slate-500 mt-1 leading-relaxed" data-i18n="home.paymentSubheading">Make sure all provided information is accurate before continuing.</p>
+        </div>
+    </div>
+
+    <form onsubmit="goToNextStepPage(event)" class="space-y-4 w-full">
+
+        <!-- NAMA PENUH -->
+        <div>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
+                </svg>
+                <span data-i18n="home.fullName">Full Name (IC)</span>
+                <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="namaInput" required data-i18n-placeholder="home.fullNamePlaceholder" placeholder="Ali bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
+        </div>
+
+        <!-- NOMBOR KAD PENGENALAN -->
+        <div>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <circle cx="7" cy="11" r="2"/>
                     <path stroke-linecap="round" d="M11 9h8M11 13h6M6 16h8"/>
                 </svg>
                 <span data-i18n="home.icNumber">IC Number</span>
@@ -585,8 +639,8 @@
             </label>
             <p id="termsError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.termsError">Please accept the terms to continue</p>
         </div>
-        
-        
+
+
         <!-- CLOUDFLARE TURNSTILE -->
     <div class="mt-4 flex justify-center">
           <div
@@ -653,11 +707,11 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script src="js/welcome-popup.js?v=20261011-welcome"></script>
-    <script type="module" src="auth/app-auth.js?v=20261003-otp-worker"></script>
-    <script type="module" src="auth/auth-forms.js"></script>
+    <script src="js/welcome-popup.js?v=20261012"></script>
+    <script type="module" src="auth/app-auth.js?v=20261012"></script>
 
-    
+
+
     <!-- Firebase Authentication UI -->
     <!-- Firebase auth controller: auth/app-auth.js -->
     <!-- QR Code Library -->
