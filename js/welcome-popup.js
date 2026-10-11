@@ -7,13 +7,11 @@
     const popup = overlay?.querySelector(".welcome-popup");
     const closeButton = document.getElementById("welcomePopupClose");
     const closeX = document.getElementById("welcomePopupCloseX");
-    const copyButton = document.getElementById("welcomePopupCopyEmail");
-    const copyStatus = document.getElementById("welcomePopupCopyStatus");
     if (!overlay || !popup || !closeButton || !closeX || overlay.dataset.initialized) return;
     overlay.dataset.initialized = "true";
 
     const previousFocus = document.activeElement;
-    const deadline = Date.now() + 10000;
+    const deadline = Date.now() + 30000;
     let interval = null;
     let autoClose = null;
     let isOpen = true;
@@ -41,7 +39,7 @@
     document.body.classList.add("welcome-popup-open");
     updateCountdown();
     interval = window.setInterval(updateCountdown, 1000);
-    autoClose = window.setTimeout(closePopup, 10000);
+    autoClose = window.setTimeout(closePopup, 30000);
     window.requestAnimationFrame(function () {
       if (isOpen) closeX.focus({ preventScroll: true });
     });
@@ -79,52 +77,14 @@
 
     const poster = document.getElementById("welcomePopupImage");
     function hideFailedPoster() {
-      const artwork = popup.querySelector(".welcome-artwork");
-      if (artwork) artwork.hidden = true;
+      if (poster) poster.hidden = true;
       popup.querySelector(".welcome-content")?.classList.add("welcome-without-image");
+      const fallback = popup.querySelector(".welcome-image-fallback");
+      if (fallback) fallback.hidden = false;
     }
     poster?.addEventListener("error", hideFailedPoster);
     if (poster?.complete && poster.naturalWidth === 0) hideFailedPoster();
 
-    function copyWithSelection(email) {
-      const focusBeforeCopy = document.activeElement;
-      const buffer = document.createElement("textarea");
-      buffer.value = email;
-      buffer.readOnly = true;
-      buffer.className = "welcome-copy-buffer";
-      buffer.setAttribute("aria-hidden", "true");
-      popup.appendChild(buffer);
-      let copied;
-      try {
-        buffer.select();
-        buffer.setSelectionRange(0, email.length);
-        copied = document.execCommand("copy");
-      } finally {
-        buffer.remove();
-        if (isOpen) focusBeforeCopy?.focus({ preventScroll: true });
-      }
-      if (!copied) throw new Error("Copy unavailable");
-    }
-
-    copyButton?.addEventListener("click", async function () {
-      if (!copyStatus) return;
-      const email = "support@duitjom.my";
-      copyStatus.textContent = "";
-      try {
-        if (navigator.clipboard?.writeText) {
-          try {
-            await navigator.clipboard.writeText(email);
-          } catch (_) {
-            copyWithSelection(email);
-          }
-        } else {
-          copyWithSelection(email);
-        }
-        copyStatus.textContent = "Emel disalin.";
-      } catch (_) {
-        copyStatus.textContent = "Tekan lama alamat emel untuk menyalinnya.";
-      }
-    });
   }
 
   if (document.readyState === "loading") {
