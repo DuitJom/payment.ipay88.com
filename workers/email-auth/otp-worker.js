@@ -1,5 +1,5 @@
 // Dedicated email auth module. handleEmailAuth returns null for other routes.
-const AUTH_ROUTES = new Set(["/api/send-otp", "/api/verify-otp", "/api/session", "/api/logout"]);
+const AUTH_ROUTES = new Set(["/api/send-otp", "/api/verify-otp", "/api/send-link", "/api/verify-link", "/api/session", "/api/logout"]);
 const COOKIE_NAME = "__Host-duitjom_session";
 const OTP_TTL = 300;
 const RESEND_SECONDS = 60;
@@ -193,7 +193,26 @@ function frame(title, body) {
   return `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:28px;color:#1f2937"><h2>${title}</h2>${body}<p style="font-size:12px;color:#64748b">Email ini dijana secara automatik oleh DuitJom. Sila jangan balas email ini.</p></div>`;
 }
 function escapeHTML(value) { return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character])); }
-async function sendOtp(request, env, db, origin, requestId) {
+function registrationProfile(value) {
+  const fullName = typeof value?.fullName === 'string' ? value.fullName.trim() : '';
+  const mykad = typeof value?.mykad === 'string' ? value.mykad.replace(/\D/g, '') : '';
+  const phone = typeof value?.phone === 'string' ? value.phone.trim() : '';
+  if (fullName.length < 2 || fullName.length > 120 || /[\x00-\x1f]/.test(fullName) ||
+      !/^[0-9]{12}$/.test(mykad) || !/^\+601[0-9]{8,9}$/.test(phone)) {
+    reject('INVALID_PROFILE', 400, 'Sila lengkapkan nama penuh, nombor kad pengenalan dan nombor telefon yang sah.');
+  }
+  return { fullName, mykad, phone };
+}
+async function accountIntent(db, email, intent, profile) {
+  // Missing intent means login; never create a new account implicitly.
+  intent = intent || 'login';
+  if (!['login', 'register'].includes(intent)) reject('INVALID_INTENT', 400, 'Pilihan akaun tidak sah.');
+  const user = await db.prepare('SELECT email FROM email_auth_users WHERE email = ?1').bind(email).first();
+  if (intent === 'login' && !user) reject('ACCOUNT_NOT_FOUND', 404, 'Alamat e-mel ini belum didaftarkan. Sila daftar akaun baharu untuk meneruskan.');
+  if (intent === 'register' && user) reject('ACCOUNT_EXISTS', 409, 'Alamat e-mel ini sudah mempunyai akaun. Sila log masuk untuk meneruskan.');
+  return { intent, profile: intent === 'register' ? registrationProfile(profile) : null };
+}
+async function sendOtp(request, env, db, origin, requestId, kind = "otp") {
   const data = await readBody(request);
   const email = emailAddress(data.email);
   pepper(env);
@@ -201,7 +220,9 @@ async function sendOtp(request, env, db, origin, requestId) {
   await rateLimit(db, env, `send-ip:${request.headers.get("CF-Connecting-IP") || "unknown"}`, 30);
   await verifyTurnstile(request, env, data, origin, requestId);
   await rateLimit(db, env, `send-email:${email}`, 5);
-  const otp = sixDigitOTP();
+  if (kind === 'link' && data.intent !== 'login') reject('INVALID_INTENT', 400, 'Sila log masuk dengan akaun berdaftar.');
+  const flow = await accountIntent(db, email, data.intent, data.profile);
+  const otp = kind === 'link' ? randomToken() : sixDigitOTP();
   const challengeId = crypto.randomUUID();
   const timestamp = now();
   const otpMac = await mac(env, `${challengeId}:${email}:${otp}`);
@@ -217,7 +238,15 @@ async function sendOtp(request, env, db, origin, requestId) {
     reject("RESEND_COOLDOWN", 429, "Sila tunggu sebelum meminta OTP baharu.", Math.max(1, RESEND_SECONDS - (timestamp - existing.created_at)));
   }
   try {
-    const messageId = await sendTransactionalEmail(env, email, {
+    await db.prepare(`INSERT INTO email_auth_pending_profiles(challenge_id, intent, kind, full_name, mykad, phone)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6)`).bind(challengeId, flow.intent, kind,
+      flow.profile?.fullName || null, flow.profile?.mykad || null, flow.profile?.phone || null).run();
+    const link = `${origin}/index.html#${new URLSearchParams({ auth:'link', email, token:otp, challengeId })}`;
+    const messageId = await sendTransactionalEmail(env, email, kind === 'link' ? {
+      Subject:'Pautan Log Masuk DuitJom',
+      TextPart:`Buka pautan ini untuk log masuk: ${link}\nPautan ini sah selama 5 minit dan hanya boleh digunakan sekali. Jika anda tidak meminta pautan ini, abaikan e-mel ini.`,
+      HTMLPart:frame('Pautan Log Masuk', `<p><a href="${escapeHTML(link)}">Log masuk ke DuitJom</a></p><p>Pautan ini sah selama 5 minit dan hanya boleh digunakan sekali. Jangan kongsikannya.</p>`)
+    } : {
       Subject: "Kod Pengesahan DuitJom Anda",
       TextPart: `Kod pengesahan anda ialah ${otp}. Kod ini sah selama 5 minit. Jangan kongsikan kod ini dengan sesiapa. Jika anda tidak meminta kod ini, abaikan email ini.`,
       HTMLPart: frame("Kod Pengesahan", `<p>Gunakan kod ini untuk meneruskan:</p><p style="font-size:32px;font-weight:bold;letter-spacing:6px;text-align:center">${otp}</p><p>Kod ini sah selama 5 minit. Jangan kongsikan kod ini dengan sesiapa.</p><p>Jika anda tidak meminta kod ini, abaikan email ini.</p>`)
@@ -228,7 +257,7 @@ async function sendOtp(request, env, db, origin, requestId) {
     await db.prepare("UPDATE email_otp_challenges SET delivery_status = 'failed', consumed = 1 WHERE challenge_id = ?1").bind(challengeId).run();
     throw error;
   }
-  return { success: true, message: "Permintaan OTP diterima.", challengeId, delivery: "accepted", expiresIn: OTP_TTL, resendAfter: RESEND_SECONDS };
+  return { success: true, authFlowVersion: 2, message: "Permintaan diterima.", challengeId, delivery: "accepted", expiresIn: OTP_TTL, resendAfter: RESEND_SECONDS };
 }
 function sessionCookie(token, seconds) {
   return `${COOKIE_NAME}=${token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${seconds}`;
@@ -246,17 +275,23 @@ export async function requireEmailSession(request, env) {
   const row = await database(env).prepare("SELECT email, expires_at FROM email_auth_sessions WHERE token_hash = ?1 AND expires_at > ?2")
     .bind(await tokenHash(token), now()).first();
   if (!row) reject("SESSION_REQUIRED", 401, "Sesi telah tamat. Sila log masuk semula.");
-  return { email: row.email, expiresAt: row.expires_at * 1000 };
+  const profile = await database(env).prepare('SELECT full_name FROM email_auth_profiles WHERE email = ?1').bind(row.email).first();
+  return { email: row.email, fullName: profile?.full_name || '', expiresAt: row.expires_at * 1000 };
 }
 function invalidOtp() { reject("OTP_INVALID", 400, "Kod OTP salah atau tamat tempoh. Sila minta kod baharu jika perlu."); }
-async function verifyOtp(request, env, db, context, requestId) {
+async function verifyOtp(request, env, db, context, requestId, kind = "otp") {
   const data = await readBody(request);
   const email = emailAddress(data.email);
-  const otp = data.otp;
-  if (typeof otp !== "string" || !/^[0-9]{6}$/.test(otp)) invalidOtp();
+  const otp = kind === 'link' ? data.token : data.otp;
+  if (typeof otp !== 'string' || !(kind === 'link' ? /^[a-f0-9]{64}$/ : /^[0-9]{6}$/).test(otp)) invalidOtp();
   if (data.challengeId !== undefined && (typeof data.challengeId !== "string" || !/^[a-f0-9-]{36}$/.test(data.challengeId))) invalidOtp();
   pepper(env);
   await rateLimit(db, env, `verify-ip:${request.headers.get("CF-Connecting-IP") || "unknown"}`, 150);
+  const pending = await db.prepare(`SELECT p.*, c.expires_at, c.consumed FROM email_otp_challenges c
+    LEFT JOIN email_auth_pending_profiles p ON p.challenge_id = c.challenge_id
+    WHERE c.email = ?1 AND (?2 IS NULL OR c.challenge_id = ?2)`).bind(email, data.challengeId || null).first();
+  if (pending && (pending.kind || 'otp') !== kind) invalidOtp();
+  if (pending?.expires_at <= now() && pending.consumed === 0) reject('OTP_EXPIRED', 400, 'Kod OTP telah tamat tempoh. Sila minta kod OTP baharu.');
   // Reserve one of five attempts in one statement; simultaneous requests cannot exceed it.
   const row = await db.prepare(`UPDATE email_otp_challenges SET attempts = attempts + 1
     WHERE email = ?1 AND delivery_status = 'accepted' AND consumed = 0 AND cancelled = 0 AND expires_at > ?2 AND attempts < 5
@@ -264,6 +299,9 @@ async function verifyOtp(request, env, db, context, requestId) {
   const valid = await crypto.subtle.verify("HMAC", await hmacKey(env), fromHex(row?.otp_mac),
     encoder.encode(`${row?.challenge_id || "invalid"}:${email}:${otp}`));
   if (!row || !valid) invalidOtp();
+  if (pending?.intent === 'login' || pending?.intent === 'register') {
+    await accountIntent(db, email, pending.intent, { fullName:pending.full_name, mykad:pending.mykad, phone:pending.phone });
+  }
   // Exactly one verification can consume this challenge, even with the same correct code in parallel.
   const consumed = await db.prepare(`UPDATE email_otp_challenges SET consumed = 1
     WHERE challenge_id = ?1 AND consumed = 0 AND cancelled = 0 AND expires_at > ?2 RETURNING email`)
@@ -280,6 +318,10 @@ async function verifyOtp(request, env, db, context, requestId) {
       SELECT ?1, ?2, ?3, ?4, ?5 WHERE ${liveChallenge}`)
       .bind(row.challenge_id, await tokenHash(token), email, timestamp, timestamp + ttl)
   ];
+  if (pending?.intent === 'register') {
+    statements.push(db.prepare(`INSERT OR IGNORE INTO email_auth_profiles(email, full_name, mykad, phone)
+      SELECT ?2, ?3, ?4, ?5 WHERE ${liveChallenge}`).bind(row.challenge_id, email, pending.full_name, pending.mykad, pending.phone));
+  }
   if (env.WELCOME_EMAIL_ENABLED === "true") {
     statements.push(db.prepare(`INSERT OR IGNORE INTO email_auth_outbox(id, email, kind, next_attempt_at)
       SELECT ?2, ?3, 'welcome', ?4 WHERE ${liveChallenge}`)
@@ -288,7 +330,7 @@ async function verifyOtp(request, env, db, context, requestId) {
   const results = await db.batch(statements);
   if (results[1]?.meta?.changes !== 1) invalidOtp();
   if (env.WELCOME_EMAIL_ENABLED === "true") context?.waitUntil?.(drainWelcomeEmails(env));
-  return { body: { success: true, message: "OTP sah.", user: { email }, expiresAt: (timestamp + ttl) * 1000 }, cookie: sessionCookie(token, ttl) };
+  return { body: { success: true, message: "OTP sah.", user: { email, fullName: pending?.full_name || "" }, expiresAt: (timestamp + ttl) * 1000 }, cookie: sessionCookie(token, ttl) };
 }
 export async function drainWelcomeEmails(env) {
   const db = database(env);
@@ -321,6 +363,7 @@ export async function cleanupEmailAuth(env) {
   const db = database(env);
   const timestamp = now();
   await db.batch([
+    db.prepare("DELETE FROM email_auth_pending_profiles WHERE challenge_id NOT IN (SELECT challenge_id FROM email_otp_challenges WHERE expires_at >= ?1)").bind(timestamp - 86400),
     db.prepare("DELETE FROM email_otp_challenges WHERE expires_at < ?1").bind(timestamp - 86400),
     db.prepare("DELETE FROM email_auth_rate_limits WHERE window_start < ?1").bind(timestamp - 7200),
     db.prepare("DELETE FROM email_auth_sessions WHERE expires_at <= ?1").bind(timestamp)
@@ -339,14 +382,14 @@ export async function handleEmailAuth(request, env, context) {
     const expectedMethod = path === "/api/session" ? "GET" : "POST";
     if (request.method !== expectedMethod) reject("METHOD_NOT_ALLOWED", 405, "Kaedah permintaan tidak dibenarkan.");
     const db = database(env);
-    if (path === "/api/send-otp") return json({ ...await sendOtp(request, env, db, origin, requestId), requestId }, 200, cors);
-    if (path === "/api/verify-otp") {
-      const result = await verifyOtp(request, env, db, context, requestId);
+    if (path === "/api/send-otp" || path === "/api/send-link") return json({ ...await sendOtp(request, env, db, origin, requestId, path.endsWith("link") ? "link" : "otp"), requestId }, 200, cors);
+    if (path === "/api/verify-otp" || path === "/api/verify-link") {
+      const result = await verifyOtp(request, env, db, context, requestId, path.endsWith("link") ? "link" : "otp");
       return json({ ...result.body, requestId }, 200, cors, { "Set-Cookie": result.cookie });
     }
     if (path === "/api/session") {
       const session = await requireEmailSession(request, env);
-      return json({ success: true, user: { email: session.email }, expiresAt: session.expiresAt, requestId }, 200, cors);
+      return json({ success: true, user: { email: session.email, fullName: session.fullName }, expiresAt: session.expiresAt, requestId }, 200, cors);
     }
     const token = cookieToken(request);
     const data = request.body ? await readBody(request) : {};

@@ -164,3 +164,6 @@ html:has(dialog[open]) { overflow: hidden; }
 @media (max-width: 480px) { .bank-dialog { margin: auto auto max(16px, env(safe-area-inset-bottom, 0px)); border-radius: 23px; } }
 @media (max-width: 360px) { .payment-shell { padding: 0 16px; } .nav-label { font-size: 8px; letter-spacing: .6px; } .method-card, .receipt-card, .qr-card { padding: 18px; } .method-tab { font-size: 9px; } .amount-card { padding: 21px; } .qr-kicker { font-size: 8px; letter-spacing: .5px; } .qr-image-caption { font-size: 9px; } .qr-card .time-track { margin: 0 -18px -18px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+:root { --blue:#1b3a5f; --blue-light:#5dade2; }
+.method-tab:disabled,.bank-picker:disabled { cursor:not-allowed; opacity:.55; }

@@ -88,3 +88,14 @@ body.welcome-popup-open { overflow: hidden; }
 .welcome-without-image .welcome-artwork { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
 .welcome-without-image .welcome-hotspot { position: static; width: 100%; min-height: 48px; background: #087dbc; color: white; border-radius: 12px; }
 .welcome-without-image .welcome-hotspot .welcome-sr-only { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
+/* Hotspots follow the uploaded 1024 × 1536 poster. */
+.welcome-whatsapp { left:85.5%; top:38.8%; width:11%; height:6.8%; min-width:0; min-height:0; }
+.welcome-poster-close { left:8.5%; top:89.5%; width:40.5%; height:5.2%; font-size:clamp(13px,4vw,20px); }
+.welcome-poster-email { left:51.5%; top:89.5%; width:40.5%; height:5.2%; }
+.welcome-copy-target { background:transparent; border-radius:8px; padding:0; }
+.welcome-copy-target:hover { background:#009de21c; outline:2px solid #058ddd; }
+.welcome-copy-email { left:25%; top:73.2%; width:50%; height:4%; }
+.welcome-copy-com { left:25%; top:83.3%; width:41%; height:2.6%; }
+.welcome-copy-my { left:25%; top:85.9%; width:38%; height:2.6%; }
+.welcome-copy-status { margin:0; padding:0 16px; color:#075985; font-size:13px; }
+.welcome-copy-status:not(:empty) { padding:10px 16px; }

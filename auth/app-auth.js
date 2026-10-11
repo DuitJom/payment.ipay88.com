@@ -36,6 +36,59 @@ let actionVersion = 0;
 const resendCooldowns = new Map();
 let resendTimer = null;
 let lastMessage = null;
+let authIntent = null;
+let authMethod = 'otp';
+let pendingLink = null;
+const noticeSwitch = byId('accountSwitchNotice');
+function showEntry(intent, focus = true) {
+  if (otpBusy || googleBusy) return;
+  authIntent = intent;
+  authMethod = 'otp';
+  pendingEmail = null; pendingChallengeId = null; pendingLink = null;
+  clearDigits(); clearMessage();
+  visible(byId('authChooser'), !intent);
+  visible(byId('authEntry'), !!intent);
+  visible(byId('loginProviders'), intent === 'login');
+  visible(byId('registrationFields'), intent === 'register');
+  byId('registrationFields').disabled = intent !== 'register';
+  visible(byId('registerPrompt'), intent === 'login');
+  visible(byId('forgotPasswordLink'), intent === 'login');
+  visible(byId('loginAccountLink'), intent === 'register');
+  visible(byId('otpSection'), false); visible(noticeSwitch, false);
+  visible(document.querySelector('.login-otp-fieldset'), true); visible(resendButton, true);
+  verifyButton.dataset.i18n = 'auth.verifyOtp'; verifyButton.textContent = t('auth.verifyOtp');
+  const titleKey = !intent ? 'chooseTitle' : intent === 'register' ? 'registerTitle' : 'loginTitle';
+  const subtitleKey = !intent ? 'chooseSubtitle' : intent === 'register' ? 'registerChoiceBody' : 'loginSubtitle';
+  for (const [id,key] of [['authTitle',titleKey],['authSubtitle',subtitleKey]]) {
+    byId(id).dataset.i18n = 'auth.' + key; byId(id).textContent = t('auth.' + key);
+  }
+  if (intent) openEmailForm(false);
+  updateMethodLabel(); tickCountdown();
+  if (focus && intent) (intent === 'register' ? byId('registerName') : emailInput)?.focus();
+}
+function updateMethodLabel() {
+  const key = authMethod === 'link' ? 'sendLink' : authIntent === 'register' ? 'getOtp' : 'continueButton';
+  requestButton.dataset.i18n = 'auth.' + key; requestButton.textContent = t('auth.' + key);
+}
+document.querySelectorAll('[data-auth-intent]').forEach(control => control.addEventListener('click', event => {
+  event.preventDefault(); showEntry(control.dataset.authIntent);
+}));
+byId('authBackButton')?.addEventListener('click', () => showEntry(null));
+byId('magicToggleButton')?.addEventListener('click', () => {
+  if (otpBusy || googleBusy) return;
+  authMethod = 'link'; openEmailForm(); updateMethodLabel(); visible(byId('otpSection'), false); clearMessage();
+});
+noticeSwitch?.addEventListener('click', () => showEntry(noticeSwitch.dataset.intent));
+byId('registerIC')?.addEventListener('input', event => {
+  const digits = event.target.value.replace(/\D/g, '').slice(0,12);
+  event.target.value = digits.slice(0,6) + (digits.length >= 6 ? '-' + digits.slice(6,8) : '') + (digits.length >= 8 ? '-' + digits.slice(8) : '');
+});
+byId('registerPhone')?.addEventListener('input', event => {
+  let digits = event.target.value.replace(/\D/g, '');
+  if (digits.startsWith('60')) digits = digits.slice(2);
+  if (digits.startsWith('0')) digits = digits.slice(1);
+  event.target.value = digits.slice(0,10);
+});
 let activeIdentity = readSession();
 
 function t(key, vars) {
@@ -51,9 +104,17 @@ function showMessage(key, type = "info", vars = {}, literal = false) {
 }
 function clearMessage() {
   lastMessage = null;
+  visible(noticeSwitch, false);
   if (messageBox) { messageBox.textContent = ""; messageBox.hidden = true; }
 }
 function showError(error) {
+  if (['ACCOUNT_NOT_FOUND','ACCOUNT_EXISTS'].includes(error?.code)) {
+    const intent = error.code === 'ACCOUNT_NOT_FOUND' ? 'register' : 'login';
+    noticeSwitch.dataset.intent = intent;
+    noticeSwitch.dataset.i18n = 'auth.' + (intent === 'register' ? 'registerChoice' : 'loginChoice');
+    noticeSwitch.textContent = t(noticeSwitch.dataset.i18n);
+    visible(noticeSwitch, true);
+  }
   const keys = {
     "auth/popup-blocked": "auth.errors.auth/popup-blocked",
     "auth/popup-closed-by-user": "auth.errors.auth/popup-closed-by-user",
@@ -118,11 +179,9 @@ function openEmailForm(focus = true) {
   emailToggle?.setAttribute("aria-expanded", "true");
   if (focus) emailInput?.focus();
 }
-emailToggle?.addEventListener("click", () => {
-  const show = emailForm?.hidden;
-  visible(emailForm, show);
-  emailToggle.setAttribute("aria-expanded", String(show));
-  if (show) emailInput?.focus();
+emailToggle?.addEventListener('click', () => {
+  if (otpBusy || googleBusy) return;
+  authMethod = 'otp'; openEmailForm(); updateMethodLabel(); visible(byId('otpSection'), !!pendingEmail); clearMessage();
 });
 window.requestPaymentLogin = () => {
   emailSessionVerified = false;
@@ -130,6 +189,7 @@ window.requestPaymentLogin = () => {
   activeIdentity = null;
   clearStoredSession();
   renderAccount();
+  showEntry("login");
   openEmailForm();
   showMessage("auth.needLoginToPay", "error");
   loginPanel?.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -167,16 +227,18 @@ function cooldownDeadline() {
 function updateControls() {
   const busy = otpBusy || googleBusy;
   const coolingDown = Date.now() < cooldownDeadline();
-  if (requestButton) requestButton.disabled = busy || coolingDown || !window.loginTurnstileToken;
-  if (verifyButton) verifyButton.disabled = busy || !pendingEmail;
+  if (requestButton) requestButton.disabled = busy || coolingDown;
+  if (verifyButton) verifyButton.disabled = busy || !pendingEmail || (!pendingLink && otpInputs.map(i => i.value).join("").length !== 6);
   if (resendButton) {
     resendButton.disabled = busy || coolingDown;
     resendButton.setAttribute("aria-disabled", String(resendButton.disabled));
   }
   if (googleButton) googleButton.disabled = busy;
+  document.querySelectorAll('[data-auth-intent], #authBackButton, #magicToggleButton, #emailToggleButton, #accountSwitchNotice').forEach(button => { button.disabled = busy; });
   if (logoutButton) logoutButton.disabled = googleBusy;
   if (continueButton) continueButton.disabled = !canContinue() || continuing;
   if (emailInput) emailInput.readOnly = busy;
+  byId("registrationFields").querySelectorAll("input").forEach(input => { input.readOnly = busy; });
   otpInputs.forEach(input => { input.readOnly = busy; });
   emailForm?.setAttribute("aria-busy", String(busy));
 }
@@ -209,6 +271,8 @@ emailInput?.addEventListener("input", () => {
   if (pendingEmail && emailInput.value.trim().toLowerCase() !== pendingEmail) {
     pendingEmail = null;
     pendingChallengeId = null;
+    pendingLink = null;
+    visible(byId("otpSection"), false);
     clearDigits();
     clearMessage();
   }
@@ -224,6 +288,8 @@ otpInputs.forEach((input, index) => {
     const digits = input.value.replace(/[^0-9]/g, "");
     if (digits.length > 1) fillDigits(digits, index);
     else { input.value = digits; if (digits) otpInputs[index + 1]?.focus(); }
+    updateControls();
+    if (otpInputs.every(input => /^[0-9]$/.test(input.value))) void verifyOtp();
   });
   input.addEventListener("paste", event => {
     if (otpBusy || googleBusy) return;
@@ -231,6 +297,8 @@ otpInputs.forEach((input, index) => {
     if (!/[0-9]/.test(value)) return;
     event.preventDefault();
     fillDigits(value, index);
+    updateControls();
+    if (otpInputs.every(input => /^[0-9]$/.test(input.value))) void verifyOtp();
   });
   input.addEventListener("keydown", event => {
     if (otpBusy || googleBusy) return;
@@ -262,12 +330,13 @@ async function callWorker(endpoint, body, method = "POST") {
       const messageKeys = {
         INVALID_EMAIL: "auth.errors.auth/invalid-email", TURNSTILE_REQUIRED: "auth.securityRequired",
         TURNSTILE_REJECTED: "auth.securityError", TURNSTILE_CONFIG: "auth.securityError",
-        MAILJET_REJECTED: "auth.mailDeliveryFailed", OTP_INVALID: "auth.otpInvalid",
+        MAILJET_REJECTED: "auth.mailDeliveryFailed", OTP_INVALID: "auth.otpInvalid", OTP_EXPIRED: "auth.otpExpired",
+        ACCOUNT_NOT_FOUND: "auth.accountNotFound", ACCOUNT_EXISTS: "auth.accountExists", INVALID_PROFILE: "auth.invalidProfile",
         SESSION_REQUIRED: "auth.sessionExpired", ORIGIN_REJECTED: "auth.apiBlocked",
         RATE_LIMITED: "auth.rateLimited", RESEND_COOLDOWN: "auth.rateLimited"
       };
       const seconds = Math.min(3600, Math.max(0, Number(data?.retryAfter) || 0));
-      throw { messageKey: messageKeys[data?.code] || "auth.serviceError", retryAfter: seconds, vars: { seconds } };
+      throw { code: data?.code, messageKey: messageKeys[data?.code] || "auth.serviceError", retryAfter: seconds, vars: { seconds } };
     }
     return data;
   } catch (error) {
@@ -283,6 +352,7 @@ function acceptEmailSession(data, expectedEmail) {
   emailSessionVerified = true;
   emailSessionExpiresAt = expiresAt;
   rememberIdentity(email, "otp");
+  if (data.user.fullName && byId('namaInput') && !byId('namaInput').value) byId('namaInput').value = data.user.fullName;
 }
 function restoreEmailSession() {
   if (activeIdentity?.provider === "google" || otpBusy || googleBusy) return Promise.resolve();
@@ -306,7 +376,7 @@ function restoreEmailSession() {
   })();
   return restoringSession;
 }
-async function requestOtp() {
+async function requestOtp(resending = false) {
   if (otpBusy || googleBusy || Date.now() < cooldownDeadline()) return;
   clearMessage();
   const email = emailInput?.value.trim().toLowerCase();
@@ -315,13 +385,19 @@ async function requestOtp() {
     emailInput?.focus();
     return;
   }
+  if (!authIntent || !emailForm.reportValidity()) return;
   if (!window.loginTurnstileToken) { showMessage("auth.securityRequired", "error"); return; }
+  const profile = authIntent === 'register' ? {
+    fullName: byId('registerName').value.trim(), mykad: byId('registerIC').value, phone: '+60' + byId('registerPhone').value
+  } : undefined;
   const version = ++actionVersion;
   otpBusy = true;
   updateControls();
   try {
-    const result = await callWorker("/api/send-otp", { email, turnstileToken: window.loginTurnstileToken });
+    showMessage(authMethod === 'link' ? 'auth.sendingLink' : 'auth.sendingOtp');
+    const result = await callWorker(authMethod === 'link' ? '/api/send-link' : '/api/send-otp', { email, intent:authIntent, profile, turnstileToken: window.loginTurnstileToken });
     if (version !== actionVersion) return;
+    if (result.authFlowVersion !== 2) throw { messageKey:"auth.backendUpdateRequired" };
     if (typeof result.challengeId !== "string" || !/^[a-f0-9-]{36}$/.test(result.challengeId)) {
       throw { messageKey: "auth.serviceError" };
     }
@@ -329,8 +405,9 @@ async function requestOtp() {
     pendingChallengeId = result.challengeId;
     clearDigits();
     startCountdown(email);
-    showMessage("auth.otpSent", "success");
-    otpInputs[0]?.focus();
+    visible(byId('otpSection'), authMethod === 'otp');
+    showMessage(authMethod === 'link' ? 'auth.linkSent' : resending ? 'auth.otpResent' : 'auth.otpSent', 'success');
+    if (authMethod === 'otp') otpInputs[0]?.focus();
   } catch (error) {
     if (version === actionVersion) {
       if (error.retryAfter) startCountdown(email, error.retryAfter);
@@ -341,14 +418,14 @@ async function requestOtp() {
   }
 }
 emailForm?.addEventListener("submit", event => { event.preventDefault(); void requestOtp(); });
-resendButton?.addEventListener("click", requestOtp);
+resendButton?.addEventListener("click", () => { void requestOtp(true); });
 async function verifyOtp() {
   if (otpBusy || googleBusy) return;
   clearMessage();
   const email = emailInput?.value.trim().toLowerCase();
   const otp = otpInputs.map(input => input.value).join("");
   if (!pendingEmail || pendingEmail !== email) { showMessage("auth.requestOtpFirst", "error"); return; }
-  if (!/^[0-9]{6}$/.test(otp)) {
+  if (!pendingLink && !/^[0-9]{6}$/.test(otp)) {
     showMessage("auth.otpIncomplete", "error");
     otpInputs.find(input => !input.value)?.focus();
     return;
@@ -357,13 +434,14 @@ async function verifyOtp() {
   otpBusy = true;
   updateControls();
   try {
-    await callWorker("/api/verify-otp", { email, otp, challengeId: pendingChallengeId });
+    await callWorker(pendingLink ? "/api/verify-link" : "/api/verify-otp", { email, otp, token:pendingLink, challengeId: pendingChallengeId });
     if (version !== actionVersion) return;
     // Confirm the browser accepted the HttpOnly cookie before opening Continue.
     const session = await callWorker("/api/session", undefined, "GET");
     if (version !== actionVersion) return;
     acceptEmailSession(session, email);
     pendingEmail = null;
+    pendingLink = null;
     clearDigits();
     renderAccount();
     showMessage("auth.otpVerified", "success");
@@ -394,6 +472,7 @@ async function logout() {
   resetTurnstile();
   ["paymentPage", "qrPage", "thanksPage"].forEach(id => byId(id)?.classList.add("hidden"));
   ["mainPage", "firebaseAuthContainer", "siteFooter", "features-container"].forEach(id => byId(id)?.classList.remove("hidden"));
+  showEntry(null, false);
   googleBusy = true;
   updateControls();
   try {
@@ -413,6 +492,7 @@ function handleFirebaseState(user) {
   if (isGoogle && user.emailVerified === true && EMAIL_PATTERN.test(user.email || "")) {
     hadFirebaseUser = true;
     rememberIdentity(user.email, "google");
+    if (user.displayName && byId("namaInput") && !byId("namaInput").value) byId("namaInput").value = user.displayName;
   } else if (activeIdentity?.provider === "google") {
     hadFirebaseUser = false;
     activeIdentity = null;
@@ -457,20 +537,28 @@ function refreshLocale() {
   otpInputs.forEach((input, index) => input.setAttribute("aria-label", t("auth.otpDigit", { digit: index + 1 })));
   tickCountdown();
   renderAccount();
+  updateMethodLabel();
   if (lastMessage) showMessage(lastMessage.key, lastMessage.type, lastMessage.vars, lastMessage.literal);
 }
 document.addEventListener("duitjom:locale-changed", refreshLocale);
 window.addEventListener("pageshow", () => { void restoreEmailSession(); tickCountdown(); });
 refreshLocale();
 const params = new URLSearchParams(window.location.search);
-if (params.get("intent") === "register") {
-  const title = byId("authTitle");
-  if (title) {
-    title.setAttribute("data-i18n", "auth.registerTitle");
-    title.textContent = t("auth.registerTitle");
-  }
+showEntry(params.get('intent') === 'register' ? 'register' : params.get('auth') === 'email' || params.get('intent') === 'login' ? 'login' : null, false);
+const linkParams = new URLSearchParams(window.location.hash.slice(1));
+if (linkParams.get('auth') === 'link') {
+  // Remove the token from the address bar immediately; never persist it.
+  history.replaceState(null, '', window.location.pathname + window.location.search);
+  showEntry('login', false);
+  const token = linkParams.get('token'), email = linkParams.get('email'), challengeId = linkParams.get('challengeId');
+  if (/^[a-f0-9]{64}$/.test(token || '') && EMAIL_PATTERN.test(email || '') && /^[a-f0-9-]{36}$/.test(challengeId || '')) {
+    emailInput.value = email; pendingEmail = email; pendingChallengeId = challengeId; pendingLink = token;
+    visible(byId('otpSection'), true);
+    visible(document.querySelector('.login-otp-fieldset'), false); visible(resendButton, false);
+    verifyButton.dataset.i18n = 'auth.confirmLink'; verifyButton.textContent = t('auth.confirmLink');
+    showMessage('auth.confirmLinkHint'); updateControls();
+  } else showMessage('auth.otpInvalid', 'error');
 }
-if (params.get("auth") === "email") openEmailForm();
 void Promise.all([restoreEmailSession(), firebaseReady]).then(() => {
   if (params.get("step") === "payment" && typeof window.goToPaymentPage === "function") {
     if (canContinue()) window.goToPaymentPage();
