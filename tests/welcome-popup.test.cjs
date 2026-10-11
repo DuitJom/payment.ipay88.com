@@ -82,16 +82,16 @@ function setup({ clipboard = "ok", fallback = true, readyState = "loading" } = {
   };
 }
 
-test("welcome appears with 10s, counts down and closes at ten seconds", () => {
+test("welcome appears with 30s, counts down and closes at thirty seconds", () => {
   const h = setup();
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "false");
-  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 10s");
+  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 30s");
   assert.equal(h.document.body.classList.contains("welcome-popup-open"), true);
   h.flushFrames();
   assert.equal(h.document.activeElement, h.get("welcomePopupCloseX"));
   h.advance(1000);
-  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 9s");
-  h.advance(8000);
+  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 29s");
+  h.advance(28000);
   assert.equal(h.get("welcomePopupClose").textContent, "Tutup 1s");
   h.advance(999);
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "false");
@@ -114,14 +114,14 @@ test("close button, red X, Escape and backdrop close immediately and cancel both
     assert.equal(h.intervals.size + h.timeouts.size, 0, close);
     assert.equal(h.document.activeElement, h.previousFocus, close);
     h.advance(15000);
-    assert.equal(h.get("welcomePopupClose").textContent, "Tutup 10s", close);
+    assert.equal(h.get("welcomePopupClose").textContent, "Tutup 30s", close);
   }
 });
 
 test("returning from a backgrounded phone app uses elapsed time rather than delayed timer ticks", async () => {
   const h = setup();
   h.document.hidden = true;
-  h.advance(14000, false);
+  h.advance(34000, false);
   h.document.hidden = false;
   await h.document.dispatch("visibilitychange");
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "true");
@@ -138,41 +138,17 @@ test("Tab stays inside the popup and a failed poster leaves the support controls
   assert.equal(h.document.activeElement, h.get("welcomePopupCloseX"));
   assert.equal(prevented, 2);
   await h.get("welcomePopupImage").dispatch("error");
-  assert.equal(h.artwork.hidden, true);
+  assert.equal(h.get("welcomePopupImage").hidden, true);
   assert.equal(h.content.classList.contains("welcome-without-image"), true);
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "false");
 });
 
-test("copy button copies exactly the requested support email and reports success", async () => {
-  const h = setup();
-  await h.get("welcomePopupCopyEmail").click();
-  assert.deepEqual(h.copied, ["support@duitjom.my"]);
-  assert.equal(h.get("welcomePopupCopyStatus").textContent, "Emel disalin.");
-  assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "false");
-});
-
-test("copy handles missing/denied Clipboard API and a fully blocked copy operation", async () => {
-  for (const clipboard of ["missing", "denied"]) {
-    const h = setup({ clipboard });
-    h.get("welcomePopupCopyEmail").focus();
-    await h.get("welcomePopupCopyEmail").click();
-    assert.deepEqual(h.fallbackCopies, ["support@duitjom.my"]);
-    assert.equal(h.buffers[0].isConnected, false);
-    assert.equal(h.document.activeElement, h.get("welcomePopupCopyEmail"));
-    assert.equal(h.get("welcomePopupCopyStatus").textContent, "Emel disalin.");
-  }
-  const blocked = setup({ clipboard: "denied", fallback: false });
-  await blocked.get("welcomePopupCopyEmail").click();
-  assert.equal(blocked.get("welcomePopupCopyStatus").textContent, "Tekan lama alamat emel untuk menyalinnya.");
-});
-
-test("email links use the phone's mail handler, application goes to duitjom.com, and the new asset is wired", () => {
+test("email, WhatsApp and the uploaded poster are wired correctly", () => {
   const h = setup({ readyState: "complete" });
   assert.equal(h.get("welcomePopupSupport").getAttribute("href"), "mailto:support@duitjom.my");
-  assert.equal(h.get("welcomePopupEmail").getAttribute("href"), "mailto:support@duitjom.my");
-  assert.equal(h.get("welcomePopupWebsite").getAttribute("href"), "https://www.duitjom.com/");
-  assert.equal(h.get("welcomePopupImage").getAttribute("src"), "images/4602E986-7085-4B0D-B540-AF33DA5C2EAF.png");
-  assert.match(html, /src="js\/welcome-popup\.js\?v=20261006-welcome"/);
-  assert.match(html, /href="css\/welcome-popup\.css\?v=20261006-welcome"/);
-  assert.doesNotMatch(markup, /sedang dibaiki|maintenance-hotspot/);
+  assert.equal(h.get("welcomePopupWhatsApp").getAttribute("href"), "https://wa.me/601168462807");
+  assert.equal(h.get("welcomePopupImage").getAttribute("src"), "images/IMG_0181.jpeg");
+  assert.ok(fs.existsSync(path.join(root, h.get("welcomePopupImage").getAttribute("src"))));
+  assert.match(html, /js\/welcome-popup\.js\?v=20261011-welcome/);
+  assert.match(html, /css\/welcome-popup\.css\?v=20261011-welcome/);
 });

@@ -28,8 +28,8 @@
     <!-- External CSS files -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
-    <link rel="stylesheet" href="auth/login.css?v=20261006-welcome">
-    <link rel="stylesheet" href="css/welcome-popup.css?v=20261006-welcome">
+    <link rel="stylesheet" href="auth/login.css?v=20261011-welcome">
+    <link rel="stylesheet" href="css/welcome-popup.css?v=20261011-welcome">
     <link rel="stylesheet" href="auth/auth-forms.css">
     <link rel="stylesheet" href="auth/email-otp.css?v=20261003-otp-worker">
 
@@ -97,53 +97,22 @@
                     </svg>
                 </button>
             </div>
+            <h2 id="welcomePopupTitle" class="welcome-sr-only">Notis penyelenggaraan DuitJom</h2>
+            <p id="welcomePopupMessage" class="welcome-sr-only">Laman web sedang dinaik taraf. Hubungi kami melalui email atau WhatsApp. Popup ditutup secara automatik selepas 30 saat.</p>
             <div class="welcome-content">
                 <div class="welcome-artwork">
-                    <img id="welcomePopupImage" class="welcome-poster" src="images/4602E986-7085-4B0D-B540-AF33DA5C2EAF.png"
-                        width="1024" height="1536" alt="Sistem Pembayaran Baharu DuitJom. Mudah, selamat dan untuk semua."
+                    <img id="welcomePopupImage" class="welcome-poster" src="images/IMG_0181.jpeg"
+                        width="843" height="1264" alt="Notis: Laman web DuitJom sedang dalam penyelenggaraan. Terima kasih atas kesabaran dan sokongan anda."
                         fetchpriority="high" decoding="async">
+                    <p class="welcome-image-fallback" hidden>Laman web DuitJom sedang dinaik taraf. Terima kasih atas kesabaran anda.</p>
+                    <a id="welcomePopupWhatsApp" class="welcome-hotspot welcome-whatsapp"
+                        href="https://wa.me/601168462807" target="_blank" rel="noopener noreferrer"
+                        aria-label="Hubungi WhatsApp agent 01168462807" title="Hubungi WhatsApp"><span class="welcome-sr-only">Hubungi WhatsApp</span></a>
+                    <button id="welcomePopupClose" class="welcome-hotspot welcome-poster-close" type="button">Tutup 30s</button>
+                    <a id="welcomePopupSupport" class="welcome-hotspot welcome-poster-email"
+                        href="mailto:support@duitjom.my" aria-label="Hubungi Kami melalui email support@duitjom.my"
+                        title="Hubungi Kami"><span class="welcome-sr-only">Hubungi Kami</span></a>
                 </div>
-                <div class="welcome-details">
-                    <div class="welcome-support-heading">
-                        <span class="welcome-support-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                <path d="M4 13v-2a8 8 0 0 1 16 0v2M4 12H3v6h4v-6H4Zm16 0h1v6h-4v-6h3Zm0 6a4 4 0 0 1-4 4h-3"/>
-                            </svg>
-                        </span>
-                        <h2 id="welcomePopupTitle">Hubungi Sokongan <span>24/7</span></h2>
-                    </div>
-                    <p class="welcome-label">Email :</p>
-                    <div class="welcome-email-row">
-                        <a id="welcomePopupEmail" class="welcome-email" href="mailto:support@duitjom.my">support@duitjom.my</a>
-                        <button id="welcomePopupCopyEmail" class="welcome-copy" type="button"
-                            aria-label="Salin emel support@duitjom.my" title="Salin emel">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                <rect x="8" y="8" width="12" height="13" rx="2"/>
-                                <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <p id="welcomePopupCopyStatus" class="welcome-copy-status" role="status" aria-live="polite"></p>
-                    <div class="welcome-application">
-                        <p class="welcome-application-title">Mohon Pinjaman :</p>
-                        <p id="welcomePopupMessage">Sila layari laman web rasmi di
-                            <a id="welcomePopupWebsite" href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer">www.duitjom.com
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                    <path d="M14 4h6v6m0-6L10 14M20 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4"/>
-                                </svg>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="welcome-actions">
-                <button id="welcomePopupClose" class="welcome-button welcome-button-close" type="button">Tutup 10s</button>
-                <a id="welcomePopupSupport" class="welcome-button welcome-button-support" href="mailto:support@duitjom.my">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/>
-                    </svg>
-                    Hubungi Sokongan
-                </a>
             </div>
         </section>
     </div>
@@ -551,54 +520,7 @@
 </div>
 
 <!-- PAYMENT PAGE (Borang Maklumat Diri) -->
-<div id="paymentPage" class="hidden flex-col min-h-screen bg-white -mt-[72px] pt-[72px]">
-<main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
-    <div class="w-full flex flex-col items-center text-center mb-6">
-        <div class="relative w-28 h-28 mb-4 flex items-center justify-center">
-            <div class="absolute inset-0 rounded-[32px] bg-gradient-to-br from-blue-100 via-sky-50 to-cyan-100 blur-xl opacity-80"></div>
-            <div class="relative w-24 h-24 rounded-[28px] bg-white/70 backdrop-blur-xl border border-white/90 shadow-[0_15px_40px_rgba(37,99,235,0.12)] flex items-center justify-center overflow-hidden">
-                <img src="IMG_6715.png" alt="Logo DuitJom" class="w-[82px] h-[82px] object-contain">
-            </div>
-        </div>
-        <p class="text-slate-500 font-medium text-xs max-w-xs leading-relaxed" data-i18n="home.paymentIntro">
-            Complete your details to continue safely to the next step.
-        </p>
-    </div>
-    
-    <div class="w-full flex items-center gap-4 py-5 border-t border-b border-slate-100">
-        <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="w-7 h-7 text-blue-500" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
-            </svg>
-        </div>
-        <div class="flex-1 text-left">
-            <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mb-1" data-i18n="home.paymentRequired">Required Information</p>
-            <h3 class="text-sm font-extrabold text-slate-900 leading-snug" data-i18n="home.paymentHeading">Please fill in your details</h3>
-            <p class="text-[10px] text-slate-500 mt-1 leading-relaxed" data-i18n="home.paymentSubheading">Make sure all provided information is accurate before continuing.</p>
-        </div>
-    </div>
-
-    <form onsubmit="goToNextStepPage(event)" class="space-y-4 w-full">
-        <!-- NAMA PENUH -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
-                </svg>
-                <span data-i18n="home.fullName">Full Name (IC)</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="namaInput" required data-i18n-placeholder="home.fullNamePlaceholder" placeholder="Ali bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
-        </div>
-
-        <!-- NOMBOR KAD PENGENALAN -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <rect x="2" y="5" width="20" height="14" rx="2"/>
-                    <circle cx="7" cy="11" r="2"/>
+<div id="paym…979 tokens truncated…/>
                     <path stroke-linecap="round" d="M11 9h8M11 13h6M6 16h8"/>
                 </svg>
                 <span data-i18n="home.icNumber">IC Number</span>
@@ -731,7 +653,7 @@
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
-    <script src="js/welcome-popup.js?v=20261006-welcome"></script>
+    <script src="js/welcome-popup.js?v=20261011-welcome"></script>
     <script type="module" src="auth/app-auth.js?v=20261003-otp-worker"></script>
     <script type="module" src="auth/auth-forms.js"></script>
 
