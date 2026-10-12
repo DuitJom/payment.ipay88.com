@@ -78,24 +78,26 @@ body.welcome-popup-open { overflow: hidden; }
 .welcome-poster[hidden] { display: none; }
 .welcome-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .welcome-hotspot { position: absolute; display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: manipulation; border: 0; text-decoration: none; }
-/* Percentages follow the 843 x 1264 poster, so targets scale with its artwork. */
-.welcome-whatsapp { left: 86%; top: 46.5%; width: 12%; height: 8%; border-radius: 50%; min-width: 44px; min-height: 44px; }
-.welcome-poster-email { left: 51.5%; top: 84.3%; width: 44.5%; height: 8.3%; border-radius: 999px; }
-.welcome-poster-close { left: 5%; top: 84.5%; width: 43.5%; height: 7.8%; border-radius: 999px; background: #e8f7fc; color: #06233a; font: 650 clamp(14px, 4vw, 21px)/1.2 system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+/* Hit areas match images/IMG_0189.png (1024 × 1536). */
+.welcome-whatsapp { left:85.5%; top:38.8%; width:11%; height:6.8%; border-radius:50%; }
+.welcome-poster-close { left:8.5%; top:89.5%; width:40.5%; height:5.2%; border-radius:999px; background:#e8f7fc; color:#06233a; font:650 clamp(13px,4vw,20px)/1.2 system-ui,sans-serif; font-variant-numeric:tabular-nums; }
+.welcome-poster-email { left:51.5%; top:89.5%; width:40.5%; height:5.2%; border-radius:999px; }
 .welcome-poster-close:hover { background: #d5edf7; }
 .welcome-popup :is(button, a):focus-visible { outline: 3px solid #087dbc; outline-offset: -3px; }
 .welcome-image-fallback { padding: 20px; }
 .welcome-without-image .welcome-artwork { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
 .welcome-without-image .welcome-hotspot { position: static; width: 100%; min-height: 48px; background: #087dbc; color: white; border-radius: 12px; }
 .welcome-without-image .welcome-hotspot .welcome-sr-only { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
-/* Hotspots follow the uploaded 1024 × 1536 poster. */
-.welcome-whatsapp { left:85.5%; top:38.8%; width:11%; height:6.8%; min-width:0; min-height:0; }
-.welcome-poster-close { left:8.5%; top:89.5%; width:40.5%; height:5.2%; font-size:clamp(13px,4vw,20px); }
-.welcome-poster-email { left:51.5%; top:89.5%; width:40.5%; height:5.2%; }
 .welcome-copy-target { background:transparent; border-radius:8px; padding:0; }
 .welcome-copy-target:hover { background:#009de21c; outline:2px solid #058ddd; }
-.welcome-copy-email { left:25%; top:73.2%; width:50%; height:4%; }
-.welcome-copy-com { left:25%; top:83.3%; width:41%; height:2.6%; }
-.welcome-copy-my { left:25%; top:85.9%; width:38%; height:2.6%; }
+.welcome-copy-email { left:24%; top:73.2%; width:52%; height:4%; }
+.welcome-copy-com { left:24%; top:83.3%; width:43%; height:2.6%; }
+.welcome-copy-my { left:24%; top:85.9%; width:40%; height:2.6%; }
 .welcome-copy-status { margin:0; padding:0 16px; color:#075985; font-size:13px; }
 .welcome-copy-status:not(:empty) { padding:10px 16px; }
+
+/* Keep the whole poster and its actions visible on short mobile viewports. */
+.welcome-popup { width:min(100%,440px,calc((100dvh - 130px) * 2 / 3)); }
+@media (max-height:500px) {
+  .welcome-popup { width:min(100%,440px); }
+}

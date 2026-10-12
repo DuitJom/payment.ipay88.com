@@ -18,7 +18,7 @@ function setup({ clipboard = "ok", fallback = true, readyState = "loading" } = {
     for (const m of attrs.matchAll(/([\w-]+)="([^"]*)"/g)) values[m[1]] = m[2];
     for (const value of (values.class || "").split(/\s+/)) classes.add(value);
     return {
-      id, dataset: {}, hidden: false, isConnected: true, textContent: "", naturalWidth: 1024, complete: true,
+      id, dataset: {copy: values['data-copy']}, style: {}, hidden: false, isConnected: true, textContent: "", naturalWidth: 1024, complete: true,
       setAttribute(k, v) { values[k] = String(v); }, getAttribute(k) { return values[k]; },
       addEventListener(k, fn) { if (!listeners.has(k)) listeners.set(k, []); listeners.get(k).push(fn); },
       dispatch(k, event = {}) { return Promise.all((listeners.get(k) || []).map(fn => fn(event))); },
@@ -33,7 +33,7 @@ function setup({ clipboard = "ok", fallback = true, readyState = "loading" } = {
   for (const m of markup.matchAll(/<\w+\b([^>]*\bid="([^"]+)"[^>]*)>/g)) nodes.set(m[2], element(m[2], m[1]));
   const popup = element("dialog"), artwork = element("artwork"), content = element("content");
   const controls = [...markup.matchAll(/<(?:button|a)\b[^>]*\bid="([^"]+)"[^>]*>/g)].map(m => nodes.get(m[1]));
-  popup.querySelectorAll = () => controls;
+  popup.querySelectorAll = selector => selector === '[data-copy]' ? controls.filter(el => el.dataset.copy) : controls;
   popup.querySelector = selector => selector === ".welcome-artwork" ? artwork : content;
   popup.contains = node => node === popup || controls.includes(node);
   popup.appendChild = node => buffers.push(node);
@@ -51,7 +51,7 @@ function setup({ clipboard = "ok", fallback = true, readyState = "loading" } = {
     const buffer = buffers[buffers.length - 1];
     fallbackCopies.push(buffer.value);
     assert.equal(buffer.selected, true);
-    assert.deepEqual(buffer.range, [0, "support@duitjom.my".length]);
+    assert.deepEqual(buffer.range, [0, buffer.value.length]);
     return fallback;
   };
   const window = element("window");
@@ -82,16 +82,16 @@ function setup({ clipboard = "ok", fallback = true, readyState = "loading" } = {
   };
 }
 
-test("welcome appears with 30s, counts down and closes at thirty seconds", () => {
+test("welcome appears with 60s, counts down and closes at sixty seconds", () => {
   const h = setup();
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "false");
-  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 30s");
+  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 60s");
   assert.equal(h.document.body.classList.contains("welcome-popup-open"), true);
   h.flushFrames();
   assert.equal(h.document.activeElement, h.get("welcomePopupCloseX"));
   h.advance(1000);
-  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 29s");
-  h.advance(28000);
+  assert.equal(h.get("welcomePopupClose").textContent, "Tutup 59s");
+  h.advance(58000);
   assert.equal(h.get("welcomePopupClose").textContent, "Tutup 1s");
   h.advance(999);
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "false");
@@ -114,14 +114,14 @@ test("close button, red X, Escape and backdrop close immediately and cancel both
     assert.equal(h.intervals.size + h.timeouts.size, 0, close);
     assert.equal(h.document.activeElement, h.previousFocus, close);
     h.advance(15000);
-    assert.equal(h.get("welcomePopupClose").textContent, "Tutup 30s", close);
+    assert.equal(h.get("welcomePopupClose").textContent, "Tutup 60s", close);
   }
 });
 
 test("returning from a backgrounded phone app uses elapsed time rather than delayed timer ticks", async () => {
   const h = setup();
   h.document.hidden = true;
-  h.advance(34000, false);
+  h.advance(64000, false);
   h.document.hidden = false;
   await h.document.dispatch("visibilitychange");
   assert.equal(h.get("welcomePopup").getAttribute("aria-hidden"), "true");
@@ -145,10 +145,28 @@ test("Tab stays inside the popup and a failed poster leaves the support controls
 
 test("email, WhatsApp and the uploaded poster are wired correctly", () => {
   const h = setup({ readyState: "complete" });
-  assert.equal(h.get("welcomePopupSupport").getAttribute("href"), "mailto:support@duitjom.my");
+  assert.equal(h.get("welcomePopupSupport").getAttribute("href"), "mailto:support@duitjom.my?subject=Hi%20PM-PerlukanBantuan&amp;body=Hi%20PM-PerlukanBantuan");
   assert.equal(h.get("welcomePopupWhatsApp").getAttribute("href"), "https://wa.me/601168462807");
-  assert.equal(h.get("welcomePopupImage").getAttribute("src"), "images/IMG_0181.jpeg");
+  assert.equal(h.get("welcomePopupImage").getAttribute("src"), "images/IMG_0189.png");
   assert.ok(fs.existsSync(path.join(root, h.get("welcomePopupImage").getAttribute("src"))));
-  assert.match(html, /js\/welcome-popup\.js\?v=20261011-welcome/);
-  assert.match(html, /css\/welcome-popup\.css\?v=20261011-welcome/);
+  assert.match(html, /js\/welcome-popup\.js\?v=20261012-popup2/);
+  assert.match(html, /css\/welcome-popup\.css\?v=20261012-popup2/);
+});
+
+test("all three copy targets handle clipboard success, denial and missing API", async () => {
+  for (const clipboard of ["ok", "missing", "denied"]) {
+    const h = setup({clipboard});
+    for (const [id, value] of [["welcomeCopyEmail", "support@duitjom.my"], ["welcomeCopyCom", "www.duitjom.com"], ["welcomeCopyMy", "www.duitjom.my"]]) {
+      await h.get(id).click();
+      assert.equal((clipboard === "ok" ? h.copied : h.fallbackCopies).at(-1), value);
+      assert.match(h.get("welcomeCopyStatus").textContent, /Berjaya disalin/);
+    }
+    assert(h.buffers.every(buffer => !buffer.isConnected));
+  }
+});
+test("blocked copying reports failure instead of success", async () => {
+  const h = setup({clipboard:"missing", fallback:false});
+  await h.get("welcomeCopyEmail").click();
+  assert.match(h.get("welcomeCopyStatus").textContent, /Tidak dapat menyalin/);
+  assert(h.buffers.every(buffer => !buffer.isConnected));
 });

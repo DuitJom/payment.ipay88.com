@@ -87,9 +87,11 @@
             const input = document.createElement('textarea');
             input.value = value;
             input.style.cssText = 'position:fixed;left:0;top:0;opacity:0';
-            popup.append(input); input.focus(); input.select();
+            popup.appendChild(input); input.focus(); input.select();
             input.setSelectionRange(0, value.length);
-            const copied = document.execCommand('copy'); input.remove(); button.focus();
+            let copied = false;
+            try { copied = document.execCommand('copy'); }
+            finally { input.remove(); if (isOpen) button.focus({ preventScroll: true }); }
             if (!copied) throw new Error('copy failed');
           }
           status.textContent = 'Berjaya disalin: ' + value;
