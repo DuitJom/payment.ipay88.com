@@ -1,19 +1,9 @@
-# robots.txt for https://www.duitjom.my
 User-agent: *
-# Allow everything by default (search engines may still respect noindex/meta tags)
 Allow: /
 
-# Disallow sensitive or internal paths (sesuaikan ikut laman anda)
 Disallow: /admin/
-Disallow: /wp-admin/
-Disallow: /login
-Disallow: /dashboard
 Disallow: /private/
 Disallow: /cgi-bin/
+Disallow: /wp-admin/
 
-# Jika ada parameter query yang tak nak diindex, boleh tambah juga
-# Disallow: /*?preview=
-# Disallow: /*?session=
-
-# Location of sitemap
 Sitemap: https://www.duitjom.my/sitemap.xml
