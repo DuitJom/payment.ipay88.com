@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Halaman utama -->
+  <!-- Homepage -->
   <url>
     <loc>https://www.duitjom.my/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Data deletion / privacy-related -->
-  <url>
-    <loc>https://www.duitjom.my/data-deletion</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- Contoh halaman lain — tukar atau tambah mengikut folder/page sebenar -->
+  <!-- Pages (sesuaikan dengan folder/page anda) -->
   <url>
     <loc>https://www.duitjom.my/about-us</loc>
     <changefreq>monthly</changefreq>
@@ -22,22 +15,100 @@
   </url>
 
   <url>
-    <loc>https://www.duitjom.my/privacy-policy</loc>
+    <loc>https://www.duitjom.my/how-it-works</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/personal-loan</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/home-repair-loan</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/school-fees-loan</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/apply</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/eligibility</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/rates</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/faq</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/blog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- contoh blog post -->
+  <url>
+    <loc>https://www.duitjom.my/blog/example-post-slug</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Data deletion / privacy-related -->
+  <url>
+    <loc>https://www.duitjom.my/data-deletion</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://www.duitjom.my/terms-and-conditions</loc>
     <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://www.duitjom.my/contact</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
   </url>
 
-  <!-- Tambah URL blog/produk dsb di sini -->
+  <url>
+    <loc>https://www.duitjom.my/login</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <url>
+    <loc>https://www.duitjom.my/portal</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
 </urlset>
