@@ -18,13 +18,12 @@ import {
   signInWithEmailLink
 } from "./firebase-config.js?v=20260914";
 
-// SELEPAS (NPM) - Tukar kepada format ini:
 import {
   doc,
   getDoc,
   setDoc,
   serverTimestamp
-} from "firebase/firestore";
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 export async function loginWithGoogle() {
   await authPersistenceReady;
