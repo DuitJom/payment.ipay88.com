@@ -479,24 +479,7 @@ document.addEventListener('click', event => {
   }
 });
 
-/* =========================================================
-   ANIMASI BUTANG SIGN IN PINTU & MASKOT (CLOUDFLARE WORKER)
-========================================================= */
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('loginForm');
-    const btn = document.querySelector('.doorbtn');
-    const fox = document.querySelector('.fox');
 
-    // Jika halaman semasa tiada borang login ini, jangan jalankan kod di bawah
-    // (Ini memastikan fungsi QR, Sidebar & Slider di halaman lain tidak terjejas)
-    if (!form || !btn) return;
-
-    // Gantikan dengan URL Cloudflare Worker anda
-    const API_URL = 'https://api.duitjom.my/login';
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
 
         const usernameInput = form.querySelector('input[type="text"], input[type="email"]');
         const passwordInput = form.querySelector('input[type="password"]');
