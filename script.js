@@ -478,3 +478,75 @@ document.addEventListener('click', event => {
     document.getElementById('languageToggle')?.setAttribute('aria-expanded', 'false');
   }
 });
+
+/* =========================================================
+   ANIMASI BUTANG SIGN IN PINTU & MASKOT (CLOUDFLARE WORKER)
+========================================================= */
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const btn = document.querySelector('.doorbtn');
+    const fox = document.querySelector('.fox');
+
+    // Jika halaman semasa tiada borang login ini, jangan jalankan kod di bawah
+    // (Ini memastikan fungsi QR, Sidebar & Slider di halaman lain tidak terjejas)
+    if (!form || !btn) return;
+
+    // Gantikan dengan URL Cloudflare Worker anda
+    const API_URL = 'https://api.duitjom.my/login';
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+
+        const usernameInput = form.querySelector('input[type="text"], input[type="email"]');
+        const passwordInput = form.querySelector('input[type="password"]');
+        const username = usernameInput ? usernameInput.value : '';
+        const password = passwordInput ? passwordInput.value : '';
+
+        // Reset keadaan animasi
+        btn.classList.remove('out', 'walking', 'dooropen');
+        fox?.classList.remove('is-happy');
+        void btn.offsetWidth;
+
+        // 1. Buka pintu sementara menunggu respons daripada Cloudflare Worker
+        btn.classList.add('dooropen');
+
+        try {
+            const [response] = await Promise.all([
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                }),
+                wait(380)
+            ]);
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // 2. Log masuk BERJAYA: Orang lidi berjalan masuk ke dalam pintu
+                btn.classList.add('walking');
+                btn.classList.add('out');
+                await wait(760);
+
+                // 3. Pintu tertutup & maskot menjadi gembira
+                btn.classList.remove('walking', 'dooropen');
+                fox?.classList.add('is-happy');
+
+                if (data.token) {
+                    localStorage.setItem('duitjom_token', data.token);
+                }
+
+                await wait(500);
+                window.location.href = '/dashboard.html';
+            } else {
+                // Log masuk GAGAL: Tutup semula pintu
+                btn.classList.remove('dooropen');
+                alert(data.message || 'Nama pengguna atau kata laluan tidak sah.');
+            }
+        } catch (error) {
+            btn.classList.remove('dooropen');
+            alert('Gagal menghubungi pelayan. Sila cuba lagi.');
+        }
+    };
+});
