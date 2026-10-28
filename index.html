@@ -246,16 +246,17 @@
     <div id="mainPage" class="flex flex-col min-h-screen justify-between">
         <main class="w-full max-w-md mx-auto px-4 py-8 flex-grow flex flex-col items-center">
 
-            <!-- CTA SECTION (Gambar 3) -->
-            <section class="w-full bg-[#1e3a8a] rounded-3xl p-8 mb-10 text-center shadow-2xl relative overflow-hidden border border-white/10">
+            <!-- CTA SECTION (Warna Biru + Gray Gelap) -->
+            <section class="w-full rounded-3xl p-8 mb-10 text-center shadow-2xl relative overflow-hidden border border-white/10" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);">
                 <!-- Glow Effect -->
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/20 blur-3xl rounded-full"></div>
                 <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 blur-3xl rounded-full"></div>
 
                 <h2 class="text-2xl font-bold text-white mb-3 relative z-10 leading-snug">Bersedia untuk Mengalami Perbezaan DuitJom?</h2>
-                <p class="text-sm text-blue-200 mb-8 relative z-10 leading-relaxed">Sertai ribuan pelanggan yang berpuas hati yang memilih cara yang lebih bijak untuk meminjam</p>
+                <p class="text-sm text-gray-300 mb-8 relative z-10 leading-relaxed">Sertai ribuan pelanggan yang berpuas hati yang memilih cara yang lebih bijak untuk meminjam</p>
                 
-                <button class="w-full bg-white text-[#1e3a8a] font-bold py-4 rounded-full shadow-lg hover:scale-105 transition-transform flex justify-center items-center gap-2 mb-8 relative z-10">
+                <!-- Butang CTA -->
+                <button class="cta-button-fix w-full font-bold py-4 rounded-full shadow-lg hover:scale-105 transition-transform flex justify-center items-center gap-2 mb-8 relative z-10">
                     Mohon Sekarang - Mulakan dalam 2 Minit
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </button>
@@ -285,17 +286,17 @@
 
                 <div class="space-y-3">
                     <!-- FAQ Item 1 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Siapa yang boleh memohon pinjaman?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             DuitJom menawarkan perkhidmatan pinjaman kepada pelanggan yang memenuhi kriteria berikut:
-                            <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
                                 <li>Pemohon mestilah berumur antara 20 dan 60 tahun</li>
                                 <li>Pemohon sepatutnya sedang bekerja</li>
                                 <li>Pemohon mesti mempunyai alamat kediaman yang sah di Malaysia</li>
@@ -305,59 +306,59 @@
                     </details>
 
                     <!-- FAQ Item 2 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Dokumen apa yang saya perlukan untuk permohonan pinjaman?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Untuk melengkapkan permohonan pinjaman anda, anda perlu menyediakan MyKad (NRIC) atau dokumen pengenalan lain seperti yang ditetapkan oleh pemberi pinjam. Dokumen ini diperlukan untuk pengesahan identiti dan untuk memastikan anda memenuhi kriteria kelayakan untuk pinjaman.
                         </div>
                     </details>
 
                     <!-- FAQ Item 3 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Bagaimana saya akan tahu jika pinjaman saya diluluskan?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Sebaik sahaja pinjaman peribadi anda diluluskan, kami akan memberitahu anda dengan segera melalui SMS dan e-mel. Pemberitahuan ini akan memberikan anda maklumat dan arahan yang diperlukan mengenai langkah seterusnya untuk melengkapkan proses pinjaman dan menerima dana dalam akaun bank anda. Penting untuk memerhatikan mesej SMS dan peti mel e-mel anda untuk sebarang kemaskini dan arahan dari kami.
                         </div>
                     </details>
 
                     <!-- FAQ Item 4 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Berapa lama masa yang diperlukan untuk menerima pinjaman?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Kami berusaha untuk menyediakan proses pengeluaran pinjaman yang cepat dan cekap. Sebaik sahaja pinjaman anda diluluskan, kami berhasrat untuk memproses dan mengeluarkan dana dalam masa 24 jam. Anda akan menerima mesej teks (SMS) dan pemberitahuan e-mel sebaik sahaja wang tunai berjaya dipindahkan ke akaun bank peribadi anda.
                         </div>
                     </details>
 
                     <!-- FAQ Item 5 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Kaedah apa yang boleh saya gunakan untuk membayar balik pinjaman?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Membayar balik pinjaman anda dipermudahkan dengan pelbagai pilihan pembayaran:
-                            <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
                                 <li>Pemindahan perbankan dalam talian</li>
                                 <li>Pembayaran E-Wallet (Touch 'n Go, GrabPay, dll.)</li>
                                 <li>Pemindahan DuitNow</li>
@@ -368,31 +369,31 @@
                     </details>
 
                     <!-- FAQ Item 6 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Bolehkah saya bayar awal pinjaman?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Ya! Anda mempunyai pilihan untuk bayar awal pinjaman anda tanpa dikenakan sebarang penalti atau caj tambahan. Kami memahami bahawa keadaan mungkin berubah, membolehkan anda membayar balik pinjaman lebih awal daripada dijangka. Kami menggalakkan pengurusan kewangan yang bertanggungjawab, dan jika anda berada dalam kedudukan untuk membayar balik pinjaman anda sebelum tarikh matang yang dijadualkan, anda bebas berbuat demikian tanpa sebarang akibat negatif.
                         </div>
                     </details>
 
                     <!-- FAQ Item 7 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Adakah terdapat kos dan caj lain?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Ya, sebagai tambahan kepada faedah dan sebarang caj pembayaran lewat, terdapat yuran berkanun tertentu:
-                            <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
                                 <li><strong>Duti Setem:</strong> Yuran yang dikenakan oleh kerajaan yang perlu dibayar atas perjanjian pinjaman. Jumlah tepat berbeza bergantung kepada jumlah pinjaman dan peraturan semasa</li>
                                 <li><strong>Kos Undang-undang:</strong> Dalam sesetengah kes, kos undang-undang mungkin ditanggung semasa proses permohonan pinjaman atau sekiranya berlaku kegagalan</li>
                             </ul>
@@ -400,21 +401,20 @@
                     </details>
 
                     <!-- FAQ Item 8 -->
-                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
-                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                    <details class="faq-box">
+                        <summary>
                             <span>Bolehkah saya mengambil pinjaman lain?</span>
-                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                            <span class="faq-icon-wrapper">
                                 <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                 <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                             </span>
                         </summary>
-                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                        <div class="faq-answer">
                             Jika anda ingin mengambil pinjaman lain, anda boleh memohon dalam talian dengan mudah melalui laman web kami. Kami mengalu-alukan pinjaman berulang, dan sebagai peminjam dengan sejarah pembayaran yang baik di DuitJom, kami telah memudahkan untuk anda memohon semula. Hanya gunakan sistem permohonan dalam talian kami sekali lagi. Kami berharap dapat membantu anda dengan keperluan kewangan anda sekali lagi!
                         </div>
                     </details>
                 </div>
             </section>
-
         </main>
 
         <!-- FEATURES CONTAINER (Kekal sama) -->
@@ -639,7 +639,6 @@
            </div>
         </footer>
     </div> <!-- Penutup kotak utama -->
-
     <!-- =========================================================
          END MAIN PAGE
          ========================================================= -->
