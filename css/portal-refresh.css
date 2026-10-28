@@ -55,3 +55,59 @@ body.login-page>header>div>div { display:flex; align-items:center; gap:12px; }
 #features-container #featuresPage .feature-card h3,#features-container #featuresPage .blog-card h3 { color:#1b3a5f; }
 #features-container #featuresPage .feature-card p,#features-container #featuresPage .blog-card p { color:#52687b; }
 .admin-glass-overlay .admin-overlay-content h1 span { background:none; -webkit-text-fill-color:white; color:white; }
+
+
+/* =========================================================
+   DUITJOM DARK BACKGROUND RESTORE — targeted visual fix
+   Keeps existing forms, navigation, and page functionality.
+========================================================= */
+html,
+body.login-page {
+    background-color: #05070b !important;
+}
+
+body.login-page {
+    color: #e5e7eb;
+    background-image:
+        radial-gradient(ellipse at 50% 0%, rgba(32, 78, 112, .22), transparent 48%) !important;
+}
+
+body.login-page > header {
+    background: #080a0f !important;
+    border-bottom: 1px solid #202630 !important;
+    color: #f8fafc !important;
+}
+
+body.login-page > header .text-slate-800,
+body.login-page > header .text-gray-500,
+body.login-page > header .text-gray-700 {
+    color: #e5e7eb !important;
+}
+
+body.login-page > header #languageToggle {
+    background: #11151c !important;
+    border-color: #303744 !important;
+    color: #e5e7eb !important;
+}
+
+body.login-page #siteFooter {
+    background: #05070b !important;
+    color: #d1d5db !important;
+    border-top: 1px solid #252b35 !important;
+}
+
+body.login-page #features-container {
+    background-color: #080b11;
+}
+
+body.login-page .login-live-background {
+    pointer-events: none;
+}
+
+/* Keep the brand mark visible against the dark header. */
+body.login-page > header img {
+    display: block;
+    width: 112px;
+    height: 32px;
+    object-fit: contain;
+}
