@@ -26,7 +26,7 @@
     <meta property="og:url" content="https://www.duitjom.my/">
     <meta property="og:title" content="DuitJom - Fast & Reliable Repayment Loans in Malaysia">
     <meta property="og:description" content="DuitJom - The New Payment Portal for Fast & Reliable Personal Loans in Malaysia. Quick processing, secure transactions.">
-    <meta property="og:image" content="IMG_6715.png">
+    <meta property="og:image" content="logo.png">
     <meta property="og:site_name" content="DuitJom">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="512"></meta>
@@ -49,6 +49,64 @@
     <link rel="stylesheet" href="auth/auth-forms.css">
     <link rel="stylesheet" href="css/portal-refresh.css?v=20261029">
     <link rel="stylesheet" href="auth/email-otp.css?v=20261012">
+    
+    <!-- DUITJOM NEWS VISIBILITY FIX -->
+<style id="duitjom-news-visibility-fix">
+    .duitjom-news {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        max-width: 100%;
+        margin: 26px auto;
+        overflow: visible;
+    }
+
+    .duitjom-news .news-header,
+    .duitjom-news .news-slider,
+    .duitjom-news .news-track,
+    .duitjom-news .news-item,
+    .duitjom-news .news-slider-indicators {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .duitjom-news .news-slider {
+        display: block !important;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .duitjom-news .news-track {
+        display: flex;
+        width: 100%;
+    }
+
+    .duitjom-news .news-item {
+        flex: 0 0 100%;
+        min-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .duitjom-news .news-slider-indicators {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    @media (max-width: 600px) {
+        .duitjom-news {
+            max-width: 100%;
+            margin: 20px auto;
+        }
+    }
+</style>
+<!-- END DUITJOM NEWS VISIBILITY FIX -->
 
     <script src="auth/otp-turnstile.js?v=20261012"></script>
     <!-- Cloudflare Turnstile API -->
@@ -68,7 +126,13 @@
     <header class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-100">
         <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <img src="/logo.png" alt="DuitJom Logo" class="h-8 object-contain" onerror="this.outerHTML='<span class=\'font-semibold text-xl text-slate-800\'>Duit<span class=\'text-blue-400\'>Jom</span></span>'">
+<img
+    src="/logo.png"
+    alt="DuitJom Logo"
+    width="160"
+    height="48"
+    style="display:block;width:160px;height:48px;object-fit:contain;"
+>
                 <span class="font-semibold text-sm text-slate-800 hidden sm:inline" data-i18n="nav.paymentHub">Payment Hub</span>
             </div>
 
