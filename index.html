@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <title>
-          DuitJom
-    </title>
+    <title>DuitJom</title>
     <meta charset="utf-8">
     <meta name="description" content="DuitJom - Makes loan repayments simple and secure. Existing customers can pay their instalments online anytime, with fast payment processing and clear transaction records. Stay on track with your repayments through a convenient and trusted payment experience."></meta>
     
@@ -49,64 +47,20 @@
     <link rel="stylesheet" href="auth/auth-forms.css">
     <link rel="stylesheet" href="css/portal-refresh.css?v=20261029">
     <link rel="stylesheet" href="auth/email-otp.css?v=20261012">
-    
-    <!-- DUITJOM NEWS VISIBILITY FIX -->
-<style id="duitjom-news-visibility-fix">
-    .duitjom-news {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: relative;
-        z-index: 5;
-        width: 100%;
-        max-width: 100%;
-        margin: 26px auto;
-        overflow: visible;
-    }
 
-    .duitjom-news .news-header,
-    .duitjom-news .news-slider,
-    .duitjom-news .news-track,
-    .duitjom-news .news-item,
-    .duitjom-news .news-slider-indicators {
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    .duitjom-news .news-slider {
-        display: block !important;
-        width: 100%;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .duitjom-news .news-track {
-        display: flex;
-        width: 100%;
-    }
-
-    .duitjom-news .news-item {
-        flex: 0 0 100%;
-        min-width: 100%;
-        box-sizing: border-box;
-    }
-
-    .duitjom-news .news-slider-indicators {
-        display: flex !important;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        margin-top: 14px;
-    }
-
-    @media (max-width: 600px) {
-        .duitjom-news {
-            max-width: 100%;
-            margin: 20px auto;
-        }
-    }
-</style>
-<!-- END DUITJOM NEWS VISIBILITY FIX -->
+    <!-- CSS KHAS UNTUK FAQ (+ & -) -->
+    <style>
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        /* Sembunyikan butang + bila buka, tunjuk - */
+        details[open] .icon-plus { display: none; }
+        details[open] .icon-minus { display: block; }
+        
+        /* Sembunyikan butang - bila tutup, tunjuk + */
+        details:not([open]) .icon-plus { display: block; }
+        details:not([open]) .icon-minus { display: none; }
+    </style>
 
     <script src="auth/otp-turnstile.js?v=20261012"></script>
     <!-- Cloudflare Turnstile API -->
@@ -120,51 +74,47 @@
     <script src="js/loading-screen.js"></script>
 
 </head>
-<body data-page="home" class="login-page font-sans bg-[#FAF6F0] text-gray-900 min-h-screen flex flex-col pt-[72px] overflow-x-hidden">
 
-    <!-- GLOBAL FIXED NAVBAR UNTUK SEMUA HALAMAN -->
-    <header class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-100">
+<!-- TUKAR WARNA BACKGROUND KEPADA BIRU GELAP (Gambar 3) -->
+<body data-page="home" class="login-page font-sans bg-gradient-to-b from-[#1e3a8a] to-[#0f172a] text-white min-h-screen flex flex-col pt-[72px] overflow-x-hidden">
+
+    <!-- GLOBAL FIXED NAVBAR -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-[#1e3a8a]/90 backdrop-blur-md shadow-sm border-b border-white/10">
         <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-<img
-    src="/logo.png"
-    alt="DuitJom Logo"
-    width="160"
-    height="48"
-    style="display:block;width:160px;height:48px;object-fit:contain;"
->
-                <span class="font-semibold text-sm text-slate-800 hidden sm:inline" data-i18n="nav.paymentHub">Payment Hub</span>
+                <img src="/logo.png" alt="DuitJom Logo" width="160" height="48" style="display:block;width:160px;height:48px;object-fit:contain;">
+                <span class="font-semibold text-sm text-white hidden sm:inline" data-i18n="nav.paymentHub">Payment Hub</span>
             </div>
 
             <div class="flex items-center gap-3">
                 <!-- Language Switcher -->
                 <div class="relative inline-block text-left group" id="languageMenu">
-                    <button type="button" class="flex items-center gap-1.5 text-[10px] font-medium text-gray-700 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-100 transition" data-i18n-aria-label="lang.switcherLabel" aria-haspopup="true" id="languageToggle" aria-expanded="false">
-                        <span class="lang-current-flag">🇺🇸</span> <span class="lang-current-label">English</span> <i class="fas fa-chevron-down text-[9px] text-gray-400"></i>
+                    <button type="button" class="flex items-center gap-1.5 text-[10px] font-medium text-gray-200 bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/20 hover:bg-white/20 transition" data-i18n-aria-label="lang.switcherLabel" aria-haspopup="true" id="languageToggle" aria-expanded="false">
+                        <span class="lang-current-flag">🇺🇸</span> <span class="lang-current-label">English</span> <i class="fas fa-chevron-down text-[9px] text-gray-300"></i>
                     </button>
                     <!-- Dropdown -->
-                    <div class="absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <button type="button" data-locale-option="en" onclick="DJ_I18N.setLocale('en')" class="lang-option w-full text-left block px-4 py-2.5 text-xs font-bold text-gray-500 hover:bg-gray-50">
+                    <div class="absolute right-0 mt-2 w-36 bg-[#1e3a8a] border border-white/20 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <button type="button" data-locale-option="en" onclick="DJ_I18N.setLocale('en')" class="lang-option w-full text-left block px-4 py-2.5 text-xs font-bold text-gray-200 hover:bg-white/10">
                             <span class="mr-2">🇺🇸</span> <span data-i18n="lang.en">English</span>
                         </button>
-                        <button type="button" data-locale-option="zh" onclick="DJ_I18N.setLocale('zh')" class="lang-option w-full text-left block px-4 py-2.5 text-xs font-bold text-gray-500 hover:bg-gray-50 border-t border-gray-50">
+                        <button type="button" data-locale-option="zh" onclick="DJ_I18N.setLocale('zh')" class="lang-option w-full text-left block px-4 py-2.5 text-xs font-bold text-gray-200 hover:bg-white/10 border-t border-white/10">
                             <span class="mr-2">🇨🇳</span> <span data-i18n="lang.zh">中文</span>
                         </button>
-                        <button type="button" data-locale-option="ms" onclick="DJ_I18N.setLocale('ms')" class="lang-option w-full text-left block px-4 py-2.5 text-xs font-bold text-gray-500 hover:bg-gray-50 border-t border-gray-50">
+                        <button type="button" data-locale-option="ms" onclick="DJ_I18N.setLocale('ms')" class="lang-option w-full text-left block px-4 py-2.5 text-xs font-bold text-gray-200 hover:bg-white/10 border-t border-white/10">
                             <span class="mr-2">🇲🇾</span> <span data-i18n="lang.ms">Bahasa Malaysia</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Hamburger Button -->
-                <button id="sidebarToggleButton" type="button" onclick="openSidebar(event)" class="text-gray-500 hover:text-black transition" data-i18n-aria-label="nav.menu" aria-label="Open menu" aria-controls="sidebarMenu" aria-expanded="false">
+                <button id="sidebarToggleButton" type="button" onclick="openSidebar(event)" class="text-white hover:text-gray-300 transition" data-i18n-aria-label="nav.menu" aria-label="Open menu" aria-controls="sidebarMenu" aria-expanded="false">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- DuitJom welcome popup -->
+    <!-- DuitJom welcome popup (Kekal sama) -->
     <div id="welcomePopup" class="welcome-overlay" aria-hidden="true">
         <section class="welcome-popup" role="dialog" aria-modal="true"
             aria-labelledby="welcomePopupTitle" aria-describedby="welcomePopupMessage"
@@ -190,9 +140,9 @@
                     <a id="welcomePopupWhatsApp" class="welcome-hotspot welcome-whatsapp"
                         href="https://wa.me/601168462807" target="_blank" rel="noopener noreferrer"
                         aria-label="Hubungi WhatsApp agent 01168462807" title="Hubungi WhatsApp"><span class="welcome-sr-only">Hubungi WhatsApp</span></a>
-<button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-email" data-copy="support@duitjom.my" aria-label="Salin support@duitjom.my"><span class="welcome-sr-only">Salin support@duitjom.my</span></button>
-<button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-com" data-copy="www.duitjom.com" aria-label="Salin www.duitjom.com"><span class="welcome-sr-only">Salin www.duitjom.com</span></button>
-<button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-my" data-copy="www.duitjom.my" aria-label="Salin www.duitjom.my"><span class="welcome-sr-only">Salin www.duitjom.my</span></button>
+                    <button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-email" data-copy="support@duitjom.my" aria-label="Salin support@duitjom.my"><span class="welcome-sr-only">Salin support@duitjom.my</span></button>
+                    <button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-com" data-copy="www.duitjom.com" aria-label="Salin www.duitjom.com"><span class="welcome-sr-only">Salin www.duitjom.com</span></button>
+                    <button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-my" data-copy="www.duitjom.my" aria-label="Salin www.duitjom.my"><span class="welcome-sr-only">Salin www.duitjom.my</span></button>
                     <button id="welcomePopupClose" class="welcome-hotspot welcome-poster-close" type="button">Tutup 60s</button>
                     <a id="welcomePopupSupport" class="welcome-hotspot welcome-poster-email"
                         href="mailto:support@duitjom.my?subject=Hi%20PM-PerlukanBantuan&amp;body=Hi%20PM-PerlukanBantuan" aria-label="Hubungi Kami melalui email support@duitjom.my"
@@ -204,9 +154,11 @@
 
 
     <div id="sidebar-container"></div>
+    
+    <!-- KOTAK LOGIN FIREBASE (Kekal sama) -->
     <section data-email-auth id="firebaseAuthContainer" class="login-shell w-full max-w-md mx-auto px-4 pt-2" aria-labelledby="authTitle">
         <div class="login-live-background" aria-hidden="true"><span class="login-live-orb login-live-orb-one"></span><span class="login-live-orb login-live-orb-two"></span><span class="login-live-orb login-live-orb-three"></span></div>
-        <div id="authLoginPanel" class="login-card">
+        <div id="authLoginPanel" class="login-card bg-white text-gray-900">
             <img class="entry-logo" src="/logo.png" alt="DuitJom">
             <p class="login-kicker" data-i18n="auth.kickerLogin">PENGESAHAN</p>
             <h2 id="authTitle" class="login-title" data-i18n="auth.chooseTitle">Sila Pilih Kaedah untuk Meneruskan</h2>
@@ -218,18 +170,17 @@
             <div id="authEntry" hidden>
                 <button type="button" id="authBackButton" class="login-link-button" data-i18n="auth.backChoices">Kembali ke pilihan akaun</button>
                 <div id="loginProviders">
-            <button id="googleLoginButton" type="button" class="login-provider-button">
-                <svg class="google-provider-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.22z"/>
-                    <path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.5z"/>
-                    <path fill="#FBBC05" d="M6.54 13.59A5.86 5.86 0 0 1 6.23 12c0-.55.11-1.09.31-1.59V7.88H3.29A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.12l3.25-2.53z"/>
-                    <path fill="#EA4335" d="M12 6.38c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.84 3.46 14.63 2.5 12 2.5a9.75 9.75 0 0 0-8.71 5.38l3.25 2.53C7.31 8.1 9.46 6.38 12 6.38z"/>
-                </svg>
-                <span data-i18n="auth.googleContinue">Continue with Google</span>
-            </button>
-
-                <button id="magicToggleButton" type="button" class="login-provider-button" data-i18n="auth.magicLink">Log in with Magic Link</button>
-                <button id="emailToggleButton" type="button" class="login-provider-button" aria-controls="emailLoginForm" aria-expanded="true" data-i18n="auth.emailContinue">Log Masuk dengan E-mel</button>
+                    <button id="googleLoginButton" type="button" class="login-provider-button">
+                        <svg class="google-provider-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.4-.18-2.05H12v3.88h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.22z"/>
+                            <path fill="#34A853" d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.29v2.53A9.75 9.75 0 0 0 12 21.5z"/>
+                            <path fill="#FBBC05" d="M6.54 13.59A5.86 5.86 0 0 1 6.23 12c0-.55.11-1.09.31-1.59V7.88H3.29A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.04 4.12l3.25-2.53z"/>
+                            <path fill="#EA4335" d="M12 6.38c1.43 0 2.72.49 3.73 1.46l2.8-2.8C16.84 3.46 14.63 2.5 12 2.5a9.75 9.75 0 0 0-8.71 5.38l3.25 2.53C7.31 8.1 9.46 6.38 12 6.38z"/>
+                        </svg>
+                        <span data-i18n="auth.googleContinue">Continue with Google</span>
+                    </button>
+                    <button id="magicToggleButton" type="button" class="login-provider-button" data-i18n="auth.magicLink">Log in with Magic Link</button>
+                    <button id="emailToggleButton" type="button" class="login-provider-button" aria-controls="emailLoginForm" aria-expanded="true" data-i18n="auth.emailContinue">Log Masuk dengan E-mel</button>
                 </div>
                 <form id="emailLoginForm" class="login-panel">
                     <fieldset id="registrationFields" hidden disabled>
@@ -242,29 +193,29 @@
                     </fieldset>
                     <label for="emailInput" data-i18n="auth.email">Alamat e-mel</label>
                     <input id="emailInput" type="email" autocomplete="email" required data-i18n-placeholder="auth.emailPlaceholder">
-                <div class="mt-4 flex justify-center">
-                    <div id="loginTurnstileWidget" class="cf-turnstile"
-                         data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth"
-                         data-theme="auto" data-size="flexible"
-                         data-callback="onLoginTurnstileSuccess"
-                         data-error-callback="onLoginTurnstileError"
-                         data-expired-callback="onLoginTurnstileExpired"></div>
-                </div>
+                    <div class="mt-4 flex justify-center">
+                        <div id="loginTurnstileWidget" class="cf-turnstile"
+                            data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth"
+                            data-theme="auto" data-size="flexible"
+                            data-callback="onLoginTurnstileSuccess"
+                            data-error-callback="onLoginTurnstileError"
+                            data-expired-callback="onLoginTurnstileExpired"></div>
+                    </div>
                     <button id="emailLoginButton" type="submit" class="login-primary-button" data-i18n="auth.continueButton">TERUSKAN</button>
                     <div id="otpSection" hidden>
-                <fieldset class="login-otp-fieldset">
-                    <legend data-i18n="auth.otpLabel">Kod Pengesahan (OTP)</legend>
-                    <div class="login-otp-digits">
-                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 1" autocomplete="one-time-code">
-                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 2" autocomplete="off">
-                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 3" autocomplete="off">
-                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 4" autocomplete="off">
-                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 5" autocomplete="off">
-                        <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 6" autocomplete="off">
-                    </div>
-                </fieldset>
-                    <div class="login-otp-resend"><button id="resendOtpButton" type="button" class="login-link-button" disabled></button></div>
-                    <button id="verifyOtpButton" type="button" class="login-primary-button" data-i18n="auth.verifyOtp" disabled>Sahkan OTP</button>
+                        <fieldset class="login-otp-fieldset">
+                            <legend data-i18n="auth.otpLabel">Kod Pengesahan (OTP)</legend>
+                            <div class="login-otp-digits">
+                                <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 1" autocomplete="one-time-code">
+                                <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 2" autocomplete="off">
+                                <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 3" autocomplete="off">
+                                <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 4" autocomplete="off">
+                                <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 5" autocomplete="off">
+                                <input type="text" inputmode="numeric" pattern="[0-9]" maxlength="6" data-login-otp aria-label="Digit OTP 6" autocomplete="off">
+                            </div>
+                        </fieldset>
+                        <div class="login-otp-resend"><button id="resendOtpButton" type="button" class="login-link-button" disabled></button></div>
+                        <button id="verifyOtpButton" type="button" class="login-primary-button" data-i18n="auth.verifyOtp" disabled>Sahkan OTP</button>
                     </div>
                 </form>
                 <nav class="auth-switch-links" aria-label="Pilihan akaun lain">
@@ -274,10 +225,9 @@
                 </nav>
             </div>
             <button id="accountSwitchNotice" type="button" class="login-link-button" hidden></button>
-
         </div>
 
-        <div id="authUserPanel" class="login-card hidden" hidden>
+        <div id="authUserPanel" class="login-card hidden bg-white text-gray-900" hidden>
             <p class="login-kicker" data-i18n="auth.kickerAccount">YOUR ACCOUNT</p>
             <h2 id="userDisplay" class="login-title" aria-live="polite"></h2>
             <p class="login-subtitle" data-i18n="auth.loggedInSubtitle">Email anda telah disahkan. Teruskan untuk mengisi maklumat pelanggan.</p>
@@ -291,734 +241,590 @@
     </section>
 
     <!-- =========================================================
-         MAIN PAGE — DIPERBAIKI
+         MAIN PAGE — CTA & SOALAN LAZIM (FAQ)
          ========================================================= -->
-     <div id="mainPage"
-         class="flex flex-col min-h-screen justify-between">
+    <div id="mainPage" class="flex flex-col min-h-screen justify-between">
+        <main class="w-full max-w-md mx-auto px-4 py-8 flex-grow flex flex-col items-center">
 
-     <main class="max-w-md mx-auto px-4 py-4 text-center flex-grow flex flex-col justify-center items-center">
+            <!-- CTA SECTION (Gambar 3) -->
+            <section class="w-full bg-[#1e3a8a] rounded-3xl p-8 mb-10 text-center shadow-2xl relative overflow-hidden border border-white/10">
+                <!-- Glow Effect -->
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/20 blur-3xl rounded-full"></div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 blur-3xl rounded-full"></div>
 
-            <div class="duitjom-status-badge">
-                <span class="duitjom-status-dot"></span>
-                <span data-i18n="home.statusBadge">DIGITAL • SECURE • ONLINE</span>
-                <span class="duitjom-status-live" data-i18n="home.statusLive">On Going</span>
-            </div>
+                <h2 class="text-2xl font-bold text-white mb-3 relative z-10 leading-snug">Bersedia untuk Mengalami Perbezaan DuitJom?</h2>
+                <p class="text-sm text-blue-200 mb-8 relative z-10 leading-relaxed">Sertai ribuan pelanggan yang berpuas hati yang memilih cara yang lebih bijak untuk meminjam</p>
+                
+                <button class="w-full bg-white text-[#1e3a8a] font-bold py-4 rounded-full shadow-lg hover:scale-105 transition-transform flex justify-center items-center gap-2 mb-8 relative z-10">
+                    Mohon Sekarang - Mulakan dalam 2 Minit
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
 
-            <!-- PREMIUM ADMINISTRATION OVERLAY -->
-            <div class="admin-glass-overlay">
-                <div class="admin-overlay-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8"
-                         aria-hidden="true">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M12 3l7 4v5c0 4.8-3 7.9-7 9-4-1.1-7-4.2-7-9V7l7-4z"/>
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M9.5 12l1.7 1.7 3.4-3.4"/>
-                    </svg>
-                </div>
-                <div class="admin-overlay-content">
-                    <span class="admin-overlay-label" data-i18n="home.adminLabel">
-                        DIGITAL ADMINISTRATION
-                    </span>
-                    <h1>
-                        <span data-i18n="home.adminTitleLine1">Efficient Administration</span>
-                        <span data-i18n="home.adminTitleLine2">Control System</span>
-                    </h1>
-                    <p data-i18n="home.adminDescription">
-                        All administrative processes are managed digitally with
-                        intelligent A.I. assistance for faster, accurate and
-                        organized decisions.
-                    </p>
-                </div>
-                <div class="admin-overlay-status">
-                    <span class="status-dot"></span>
-                    <span data-i18n="home.adminStatus">System Online</span>
-                </div>
-            </div>
-
-            <!-- DUITJOM NEWS PREMIUM SLIDER -->
-            <section class="duitjom-news">
-                <!-- News Header -->
-                <div class="news-header">
-                    <div class="news-brand-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="1.8"
-                             aria-hidden="true">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M7 8h10M7 12h7M7 16h5"/>
-                        </svg>
+                <!-- Stats Grid -->
+                <div class="flex justify-between gap-2 relative z-10">
+                    <div class="bg-white/10 border border-white/20 rounded-xl p-3 flex-1 text-center backdrop-blur-sm">
+                        <p class="text-lg font-extrabold text-white">100K+</p>
+                        <p class="text-[8px] text-blue-200 font-bold uppercase tracking-wider">Pelanggan Gembira</p>
                     </div>
-                    <div class="news-heading">
-                        <span class="news-kicker" data-i18n="home.newsKicker">
-                            DUITJOM NEWS
-                        </span>
-                        <h2 data-i18n="home.newsTitle">
-                            Latest Updates
-                        </h2>
-                        <p data-i18n="home.newsSubtitle">
-                            DuitJom systems & services
-                        </p>
+                    <div class="bg-white/10 border border-white/20 rounded-xl p-3 flex-1 text-center backdrop-blur-sm">
+                        <p class="text-lg font-extrabold text-white">99.9%</p>
+                        <p class="text-[8px] text-blue-200 font-bold uppercase tracking-wider">Masa Aktif</p>
                     </div>
-                    <div class="news-live-status">
-                        <span></span>
-                        <span data-i18n="home.newsLive">LIVE</span>
+                    <div class="bg-white/10 border border-white/20 rounded-xl p-3 flex-1 text-center backdrop-blur-sm">
+                        <p class="text-lg font-extrabold text-white">5 <span class="text-yellow-400">★</span></p>
+                        <p class="text-[8px] text-blue-200 font-bold uppercase tracking-wider">Penilaian</p>
                     </div>
-                </div>
-
-                <!-- News Slider -->
-                <div class="news-slider">
-                    <div class="news-track" id="newsTrack">
-                        <!-- NEWS 1 -->
-                        <article class="news-item">
-                            <div class="news-item-top">
-                                <div class="news-icon latest-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              d="M12 3v18M3 12h18"/>
-                                    </svg>
-                                </div>
-                                <span class="news-label latest" data-i18n="home.news1Label">
-                                    NEW
-                                </span>
-                            </div>
-                            <h3 data-i18n="home.news1Title">
-                                DuitJom powered by iPay88 Malaysia
-                            </h3>
-                            <p data-i18n="home.news1Body">
-                                A modern digital payment system designed to keep
-                                transactions safer and more efficient.
-                            </p>
-                            <div class="news-footer">
-                                <span data-i18n="home.news1Footer">
-                                    Security Assurance
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </div>
-                        </article>
-
-                        <!-- NEWS 2 -->
-                        <article class="news-item">
-                            <div class="news-item-top">
-                                <div class="news-icon security-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              d="M12 3l7 4v5c0 4.8-3 7.9-7 9-4-1.1-7-4.2-7-9V7l7-4z"/>
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              d="M9.5 12l1.7 1.7 3.4-3.4"/>
-                                    </svg>
-                                </div>
-                                <span class="news-label security" data-i18n="home.news2Label">
-                                    SECURITY
-                                </span>
-                            </div>
-                            <h3 data-i18n="home.news2Title">
-                                Firebase Authentication
-                            </h3>
-                            <p data-i18n="home.news2Body">
-                                A modular authentication system with Google and Email/Password sign-in.
-                            </p>
-                            <div class="news-footer">
-                                <span data-i18n="home.news2Footer">
-                                    Account Security
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </div>
-                        </article>
-
-                        <!-- NEWS 3 -->
-                        <article class="news-item">
-                            <div class="news-item-top">
-                                <div class="news-icon info-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <circle cx="12" cy="12" r="9"/>
-                                        <path stroke-linecap="round"
-                                              d="M12 11v5"/>
-                                        <circle cx="12" cy="8" r=".6"
-                                                fill="currentColor"/>
-                                    </svg>
-                                </div>
-                                <span class="news-label info" data-i18n="home.news3Label">
-                                    NOTICE
-                                </span>
-                            </div>
-                            <h3 data-i18n="home.news3Title">
-                                Advance Notice
-                            </h3>
-                            <p data-i18n="home.news3Body">
-                                Any planned system maintenance will be notified
-                                via the user's registered email.
-                            </p>
-                            <div class="news-footer">
-                                <span data-i18n="home.news3Footer">
-                                    Advance Notice
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          d="M5 12h14M13 6l6 6-6 6"/>
-                                </svg>
-                            </div>
-                        </article>
-                    </div>
-                </div>
-
-                <!-- Slider Indicator -->
-                <div class="news-slider-indicators" id="newsIndicators">
-                    <button class="news-dot active" data-slide="0"></button>
-                    <button class="news-dot" data-slide="1"></button>
-                    <button class="news-dot" data-slide="2"></button>
                 </div>
             </section>
+
+            <!-- SOALAN LAZIM (FAQ) -->
+            <section class="w-full mb-12">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-white">Soalan Lazim</h2>
+                </div>
+
+                <div class="space-y-3">
+                    <!-- FAQ Item 1 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Siapa yang boleh memohon pinjaman?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            DuitJom menawarkan perkhidmatan pinjaman kepada pelanggan yang memenuhi kriteria berikut:
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                                <li>Pemohon mestilah berumur antara 20 dan 60 tahun</li>
+                                <li>Pemohon sepatutnya sedang bekerja</li>
+                                <li>Pemohon mesti mempunyai alamat kediaman yang sah di Malaysia</li>
+                            </ul>
+                            <p class="mt-2">Kriteria kelayakan ini memastikan perkhidmatan pinjaman diberikan kepada individu yang memenuhi keperluan yang ditetapkan.</p>
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 2 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Dokumen apa yang saya perlukan untuk permohonan pinjaman?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Untuk melengkapkan permohonan pinjaman anda, anda perlu menyediakan MyKad (NRIC) atau dokumen pengenalan lain seperti yang ditetapkan oleh pemberi pinjam. Dokumen ini diperlukan untuk pengesahan identiti dan untuk memastikan anda memenuhi kriteria kelayakan untuk pinjaman.
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 3 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Bagaimana saya akan tahu jika pinjaman saya diluluskan?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Sebaik sahaja pinjaman peribadi anda diluluskan, kami akan memberitahu anda dengan segera melalui SMS dan e-mel. Pemberitahuan ini akan memberikan anda maklumat dan arahan yang diperlukan mengenai langkah seterusnya untuk melengkapkan proses pinjaman dan menerima dana dalam akaun bank anda. Penting untuk memerhatikan mesej SMS dan peti mel e-mel anda untuk sebarang kemaskini dan arahan dari kami.
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 4 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Berapa lama masa yang diperlukan untuk menerima pinjaman?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Kami berusaha untuk menyediakan proses pengeluaran pinjaman yang cepat dan cekap. Sebaik sahaja pinjaman anda diluluskan, kami berhasrat untuk memproses dan mengeluarkan dana dalam masa 24 jam. Anda akan menerima mesej teks (SMS) dan pemberitahuan e-mel sebaik sahaja wang tunai berjaya dipindahkan ke akaun bank peribadi anda.
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 5 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Kaedah apa yang boleh saya gunakan untuk membayar balik pinjaman?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Membayar balik pinjaman anda dipermudahkan dengan pelbagai pilihan pembayaran:
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                                <li>Pemindahan perbankan dalam talian</li>
+                                <li>Pembayaran E-Wallet (Touch 'n Go, GrabPay, dll.)</li>
+                                <li>Pemindahan DuitNow</li>
+                                <li>Deposit kaunter bank</li>
+                            </ul>
+                            <p class="mt-2">Anda boleh memilih kaedah yang paling sesuai untuk anda untuk pembayaran balik tanpa kerumitan.</p>
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 6 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Bolehkah saya bayar awal pinjaman?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Ya! Anda mempunyai pilihan untuk bayar awal pinjaman anda tanpa dikenakan sebarang penalti atau caj tambahan. Kami memahami bahawa keadaan mungkin berubah, membolehkan anda membayar balik pinjaman lebih awal daripada dijangka. Kami menggalakkan pengurusan kewangan yang bertanggungjawab, dan jika anda berada dalam kedudukan untuk membayar balik pinjaman anda sebelum tarikh matang yang dijadualkan, anda bebas berbuat demikian tanpa sebarang akibat negatif.
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 7 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Adakah terdapat kos dan caj lain?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Ya, sebagai tambahan kepada faedah dan sebarang caj pembayaran lewat, terdapat yuran berkanun tertentu:
+                            <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                                <li><strong>Duti Setem:</strong> Yuran yang dikenakan oleh kerajaan yang perlu dibayar atas perjanjian pinjaman. Jumlah tepat berbeza bergantung kepada jumlah pinjaman dan peraturan semasa</li>
+                                <li><strong>Kos Undang-undang:</strong> Dalam sesetengah kes, kos undang-undang mungkin ditanggung semasa proses permohonan pinjaman atau sekiranya berlaku kegagalan</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <!-- FAQ Item 8 -->
+                    <details class="bg-white rounded-xl overflow-hidden shadow-sm">
+                        <summary class="flex justify-between items-center p-5 cursor-pointer font-bold text-[#1e3a8a] bg-[#f4f7fb]">
+                            <span>Bolehkah saya mengambil pinjaman lain?</span>
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-[#1e3a8a] font-bold text-lg leading-none">
+                                <svg class="icon-plus w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <svg class="icon-minus w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                            </span>
+                        </summary>
+                        <div class="p-5 text-sm text-slate-600 leading-relaxed border-t border-gray-100 bg-white">
+                            Jika anda ingin mengambil pinjaman lain, anda boleh memohon dalam talian dengan mudah melalui laman web kami. Kami mengalu-alukan pinjaman berulang, dan sebagai peminjam dengan sejarah pembayaran yang baik di DuitJom, kami telah memudahkan untuk anda memohon semula. Hanya gunakan sistem permohonan dalam talian kami sekali lagi. Kami berharap dapat membantu anda dengan keperluan kewangan anda sekali lagi!
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FEATURES CONTAINER (Kekal sama) -->
+        <div id="features-container" aria-live="polite"></div>
+
+        <!-- FOOTER LEGAL LINKS (Kekal sama) -->
+        <footer id="siteFooter" class="bg-[#0d0f14] text-slate-300 font-sans pt-12 pb-8 px-6 border-t border-neutral-800">
+           <div class="max-w-md mx-auto"> 
+              
+              <!-- 1. BAHAGIAN BRAND & DESKRIPSI -->
+              <div class="mb-10">
+                 <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                       <path d="M4 14c2-5 6-9 10-7s5 7 2 11c-2 3-7 4-10 1"/>
+                       <path d="M9 9l3 6"/>
+                    </svg>
+                    <span class="text-white font-semibold tracking-wide text-sm">duitjom</span>
+                 </div>
+                 <h2 class="text-3xl font-bold text-white mb-2">DuitJom</h2>
+                 <p class="text-slate-400 text-sm mb-6">Rakan Kewangan Anda Yang Dipercayai</p>
+                 <p class="text-[#9ca3af] text-[15px] leading-relaxed mb-6">
+                    Platform pinjaman dalam talian terkemuka Malaysia yang menyediakan perkhidmatan pinjaman yang pantas, selamat, dan telus. Dapatkan kelulusan dalam minit dengan sistem bertenaga AI kami.
+                 </p>
+                 <div class="space-y-3 mb-8">
+                    <div class="flex items-center gap-3">
+                       <div class="bg-purple-600/20 p-1.5 rounded-md text-purple-500">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg>
+                       </div>
+                       <span class="text-[15px] text-[#d1d5db]">Berlesen oleh Bank Negara Malaysia</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                       <div class="bg-purple-600/20 p-1.5 rounded-md text-purple-500">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" /></svg>
+                       </div>
+                       <span class="text-[15px] text-[#d1d5db]">Penyulitan SSL 256-bit</span>
+                    </div>
+                 </div>
+                 <h3 class="text-white text-base font-semibold mb-4">Ikuti Kami:</h3>
+                 <ul class="flex gap-3">
+                    <li>
+                       <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Facebook">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 25" fill="#ffffff" class="w-5 h-5"><path d="M12 2.54c5.523 0 10 4.476 10 10c0 4.99-3.657 9.127-8.437 9.878V15.43h2.33l.443-2.89l-2.773-.001v-1.922c.015-.774.411-1.515 1.63-1.515h1.26V6.64s-1.144-.196-2.238-.196c-2.249 0-3.73 1.342-3.776 3.774l-.002.117v2.203H7.899v2.89h2.54v6.988C5.657 21.667 2 17.53 2 12.54c0-5.523 4.477-10 10-10"/></svg>
+                       </a>
+                    </li>
+                    <li>
+                       <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Instagram">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-300 fill-current" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><path fill="currentColor" d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5"/></svg>
+                       </a>
+                    </li>
+                    <li>
+                       <a href="mailto:support@duitjom.my" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition group" aria-label="Email">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 text-slate-300 group-hover:text-white transition-colors">
+                             <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15.75 18.495A7.5 7.5 0 1 1 19.5 12"/>
+                                <path d="M19.5 13.75a2.25 2.25 0 0 1-4.5 0"/>
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.5 12v1.75"/>
+                                <path d="M15 9v5"/>
+                             </g>
+                          </svg>
+                       </a>
+                    </li>
+                    <li>
+                       <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Website">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffffff" class="w-5 h-5"><path d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7z"/></svg>
+                       </a>
+                    </li>
+                 </ul>
+              </div>
+
+              <!-- 2. PAUTAN PANTAS -->
+              <div class="mb-10">
+                 <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                    <h3 class="text-xl font-bold">Pautan Pantas</h3>
+                 </div>
+                 <ul class="space-y-4 pl-1 text-[15px] text-[#9ca3af]">
+                    <li><a href="#" class="hover:text-white transition">Mohon Sekarang</a></li>
+                    <li><a href="#" class="hover:text-white transition">Pakej Kami</a></li>
+                    <li><a href="#" class="hover:text-white transition">Kalkulator Pinjaman</a></li>
+                    <li><a href="#" class="hover:text-white transition">Soalan Lazim</a></li>
+                 </ul>
+              </div>
+
+              <!-- 3. UNDANG-UNDANG -->
+              <div class="mb-10">
+                 <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
+                    <h3 class="text-xl font-bold">Undang-undang</h3>
+                 </div>
+                 <ul class="space-y-4 pl-1 text-[15px] text-[#9ca3af]">
+                    <li><a href="#" class="hover:text-white transition">Terma & Syarat</a></li>
+                    <li><a href="#" class="hover:text-white transition">Dasar Privasi</a></li>
+                 </ul>
+              </div>
+
+              <!-- 4. HUBUNGAN & SOKONGAN -->
+              <div class="mb-10">
+                 <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+                    <h3 class="text-xl font-bold">Hubungan & Sokongan</h3>
+                 </div>
+                 <div class="space-y-4">
+                    <div class="flex items-center gap-3 cursor-pointer group" onclick="if(typeof LiveChatWidget !== 'undefined') { LiveChatWidget.call('maximize'); }">
+                       <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400 group-hover:bg-[#2a3c55] transition">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                       </div>
+                       <div>
+                          <p class="text-sm text-[#9ca3af] group-hover:text-slate-300 transition">Sembang Langsung</p>
+                          <p class="text-[15px] text-white">Tersedia 24/7</p>
+                       </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                       <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                       </div>
+                       <div>
+                          <p class="text-sm text-[#9ca3af]">Alamat</p>
+                          <p class="text-[15px] text-white">Kuala Lumpur, Malaysia</p>
+                       </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                       <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                       </div>
+                       <div>
+                          <p class="text-sm text-[#9ca3af]">E-mel Sokongan</p>
+                          <a href="mailto:support@duitjom.my" class="text-[15px] text-white hover:text-blue-400 transition">support@duitjom.my</a>
+                       </div>
+                    </div>
+                 </div>
+                 <div class="mt-6">
+                    <h4 class="text-white text-base font-semibold mb-3">Waktu Beroperasi</h4>
+                    <div class="flex justify-between items-center text-[14px] text-[#9ca3af] mb-2">
+                       <span>Isnin - Jumaat</span>
+                       <span class="text-white">9:00 PG - 6:00 PTG</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[14px] text-[#9ca3af]">
+                       <span>Hujung Minggu</span>
+                       <span class="text-white">Sokongan Dalam Talian Sahaja</span>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- PEMBAHAGI -->
+              <hr class="border-[#252830] my-8">
+
+              <!-- 5. KAD KESELAMATAN -->
+              <div class="grid gap-3 mb-10">
+                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
+                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    </div>
+                    <div>
+                       <h4 class="text-white font-semibold text-[15px]">Keselamatan Gred Bank</h4>
+                       <p class="text-[#9ca3af] text-sm">Penyulitan SSL 256-bit</p>
+                    </div>
+                 </div>
+                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
+                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                    </div>
+                    <div>
+                       <h4 class="text-white font-semibold text-[15px]">Pemberi Pinjam Berlesen</h4>
+                       <p class="text-[#9ca3af] text-sm">Dikawal selia oleh Bank Negara</p>
+                    </div>
+                 </div>
+                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
+                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0 1 18 0v6" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>
+                    </div>
+                    <div>
+                       <h4 class="text-white font-semibold text-[15px]">Sokongan 24/7</h4>
+                       <p class="text-[#9ca3af] text-sm">Sentiasa ada untuk membantu</p>
+                    </div>
+                 </div>
+                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
+                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    </div>
+                    <div>
+                       <h4 class="text-white font-semibold text-[15px]">50,000+ Pelanggan</h4>
+                       <p class="text-[#9ca3af] text-sm">Dipercayai oleh Rakyat Malaysia</p>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- PEMBAHAGI -->
+              <hr class="border-[#252830] my-8">
+
+              <!-- 6. COPYRIGHT & BADGES BAWAH -->
+              <div class="text-center">
+                 <p class="text-white text-[15px] mb-3">© 2025 DuitJom. Hak cipta terpelihara.</p>
+                 <p class="text-[#9ca3af] text-[13px] leading-relaxed mb-6 px-2">
+                    DuitJom adalah tanda dagangan berdaftar. Berlesen oleh Bank Negara Malaysia di bawah Akta Perniagaan Perkhidmatan Wang 2011.
+                 </p>
+                 
+                 <!-- Green Pills -->
+                 <div class="flex justify-center flex-wrap gap-2.5">
+                    <span class="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                       SSL
+                    </span>
+                    <span class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider shadow-[0_0_10px_rgba(34,197,94,0.15)]">
+                       <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                       </span>
+                       BNM
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                       SELAMAT
+                    </span>
+                 </div>
+                 <div class="mt-6 flex justify-center">
+                     <a href="https://sonarcloud.io/summary/new_code?id=DuitJom_payment.ipay88.com" target="_blank" rel="noopener noreferrer">
+                         <img src="https://sonarcloud.io/images/project_badges/sonarcloud-light.svg" alt="SonarQube Cloud">
+                     </a>
+                 </div>
+              </div>
+           </div>
+        </footer>
+    </div> <!-- Penutup kotak utama -->
+
+    <!-- =========================================================
+         END MAIN PAGE
+         ========================================================= -->
+
+    <div id="tutorial-modal-container"></div>
+    <div id="scammer-modal-container"></div>
+
+    <!-- LOADING / TRANSITION SCREEN -->
+    <div id="loadingPage" class="hidden flex-col min-h-screen bg-white justify-center items-center -mt-[72px] z-[100] px-6" style="padding-bottom: env(safe-area-inset-bottom, 0);">
+        <div class="flex flex-col items-center gap-7 w-full max-w-xs">
+            <div class="loading-logo-wrap">
+                <img src="/logo.png" alt="DuitJom Logo" class="w-16 h-16 object-contain">
+            </div>
+            <div class="text-center h-10">
+                <p id="loadingPageStatus" class="loading-message text-slate-700 font-semibold text-sm tracking-wide" data-i18n="loading.message1">Setting up a secure connection…</p>
+            </div>
+            <div class="w-full">
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="loadingPageProgress" class="h-full rounded-full bg-blue-600" style="width: 0%;"></div>
+                </div>
+                <div class="flex justify-end mt-2">
+                    <span id="loadingPagePercentage" class="text-blue-600 font-bold text-[11px] tabular-nums">0%</span>
+                </div>
+            </div>
+            <p class="text-center text-[10px] text-slate-400 leading-relaxed max-w-[250px]" data-i18n="loading.footer">Please wait a moment while we prepare your next page.</p>
         </div>
-
-    </main>
-
-    <!-- FEATURES: dimuatkan di antara halaman utama dan footer hitam -->
-    <div id="features-container" aria-live="polite"></div>
-
-</div> <!-- Penutup kotak utama -->
-
-
-<!-- FOOTER LEGAL LINKS -->
-    <footer id="siteFooter" class="bg-[#0d0f14] text-slate-300 font-sans pt-12 pb-8 px-6 border-t border-neutral-800">
-       <div class="max-w-md mx-auto"> 
-          
-          <!-- 1. BAHAGIAN BRAND & DESKRIPSI -->
-          <div class="mb-10">
-             <!-- Logo DuitJom -->
-             <div class="flex items-center gap-2 mb-4">
-                <!-- Anda boleh tukar SVG ini dengan <img src="logo-duitjom.png" class="h-8" alt="DuitJom"> -->
-                <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                   <path d="M4 14c2-5 6-9 10-7s5 7 2 11c-2 3-7 4-10 1"/>
-                   <path d="M9 9l3 6"/>
-                </svg>
-                <span class="text-white font-semibold tracking-wide text-sm">duitjom</span>
-             </div>
-
-             <!-- Tajuk & Sub -->
-             <h2 class="text-3xl font-bold text-white mb-2">DuitJom</h2>
-             <p class="text-slate-400 text-sm mb-6">Rakan Kewangan Anda Yang Dipercayai</p>
-
-             <!-- Perenggan Penerangan -->
-             <p class="text-[#9ca3af] text-[15px] leading-relaxed mb-6">
-                Platform pinjaman dalam talian terkemuka Malaysia yang menyediakan perkhidmatan pinjaman yang pantas, selamat, dan telus. Dapatkan kelulusan dalam minit dengan sistem bertenaga AI kami.
-             </p>
-
-             <!-- Lencana Kepercayaan (BNM & SSL) -->
-             <div class="space-y-3 mb-8">
-                <div class="flex items-center gap-3">
-                   <div class="bg-purple-600/20 p-1.5 rounded-md text-purple-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                         <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-                      </svg>
-                   </div>
-                   <span class="text-[15px] text-[#d1d5db]">Berlesen oleh Bank Negara Malaysia</span>
-                </div>
-                <div class="flex items-center gap-3">
-                   <div class="bg-purple-600/20 p-1.5 rounded-md text-purple-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                         <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
-                      </svg>
-                   </div>
-                   <span class="text-[15px] text-[#d1d5db]">Penyulitan SSL 256-bit</span>
-                </div>
-             </div>
-
-             <!-- Media Sosial -->
-             <h3 class="text-white text-base font-semibold mb-4">Ikuti Kami:</h3>
-             <ul class="flex gap-3">
-                <!-- Facebook -->
-            <li>
-               <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Facebook">
-                  <!-- SVG Facebook Baru -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 25" fill="#ffffff" class="w-5 h-5">
-                     <title fill="#ffffff">facebook</title>
-                     <path fill="#ffffff" d="M12 2.54c5.523 0 10 4.476 10 10c0 4.99-3.657 9.127-8.437 9.878V15.43h2.33l.443-2.89l-2.773-.001v-1.922c.015-.774.411-1.515 1.63-1.515h1.26V6.64s-1.144-.196-2.238-.196c-2.249 0-3.73 1.342-3.776 3.774l-.002.117v2.203H7.899v2.89h2.54v6.988C5.657 21.667 2 17.53 2 12.54c0-5.523 4.477-10 10-10"/>
-                  </svg>
-               </a>
-            </li>
-                <!-- Instagram -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><title>baseline-camera-alt</title><circle cx="12" cy="12" r="3.2" fill="currentColor"/><path fill="currentColor" d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5"/></svg>
-                <!-- Email (Boleh Ditekan) -->
-            <li>
-               <a href="mailto:support@duitjom.my" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition group" aria-label="Hantar E-mel ke support@duitjom.my">
-                  <!-- SVG Email Baru -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 text-slate-300 group-hover:text-white transition-colors">
-                     <title>email-outline</title>
-                     <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15.75 18.495A7.5 7.5 0 1 1 19.5 12"/>
-                        <path d="M19.5 13.75a2.25 2.25 0 0 1-4.5 0"/>
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.5 12v1.75"/>
-                        <path d="M15 9v5"/>
-                     </g>
-                  </svg>
-               </a>
-            </li>
-                <!-- Website -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="#ffffff"><title fill="#ffffff">company</title><path fill="#ffffff" d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7z"/></svg>
-             </ul>
-          </div>
-
-          <!-- 2. PAUTAN PANTAS -->
-          <div class="mb-10">
-             <div class="flex items-center gap-2 mb-4 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                <h3 class="text-xl font-bold">Pautan Pantas</h3>
-             </div>
-             <ul class="space-y-4 pl-1 text-[15px] text-[#9ca3af]">
-                <li><a href="#" class="hover:text-white transition">Mohon Sekarang</a></li>
-                <li><a href="#" class="hover:text-white transition">Pakej Kami</a></li>
-                <li><a href="#" class="hover:text-white transition">Kalkulator Pinjaman</a></li>
-                <li><a href="#" class="hover:text-white transition">Soalan Lazim</a></li>
-             </ul>
-          </div>
-
-          <!-- 3. UNDANG-UNDANG -->
-          <div class="mb-10">
-             <div class="flex items-center gap-2 mb-4 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
-                <h3 class="text-xl font-bold">Undang-undang</h3>
-             </div>
-             <ul class="space-y-4 pl-1 text-[15px] text-[#9ca3af]">
-                <li><a href="#" class="hover:text-white transition">Terma & Syarat</a></li>
-                <li><a href="#" class="hover:text-white transition">Dasar Privasi</a></li>
-             </ul>
-          </div>
-
-          <!-- 4. HUBUNGAN & SOKONGAN -->
-          <div class="mb-10">
-             <div class="flex items-center gap-2 mb-4 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                <h3 class="text-xl font-bold">Hubungan & Sokongan</h3>
-             </div>
-             
-             <div class="space-y-4">
-                <!-- Live Chat (Boleh Klik) -->
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="if(typeof LiveChatWidget !== 'undefined') { LiveChatWidget.call('maximize'); }">
-                   <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400 group-hover:bg-[#2a3c55] transition">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                   </div>
-                   <div>
-                      <p class="text-sm text-[#9ca3af] group-hover:text-slate-300 transition">Sembang Langsung</p>
-                      <p class="text-[15px] text-white">Tersedia 24/7</p>
-                   </div>
-                </div>
-                
-                <!-- Alamat -->
-                <div class="flex items-center gap-3">
-                   <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                   </div>
-                   <div>
-                      <p class="text-sm text-[#9ca3af]">Alamat</p>
-                      <p class="text-[15px] text-white">Kuala Lumpur, Malaysia</p>
-                   </div>
-                </div>
-
-                <!-- E-mel Sokongan -->
-                <div class="flex items-center gap-3">
-                   <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                   </div>
-                   <div>
-                      <p class="text-sm text-[#9ca3af]">E-mel Sokongan</p>
-                      <a href="mailto:support@duitjom.my" class="text-[15px] text-white hover:text-blue-400 transition">support@duitjom.my</a>
-                   </div>
-                </div>
-             </div>
-
-             <!-- Waktu Operasi -->
-             <div class="mt-6">
-                <h4 class="text-white text-base font-semibold mb-3">Waktu Beroperasi</h4>
-                <div class="flex justify-between items-center text-[14px] text-[#9ca3af] mb-2">
-                   <span>Isnin - Jumaat</span>
-                   <span class="text-white">9:00 PG - 6:00 PTG</span>
-                </div>
-                <div class="flex justify-between items-center text-[14px] text-[#9ca3af]">
-                   <span>Hujung Minggu</span>
-                   <span class="text-white">Sokongan Dalam Talian Sahaja</span>
-                </div>
-             </div>
-          </div>
-
-          <!-- PEMBAHAGI -->
-          <hr class="border-[#252830] my-8">
-
-          <!-- 5. KAD KESELAMATAN (Bento Grid) -->
-          <div class="grid gap-3 mb-10">
-             <!-- Kad 1 -->
-             <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                </div>
-                <div>
-                   <h4 class="text-white font-semibold text-[15px]">Keselamatan Gred Bank</h4>
-                   <p class="text-[#9ca3af] text-sm">Penyulitan SSL 256-bit</p>
-                </div>
-             </div>
-             <!-- Kad 2 -->
-             <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                </div>
-                <div>
-                   <h4 class="text-white font-semibold text-[15px]">Pemberi Pinjam Berlesen</h4>
-                   <p class="text-[#9ca3af] text-sm">Dikawal selia oleh Bank Negara</p>
-                </div>
-             </div>
-             <!-- Kad 3 (Ikon Headset) -->
-             <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0 1 18 0v6" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>
-                </div>
-                <div>
-                   <h4 class="text-white font-semibold text-[15px]">Sokongan 24/7</h4>
-                   <p class="text-[#9ca3af] text-sm">Sentiasa ada untuk membantu</p>
-                </div>
-             </div>
-             <!-- Kad 4 -->
-             <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                </div>
-                <div>
-                   <h4 class="text-white font-semibold text-[15px]">50,000+ Pelanggan</h4>
-                   <p class="text-[#9ca3af] text-sm">Dipercayai oleh Rakyat Malaysia</p>
-                </div>
-             </div>
-          </div>
-
-          <!-- PEMBAHAGI -->
-          <hr class="border-[#252830] my-8">
-
-          <!-- 6. COPYRIGHT & BADGES BAWAH -->
-          <div class="text-center">
-             <p class="text-white text-[15px] mb-3">© 2025 DuitJom. Hak cipta terpelihara.</p>
-             <p class="text-[#9ca3af] text-[13px] leading-relaxed mb-6 px-2">
-                DuitJom adalah tanda dagangan berdaftar. Berlesen oleh Bank Negara Malaysia di bawah Akta Perniagaan Perkhidmatan Wang 2011.
-             </p>
-             
-             <!-- Green Pills -->
-             <div class="flex justify-center flex-wrap gap-2.5">
-                <!-- SSL Pill -->
-                <span class="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                   SSL
-                </span>
-
-                <!-- BNM Pill (Dengan Live Icon Berdenyut) -->
-                <span class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider shadow-[0_0_10px_rgba(34,197,94,0.15)]">
-                   <!-- Live Pulse Dot -->
-                   <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                   </span>
-                   BNM
-                </span>
-
-                <!-- SELAMAT Pill -->
-                <span class="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                   SELAMAT
-                </span>
-             </div>
-
-             <!-- SonarQube Cloud Quality Badge -->
-             <div class="mt-6 flex justify-center">
-                 <a href="https://sonarcloud.io/summary/new_code?id=DuitJom_payment.ipay88.com" target="_blank" rel="noopener noreferrer">
-                     <img src="https://sonarcloud.io/images/project_badges/sonarcloud-light.svg" alt="SonarQube Cloud">
-                 </a>
-             </div>
-          </div>
-
-       </div>
-    </footer>
-<!-- =========================================================
-     END MAIN PAGE
-     ========================================================= -->
-
-
-<div id="tutorial-modal-container"></div>
-<div id="scammer-modal-container"></div>
-
-
-<!-- LOADING / TRANSITION SCREEN -->
-<div id="loadingPage" class="hidden flex-col min-h-screen bg-white justify-center items-center -mt-[72px] z-[100] px-6" style="padding-bottom: env(safe-area-inset-bottom, 0);">
-<div class="flex flex-col items-center gap-7 w-full max-w-xs">
-    <!-- LOGO -->
-    <div class="loading-logo-wrap">
-        <img src="/logo.png" alt="DuitJom Logo" class="w-16 h-16 object-contain">
     </div>
 
-    <!-- LOADING TEXT -->
-    <div class="text-center h-10">
-        <p id="loadingPageStatus" class="loading-message text-slate-700 font-semibold text-sm tracking-wide" data-i18n="loading.message1">
-            Setting up a secure connection…
-        </p>
+    <!-- PAYMENT PAGE (Borang Maklumat Diri) -->
+    <div id="paymentPage" class="hidden flex-col min-h-screen bg-white -mt-[72px] pt-[72px]">
+        <main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
+            <div class="w-full flex flex-col items-center text-center mb-6">
+                <div class="relative w-28 h-28 mb-4 flex items-center justify-center">
+                    <div class="absolute inset-0 rounded-[32px] bg-gradient-to-br from-blue-100 via-sky-50 to-cyan-100 blur-xl opacity-80"></div>
+                    <div class="relative w-24 h-24 rounded-[28px] bg-white/70 backdrop-blur-xl border border-white/90 shadow-[0_15px_40px_rgba(37,99,235,0.12)] flex items-center justify-center overflow-hidden">
+                        <img src="/logo.png" alt="Logo DuitJom" class="w-[82px] h-[82px] object-contain">
+                    </div>
+                </div>
+                <p class="text-slate-500 font-medium text-xs max-w-xs leading-relaxed" data-i18n="home.paymentIntro">Complete your details to continue safely to the next step.</p>
+            </div>
+            
+            <div class="w-full flex items-center gap-4 py-5 border-t border-b border-slate-100">
+                <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="w-7 h-7 text-blue-500" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
+                    </svg>
+                </div>
+                <div class="flex-1 text-left">
+                    <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mb-1" data-i18n="home.paymentRequired">Required Information</p>
+                    <h3 class="text-sm font-extrabold text-slate-900 leading-snug" data-i18n="home.paymentHeading">Please fill in your details</h3>
+                    <p class="text-[10px] text-slate-500 mt-1 leading-relaxed" data-i18n="home.paymentSubheading">Make sure all provided information is accurate before continuing.</p>
+                </div>
+            </div>
+
+            <form onsubmit="goToNextStepPage(event)" class="space-y-4 w-full">
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
+                        </svg>
+                        <span data-i18n="home.fullName">Full Name (IC)</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="namaInput" required data-i18n-placeholder="home.fullNamePlaceholder" placeholder="Ali bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                            <rect x="2" y="5" width="20" height="14" rx="2"/>
+                            <circle cx="7" cy="11" r="2"/>
+                            <path stroke-linecap="round" d="M11 9h8M11 13h6M6 16h8"/>
+                        </svg>
+                        <span data-i18n="home.icNumber">IC Number</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="icInput" required maxlength="14" inputmode="numeric" data-i18n-placeholder="home.icPlaceholder" placeholder="000000-00-0000" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="formatIC(this)">
+                    <p id="icError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.icError">Your IC number is invalid</p>
+                </div>
+
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                            <circle cx="8" cy="12" r="2"/>
+                            <path stroke-linecap="round" d="M13 10h5M13 14h4"/>
+                        </svg>
+                        <span data-i18n="home.loanId">Loan / CUST ID</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="djcustInput" required data-i18n-placeholder="home.loanIdPlaceholder" placeholder="Sila masukkan ID Loan atau CUST00000 anda" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="validateDJCust(this)">
+                    <p id="djcustError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.loanIdError">Enter a valid "DJ" or "CUST" loan ID.</p>
+                    <p class="text-[10px] text-sky-500 mt-1"><a href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer" data-i18n="home.loanIdHelp">Visit www.duitjom.com to get your Loan ID</a></p>
+                </div>
+
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 3.75h3l1.5 4-2 1.5a14 14 0 0 0 5.75 5.75l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C11.04 19.5 4.5 12.96 4.5 4.75c0-1.1.9-1 2-1Z"/>
+                        </svg>
+                        <span data-i18n="home.phoneNumber">Phone Number</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-blue-400">
+                        <span class="flex items-center px-3 bg-gray-50 border-r border-gray-200 text-sm font-semibold text-slate-600 whitespace-nowrap">🇲🇾 +60</span>
+                        <input type="tel" id="phoneInput" required inputmode="numeric" data-i18n-placeholder="home.phonePlaceholder" placeholder="123456789" class="flex-1 px-3 py-2.5 text-sm outline-none bg-white" oninput="validatePhone(this)">
+                    </div>
+                    <p id="phoneError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.phoneError">Please enter a valid phone number</p>
+                </div>
+
+                <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12M9 9h4.5a2 2 0 0 1 0 4H9m0 0h6"/>
+                        </svg>
+                        <span data-i18n="home.amount">Payment Amount</span>
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="flex rounded-xl border border-blue-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-400 bg-blue-50/30">
+                        <span class="flex items-center px-3 bg-blue-100/60 border-r border-blue-200 text-sm font-bold text-blue-600">RM</span>
+                        <input type="number" step="0.01" min="0.01" id="amountInput" required placeholder="0.00" inputmode="decimal" class="flex-1 px-3 py-2 text-sm outline-none bg-transparent">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+                        <input type="checkbox" id="termsCheckbox" class="mt-0.5 w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400">
+                        <span data-i18n="home.termsText">By continuing, you agree to the Terms & Conditions and Privacy Policy set by DuitJom.</span>
+                    </label>
+                    <p id="termsError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.termsError">Please accept the terms to continue</p>
+                </div>
+
+                <div class="mt-4 flex justify-center">
+                    <div class="cf-turnstile" data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ" data-action="auth" data-theme="auto" data-size="flexible"></div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="backToMainFromPayment()" class="flex-1 border border-gray-300 text-slate-600 font-bold text-sm py-3 px-4 rounded-xl transition hover:bg-gray-50" data-i18n="home.back">Back</button>
+                    <button type="submit" id="continueBtn" disabled class="flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition opacity-50 cursor-not-allowed">
+                        <span data-i18n="home.next">Next</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </button>
+                </div>
+            </form>
+        </main>
     </div>
 
-    <!-- PROGRESS BAR -->
-    <div class="w-full">
-        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-            <div id="loadingPageProgress"
-                 class="h-full rounded-full bg-blue-600"
-                 style="width: 0%;">
+    <!-- QR PAGE -->
+    <div id="qrPage" class="hidden flex flex-col min-h-screen -mt-[72px] pt-[72px] bg-white">
+        <main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
+            <div id="qrCode" class="mb-4"></div>
+            <p id="timerDisplay" class="text-2xl font-bold text-slate-800">10:00</p>
+            <button onclick="backToForm()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded" data-i18n="home.back">Back</button>
+        </main>
+    </div>
+
+    <!-- THANKS / CONFIRMATION PAGE -->
+    <div id="thanksPage" class="hidden flex-col min-h-screen -mt-[72px] pt-[72px] bg-white justify-center items-center" style="padding-bottom: env(safe-area-inset-bottom, 0);">
+        <div class="confirmation-card max-w-md w-full mx-auto px-6 py-10 text-center">
+            <img src="/logo.png" alt="DuitJom" class="h-6 object-contain mx-auto mb-8 opacity-80">
+            <div class="confirmation-check-ring mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-7 h-7 text-emerald-600" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6"/></svg>
+            </div>
+            <p class="confirmation-kicker" data-i18n="confirmation.kicker">PAYMENT CONFIRMATION</p>
+            <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-2" data-i18n="confirmation.title">Payment Successful</h2>
+            <p id="thanksMessage" class="text-slate-500 text-sm leading-relaxed max-w-sm mx-auto"></p>
+            <div id="confirmationSummary" class="confirmation-summary mt-7 text-left"></div>
+            <div class="confirmation-next mt-6 text-left">
+                <p class="text-xs font-bold text-slate-800 mb-1" data-i18n="confirmation.nextTitle">What happens next</p>
+                <p class="text-xs text-slate-500 leading-relaxed" data-i18n="confirmation.nextBody">Our team will review your receipt within 24 hours. You'll get an SMS or email once it's confirmed.</p>
+            </div>
+            <div class="mt-8 flex flex-col gap-2.5">
+                <button type="button" onclick="window.location.reload()" class="confirmation-primary-button" data-i18n="confirmation.backHome">Back to Home</button>
+                <a href="page/term-conditional.html" class="confirmation-secondary-link" data-i18n="confirmation.contactSupport">Contact Support</a>
             </div>
         </div>
-        <div class="flex justify-end mt-2">
-            <span id="loadingPagePercentage"
-                  class="text-blue-600 font-bold text-[11px] tabular-nums">
-                0%
-            </span>
-        </div>
     </div>
-
-    <!-- FOOTER MESSAGE -->
-    <p class="text-center text-[10px] text-slate-400 leading-relaxed max-w-[250px]" data-i18n="loading.footer">
-        Please wait a moment while we prepare your next page.
-    </p>
-</div>
-</div>
-
-<!-- PAYMENT PAGE (Borang Maklumat Diri) -->
-<div id="paymentPage" class="hidden flex-col min-h-screen bg-white -mt-[72px] pt-[72px]">
-<main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
-    <div class="w-full flex flex-col items-center text-center mb-6">
-        <div class="relative w-28 h-28 mb-4 flex items-center justify-center">
-            <div class="absolute inset-0 rounded-[32px] bg-gradient-to-br from-blue-100 via-sky-50 to-cyan-100 blur-xl opacity-80"></div>
-            <div class="relative w-24 h-24 rounded-[28px] bg-white/70 backdrop-blur-xl border border-white/90 shadow-[0_15px_40px_rgba(37,99,235,0.12)] flex items-center justify-center overflow-hidden">
-                <img src="/logo.png" alt="Logo DuitJom" class="w-[82px] h-[82px] object-contain">
-            </div>
-        </div>
-        <p class="text-slate-500 font-medium text-xs max-w-xs leading-relaxed" data-i18n="home.paymentIntro">
-            Complete your details to continue safely to the next step.
-        </p>
-    </div>
-
-    <div class="w-full flex items-center gap-4 py-5 border-t border-b border-slate-100">
-        <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="w-7 h-7 text-blue-500" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
-            </svg>
-        </div>
-        <div class="flex-1 text-left">
-            <p class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mb-1" data-i18n="home.paymentRequired">Required Information</p>
-            <h3 class="text-sm font-extrabold text-slate-900 leading-snug" data-i18n="home.paymentHeading">Please fill in your details</h3>
-            <p class="text-[10px] text-slate-500 mt-1 leading-relaxed" data-i18n="home.paymentSubheading">Make sure all provided information is accurate before continuing.</p>
-        </div>
-    </div>
-
-    <form onsubmit="goToNextStepPage(event)" class="space-y-4 w-full">
-
-        <!-- NAMA PENUH -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.25a7.5 7.5 0 0 1 15 0"/>
-                </svg>
-                <span data-i18n="home.fullName">Full Name (IC)</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="namaInput" required data-i18n-placeholder="home.fullNamePlaceholder" placeholder="Ali bin Abu" autocomplete="name" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm">
-        </div>
-
-        <!-- NOMBOR KAD PENGENALAN -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <rect x="2" y="5" width="20" height="14" rx="2"/>
-                    <circle cx="7" cy="11" r="2"/>
-                    <path stroke-linecap="round" d="M11 9h8M11 13h6M6 16h8"/>
-                </svg>
-                <span data-i18n="home.icNumber">IC Number</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="icInput" required maxlength="14" inputmode="numeric" data-i18n-placeholder="home.icPlaceholder" placeholder="000000-00-0000" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="formatIC(this)">
-            <p id="icError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.icError">Your IC number is invalid</p>
-        </div>
-
-        <!-- ID LOAN / CUST -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <rect x="3" y="5" width="18" height="14" rx="2"/>
-                    <circle cx="8" cy="12" r="2"/>
-                    <path stroke-linecap="round" d="M13 10h5M13 14h4"/>
-                </svg>
-                <span data-i18n="home.loanId">Loan / CUST ID</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="djcustInput" required data-i18n-placeholder="home.loanIdPlaceholder" placeholder="Sila masukkan ID Loan atau CUST00000 anda" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none text-sm" oninput="validateDJCust(this)">
-            <p id="djcustError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.loanIdError">Enter a valid "DJ" or "CUST" loan ID.</p>
-            <p class="text-[10px] text-sky-500 mt-1"><a href="https://www.duitjom.com/" target="_blank" rel="noopener noreferrer" data-i18n="home.loanIdHelp">Visit www.duitjom.com to get your Loan ID</a></p>
-        </div>
-
-        <!-- NOMBOR TELEFON -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.5 3.75h3l1.5 4-2 1.5a14 14 0 0 0 5.75 5.75l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C11.04 19.5 4.5 12.96 4.5 4.75c0-1.1.9-1 2-1Z"/>
-                </svg>
-                <span data-i18n="home.phoneNumber">Phone Number</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <div class="flex rounded-xl border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-blue-400">
-                <span class="flex items-center px-3 bg-gray-50 border-r border-gray-200 text-sm font-semibold text-slate-600 whitespace-nowrap">🇲🇾 +60</span>
-                <input type="tel" id="phoneInput" required inputmode="numeric" data-i18n-placeholder="home.phonePlaceholder" placeholder="123456789" class="flex-1 px-3 py-2.5 text-sm outline-none bg-white" oninput="validatePhone(this)">
-            </div>
-            <p id="phoneError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.phoneError">Please enter a valid phone number</p>
-        </div>
-
-        <!-- JUMLAH BAYARAN -->
-        <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4 text-blue-500" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12M9 9h4.5a2 2 0 0 1 0 4H9m0 0h6"/>
-                </svg>
-                <span data-i18n="home.amount">Payment Amount</span>
-                <span class="text-red-500">*</span>
-            </label>
-            <div class="flex rounded-xl border border-blue-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-400 bg-blue-50/30">
-                <span class="flex items-center px-3 bg-blue-100/60 border-r border-blue-200 text-sm font-bold text-blue-600">RM</span>
-                <input type="number" step="0.01" min="0.01" id="amountInput" required placeholder="0.00" inputmode="decimal" class="flex-1 px-3 py-2 text-sm outline-none bg-transparent">
-            </div>
-        </div>
-
-        <!-- TERMS CHECKBOX -->
-        <div>
-            <label class="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
-                <input type="checkbox" id="termsCheckbox" class="mt-0.5 w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-400">
-                <span data-i18n="home.termsText">By continuing, you agree to the Terms & Conditions and Privacy Policy set by DuitJom.</span>
-            </label>
-            <p id="termsError" class="text-red-500 text-[11px] mt-1 hidden" data-i18n="home.termsError">Please accept the terms to continue</p>
-        </div>
-
-
-        <!-- CLOUDFLARE TURNSTILE -->
-    <div class="mt-4 flex justify-center">
-          <div
-             class="cf-turnstile"
-             data-sitekey="0x4AAAAAAFDZ5bKGW2izQzbZ"
-             data-action="auth"
-             data-theme="auto"
-             data-size="flexible">
-          </div>
-      </div>
-
-
-        <!-- BUTTONS -->
-        <div class="flex gap-3 pt-2">
-            <button type="button" onclick="backToMainFromPayment()" class="flex-1 border border-gray-300 text-slate-600 font-bold text-sm py-3 px-4 rounded-xl transition hover:bg-gray-50" data-i18n="home.back">Back</button>
-            <button type="submit" id="continueBtn" disabled class="flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition opacity-50 cursor-not-allowed">
-                <span data-i18n="home.next">Next</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="w-4 h-4" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/>
-                </svg>
-            </button>
-        </div>
-    </form>
-</main>
-</div>
-
-<!-- QR PAGE -->
-<div id="qrPage" class="hidden flex flex-col min-h-screen -mt-[72px] pt-[72px] bg-white">
-<main class="max-w-md w-full mx-auto px-4 py-6 flex-grow flex flex-col items-center">
-    <div id="qrCode" class="mb-4"></div>
-    <p id="timerDisplay" class="text-2xl font-bold text-slate-800">10:00</p>
-    <button onclick="backToForm()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded" data-i18n="home.back">Back</button>
-</main>
-</div>
-
-<!-- THANKS / CONFIRMATION PAGE -->
-<div id="thanksPage" class="hidden flex-col min-h-screen -mt-[72px] pt-[72px] bg-white justify-center items-center" style="padding-bottom: env(safe-area-inset-bottom, 0);">
-<div class="confirmation-card max-w-md w-full mx-auto px-6 py-10 text-center">
-    <img src="/logo.png" alt="DuitJom" class="h-6 object-contain mx-auto mb-8 opacity-80">
-
-    <div class="confirmation-check-ring mx-auto mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-7 h-7 text-emerald-600" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6"/>
-        </svg>
-    </div>
-
-    <p class="confirmation-kicker" data-i18n="confirmation.kicker">PAYMENT CONFIRMATION</p>
-    <h2 class="text-2xl font-bold text-slate-900 mt-1 mb-2" data-i18n="confirmation.title">Payment Successful</h2>
-    <p id="thanksMessage" class="text-slate-500 text-sm leading-relaxed max-w-sm mx-auto"></p>
-
-    <div id="confirmationSummary" class="confirmation-summary mt-7 text-left"></div>
-
-    <div class="confirmation-next mt-6 text-left">
-        <p class="text-xs font-bold text-slate-800 mb-1" data-i18n="confirmation.nextTitle">What happens next</p>
-        <p class="text-xs text-slate-500 leading-relaxed" data-i18n="confirmation.nextBody">Our team will review your receipt within 24 hours. You'll get an SMS or email once it's confirmed.</p>
-    </div>
-
-    <div class="mt-8 flex flex-col gap-2.5">
-        <button type="button" onclick="window.location.reload()" class="confirmation-primary-button" data-i18n="confirmation.backHome">Back to Home</button>
-        <a href="page/term-conditional.html" class="confirmation-secondary-link" data-i18n="confirmation.contactSupport">Contact Support</a>
-    </div>
-</div>
-</div>
 
     <!-- Main Scripts -->
     <script src="script.js"></script>
     <script src="js/welcome-popup.js?v=20261012"></script>
     <script type="module" src="auth/app-auth.js?v=20261012"></script>
 
-
-
-    <!-- Firebase Authentication UI -->
-    <!-- Firebase auth controller: auth/app-auth.js -->
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -1030,7 +836,7 @@
                 document.getElementById('mainPage')?.classList.remove('hidden');
                 document.getElementById('firebaseAuthContainer')?.classList.remove('hidden');
                 document.getElementById('siteFooter')?.classList.remove('hidden');
-                document.getElementById('features-container')?.classList.remove('hidden'); // ← TAMBAH INI
+                document.getElementById('features-container')?.classList.remove('hidden'); 
                 window.scrollTo({top: 0, behavior: 'smooth'});
             });
         }
@@ -1044,50 +850,44 @@
                 document.getElementById('mainPage')?.classList.add('hidden');
                 document.getElementById('firebaseAuthContainer')?.classList.add('hidden');
                 document.getElementById('siteFooter')?.classList.add('hidden');
-                document.getElementById('features-container')?.classList.add('hidden'); // ← TAMBAH INI
+                document.getElementById('features-container')?.classList.add('hidden'); 
                 document.getElementById('paymentPage')?.classList.remove('hidden');
                 window.scrollTo({top: 0, behavior: 'smooth'});
             });
         }
 
         function goToNextStepPage(event) {
+            event?.preventDefault();
+            const nama = document.getElementById("namaInput")?.value.trim();
+            const icDigits = (document.getElementById("icInput")?.value || '').replace(/\D/g, '');
+            const loanId = (document.getElementById("djcustInput")?.value || '').trim().toUpperCase();
+            const phone = (document.getElementById("phoneInput")?.value || '').replace(/\D/g, '');
+            const amount = parseFloat(document.getElementById("amountInput")?.value || '0');
+            const termsChecked = document.getElementById("termsCheckbox")?.checked;
 
-    event?.preventDefault();
+            if (!termsChecked) {
+                document.getElementById("termsError")?.classList.remove("hidden");
+            }
 
-    const nama = document.getElementById("namaInput")?.value.trim();
-    const icDigits = (document.getElementById("icInput")?.value || '').replace(/\D/g, '');
-    const loanId = (document.getElementById("djcustInput")?.value || '').trim().toUpperCase();
-    const phone = (document.getElementById("phoneInput")?.value || '').replace(/\D/g, '');
-    const amount = parseFloat(document.getElementById("amountInput")?.value || '0');
+            if (
+                !nama ||
+                icDigits.length !== 12 ||
+                !/^(?:D[0-9]+|J[0-9]+|DJ[0-9]+|CUST[0-9]+)$/.test(loanId) ||
+                !/^1[0-9]{8,9}$/.test(phone) ||
+                amount <= 0 ||
+                !termsChecked
+            ) {
+                return;
+            }
 
-    const termsChecked =
-        document.getElementById("termsCheckbox")?.checked;
-
-    if (!termsChecked) {
-        document.getElementById("termsError")
-            ?.classList.remove("hidden");
-    }
-
-    if (
-        !nama ||
-        icDigits.length !== 12 ||
-        !/^(?:D[0-9]+|J[0-9]+|DJ[0-9]+|CUST[0-9]+)$/.test(loanId) ||
-        !/^1[0-9]{8,9}$/.test(phone) ||
-        amount <= 0 ||
-        !termsChecked
-    ) {
-        return;
-    }
-
-    window.location.href =
-       "components/payment.html?nama=" +
-        encodeURIComponent(nama) +
-        "&id=" +
-        encodeURIComponent(loanId) +
-        "&jumlah=" +
-        encodeURIComponent(amount);
-}
-
+            window.location.href =
+               "components/payment.html?nama=" +
+                encodeURIComponent(nama) +
+                "&id=" +
+                encodeURIComponent(loanId) +
+                "&jumlah=" +
+                encodeURIComponent(amount);
+        }
 
         function formatIC(input) {
             let digits = input.value.replace(/\D/g, '').slice(0, 12);
@@ -1133,16 +933,16 @@
         })();
     </script>
 
-<!-- Start of LiveChat (www.livechat.com) code -->
-<script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 19949347;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
-</script>
-<noscript><a href="https://www.livechat.com/chat-with/19949347/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
-<!-- End of LiveChat code -->
+    <!-- Start of LiveChat (www.livechat.com) code -->
+    <script>
+        window.__lc = window.__lc || {};
+        window.__lc.license = 19949347;
+        window.__lc.integration_name = "manual_channels";
+        window.__lc.product_name = "livechat";
+        ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+    </script>
+    <noscript><a href="https://www.livechat.com/chat-with/19949347/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
+    <!-- End of LiveChat code -->
 
 </body>
 </html>
