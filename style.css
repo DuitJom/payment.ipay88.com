@@ -1162,3 +1162,63 @@ select:focus-visible {
 }
 
 /* Jika ikon masih nampak besar, kecilkan angka 32px kepada 24px */
+
+/* =========================================================
+   DUITJOM FAQ & CTA FIXES
+========================================================= */
+.faq-box {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.faq-box summary {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    padding: 1.25rem !important;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-box summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-answer {
+    background-color: #0f172a !important;
+    color: #cbd5e1 !important;
+    padding: 1.25rem !important;
+    border-top: 1px solid #334155 !important;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.faq-icon-wrapper {
+    background-color: #334155 !important;
+    color: #60a5fa !important;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Toggle Icons */
+details[open] .icon-plus { display: none !important; }
+details[open] .icon-minus { display: block !important; }
+details:not([open]) .icon-plus { display: block !important; }
+details:not([open]) .icon-minus { display: none !important; }
+
+/* CTA BUTTON FIX */
+.cta-button-fix {
+    background-color: #ffffff !important;
+    color: #1e3a8a !important;
+}
