@@ -1,0 +1,103 @@
+/* Keep the supplied light design isolated from login, payment and footer styles. */
+.duitjom-loan {
+  --primary-dark: #1a3a5c;
+  --primary-mid: #3b6e9a;
+  --primary-light: #6faedb;
+  --bg: #eef3f8;
+  --card-bg: #fff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --green: #5cb85c;
+  --green-dark: #4cae4c;
+  --radius: 24px;
+  --shadow: 0 10px 30px rgba(26,58,92,.08);
+  width: 100%;
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height: 1.5;
+  scroll-margin-top: 90px;
+}
+.duitjom-loan *, .duitjom-loan *::before, .duitjom-loan *::after { box-sizing: border-box; }
+.duitjom-loan :is(h2,h3,p,ul) { margin: 0; padding: 0; }
+.duitjom-loan svg { display: block; flex-shrink: 0; }
+.duitjom-loan button, .duitjom-loan input { font: inherit; }
+.duitjom-loan button { cursor: pointer; }
+.duitjom-loan :is(button,input):focus-visible { outline: 3px solid var(--primary-mid); outline-offset: 4px; }
+.duitjom-loan .loan-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 32px 16px 48px; }
+.duitjom-loan .calculator-panel { width: 100%; max-width: 448px; margin: 0 auto 32px; }
+.duitjom-loan .calc-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+.duitjom-loan .calc-icon { width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px; background: linear-gradient(135deg,var(--primary-dark),var(--primary-light)); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 14px rgba(26,58,92,.2); }
+.duitjom-loan .calc-title h2 { font-size: 22px; font-weight: 800; color: var(--primary-dark); margin-bottom: 2px; }
+.duitjom-loan .calc-title p { font-size: 14px; color: var(--text-muted); }
+.duitjom-loan .amount-card { background: linear-gradient(180deg,#f8fafc,var(--bg)); border: 1px solid #e2e8f0; border-radius: var(--radius); padding: 28px 20px; text-align: center; margin-bottom: 20px; box-shadow: var(--shadow); }
+.duitjom-loan .amount-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
+.duitjom-loan .amount-value { display: block; font-size: 42px; font-weight: 900; color: var(--primary-dark); margin-bottom: 4px; }
+.duitjom-loan .amount-range { font-size: 14px; color: var(--text-muted); }
+.duitjom-loan .slider-wrap { display: flex; align-items: center; min-height: 44px; margin-bottom: 20px; }
+.duitjom-loan input[type=range] { appearance: none; -webkit-appearance: none; width: 100%; height: 12px; margin: 0; padding: 0; border: 0; border-radius: 10px; background: #e2e8f0; cursor: pointer; }
+.duitjom-loan input[type=range]::-webkit-slider-runnable-track { height: 12px; border-radius: 10px; }
+.duitjom-loan input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 4px solid var(--primary-dark); box-shadow: 0 4px 10px rgba(26,58,92,.25); margin-top: -8px; transition: transform .1s; }
+.duitjom-loan input[type=range]::-webkit-slider-thumb:active { transform: scale(1.1); }
+.duitjom-loan input[type=range]::-moz-range-thumb { box-sizing: border-box; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 4px solid var(--primary-dark); box-shadow: 0 4px 10px rgba(26,58,92,.25); }
+.duitjom-loan .preset-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 28px; }
+.duitjom-loan .preset-btn { min-width: 64px; min-height: 44px; padding: 10px 16px; border: 2px solid #d1d5db; border-radius: 999px; background: #fff; color: var(--text-main); font-weight: 700; font-size: 15px; transition: background .2s,color .2s,border-color .2s; }
+.duitjom-loan .preset-btn:hover { border-color: var(--primary-mid); color: var(--primary-mid); }
+.duitjom-loan .preset-btn.active { background: var(--primary-dark); border-color: var(--primary-dark); color: #fff; }
+.duitjom-loan .form-section { margin-bottom: 32px; }
+.duitjom-loan .form-label { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 14px; }
+.duitjom-loan .icon-phone { color: var(--green); }
+.duitjom-loan .phone-input-wrap { display: flex; align-items: center; background: #fff; border: 2px solid #d1d5db; border-radius: 16px; padding: 4px 12px 4px 18px; margin-bottom: 16px; transition: border-color .2s; }
+.duitjom-loan .phone-input-wrap:focus-within { border-color: var(--primary-mid); }
+.duitjom-loan .phone-prefix { font-weight: 800; color: var(--text-main); font-size: 18px; margin-right: 12px; user-select: none; }
+.duitjom-loan .phone-input { flex: 1; min-width: 0; width: 100%; border: none; border-radius: 4px; font-size: 18px; font-weight: 600; color: var(--text-main); padding: 14px 0; background: transparent; }
+.duitjom-loan .phone-input::placeholder { color: #9ca3af; font-weight: 400; }
+.duitjom-loan .phone-error { color: #b91c1c; font-size: 14px; margin: -4px 0 16px; }
+.duitjom-loan .apply-btn { position: relative; overflow: hidden; width: 100%; padding: 18px; border: none; border-radius: 16px; background: var(--green); color: #fff; font-size: 18px; font-weight: 800; letter-spacing: .5px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 8px 20px rgba(92,184,92,.35); transition: background .2s,transform .1s; }
+.duitjom-loan .apply-btn:hover { background: var(--green-dark); }
+.duitjom-loan .apply-btn:active { transform: scale(.98); }
+.duitjom-loan .apply-btn::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent); transform: skewX(-25deg); animation: loan-button-shine 2s infinite; pointer-events: none; }
+@keyframes loan-button-shine { 0%,60% { left: -100%; } 100% { left: 200%; } }
+.duitjom-loan .security-note { display: flex; align-items: center; justify-content: center; gap: 8px; background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 14px; padding: 14px; text-align: center; color: #2e7d32; font-size: 14px; font-weight: 600; }
+.duitjom-loan .security-note svg { color: var(--green); }
+.duitjom-loan .process-section { max-width: 680px; margin: 0 auto; text-align: center; padding-top: 24px; }
+.duitjom-loan .process-badge { display: inline-block; background: linear-gradient(90deg,var(--primary-dark),var(--primary-light)); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 1px; padding: 8px 22px; border-radius: 999px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(26,58,92,.18); }
+.duitjom-loan .section-title { font-size: 26px; font-weight: 900; color: var(--primary-dark); margin-bottom: 14px; line-height: 1.25; }
+.duitjom-loan .section-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 36px; line-height: 1.6; }
+.duitjom-loan .steps-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 48px; margin-bottom: 48px; }
+.duitjom-loan .step { min-width: 0; max-width: 448px; margin: 0 auto; text-align: center; }
+.duitjom-loan .step-number { width: 72px; height: 72px; border-radius: 50%; background: var(--primary-dark); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; margin: 0 auto 20px; box-shadow: 0 6px 16px rgba(26,58,92,.25); border: 4px solid #c8d9e9; }
+.duitjom-loan .step-illustration { width: 160px; height: 160px; border-radius: 28px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+.duitjom-loan .step-1 .step-illustration { background: #d6e8f7; }
+.duitjom-loan .step-2 .step-illustration { background: #f0d9f0; }
+.duitjom-loan .step-3 .step-illustration { background: #d9f0dc; }
+.duitjom-loan .step-badge { display: inline-block; background: #d6e8f7; color: var(--primary-dark); font-size: 13px; font-weight: 800; letter-spacing: 1px; padding: 8px 22px; border-radius: 999px; margin-bottom: 18px; }
+.duitjom-loan .step-title { font-size: 22px; font-weight: 900; color: var(--primary-dark); margin-bottom: 10px; }
+.duitjom-loan .step-desc { font-size: 15px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
+.duitjom-loan .step-features { list-style: none; text-align: left; max-width: 320px; margin: 0 auto; }
+.duitjom-loan .step-features li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--text-main); margin-bottom: 14px; }
+.duitjom-loan .step-features .icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; color: var(--primary-dark); background: #e8f1f8; }
+.duitjom-loan .step-3 .step-features .icon { color: var(--green); background: #e8f5e9; }
+.duitjom-loan .stat-boxes { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto 22px; }
+.duitjom-loan .stat-box { background: #e2e8f0; border-radius: 16px; padding: 18px; text-align: center; }
+.duitjom-loan .stat-value { font-size: 28px; font-weight: 900; color: var(--primary-dark); }
+.duitjom-loan .stat-label { font-size: 12px; font-weight: 700; letter-spacing: .8px; color: var(--text-muted); }
+.duitjom-loan .features-card { display: grid; grid-template-columns: minmax(0,1fr); max-width: 448px; margin: 0 auto; background: var(--card-bg); border-radius: var(--radius); padding: 32px 24px; box-shadow: var(--shadow); text-align: center; }
+.duitjom-loan .feature { padding: 28px 0; }
+.duitjom-loan .feature:first-child { padding-top: 0; }
+.duitjom-loan .feature:last-child { padding-bottom: 0; }
+.duitjom-loan .feature + .feature { border-top: 1px solid #e2e8f0; }
+.duitjom-loan .feature-icon { width: 64px; height: 64px; border-radius: 18px; background: #e8f1f8; color: var(--primary-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+.duitjom-loan .feature-icon.green { background: #e8f5e9; color: var(--green); }
+.duitjom-loan .feature-title { font-size: 20px; font-weight: 900; color: var(--primary-dark); margin-bottom: 6px; }
+.duitjom-loan .feature-desc { font-size: 15px; color: var(--text-muted); }
+@media (min-width:640px) { .duitjom-loan .loan-container { padding: 40px 24px 64px; } }
+@media (min-width:1024px) {
+  .duitjom-loan .steps-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 32px; }
+  .duitjom-loan .features-card { grid-template-columns: repeat(3,minmax(0,1fr)); max-width: none; }
+  .duitjom-loan .feature { padding: 0 24px; }
+  .duitjom-loan .feature + .feature { border-top: 0; border-left: 1px solid #e2e8f0; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .duitjom-loan *, .duitjom-loan *::after { animation: none !important; transition: none !important; }
+}
