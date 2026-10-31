@@ -1,0 +1,84 @@
+name: Gemini Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Google GenAI SDK & PyGithub
+        run: |
+          pip install google-genai PyGithub
+
+      - name: Run Gemini Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          python - << 'EOF'
+          import os
+          from github import Github
+          from google import genai
+
+          # Inisialisasi API
+          api_key = os.environ.get("GEMINI_API_KEY")
+          gh_token = os.environ.get("GITHUB_TOKEN")
+          repo_name = os.environ.get("REPO_NAME")
+          pr_number = int(os.environ.get("PR_NUMBER"))
+
+          client = genai.Client(api_key=api_key)
+          gh = Github(gh_token)
+          repo = gh.get_repo(repo_name)
+          pr = repo.get_pull(pr_number)
+
+          # Kumpul senarai fail dan kod yang diubah (diff)
+          files_diff = []
+          for file in pr.get_files():
+              patch = file.patch if file.patch else "Fail binari atau tiada diff"
+              files_diff.append(f"Fail: {file.filename}\nPerubahan:\n{patch}\n")
+
+          content_to_review = "\n".join(files_diff)
+
+          if not content_to_review.strip():
+              print("Tiada perubahan kod untuk disemak.")
+              exit(0)
+
+          prompt = f"""
+          Anda adalah pakar penilai kod (code reviewer) berpengalaman.
+          Sila semak perubahan kod (PR diff) berikut:
+          
+          {content_to_review[:15000]}
+          
+          Sila berikan maklum balas ringkas dan padat:
+          1. Rumusan perubahan.
+          2. Pepijat (bugs) atau risiko sekuriti yang dikesan (jika ada).
+          3. Cadangan penambahbaikan kod (best practices).
+          Gunakan format Markdown yang kemas.
+          """
+
+          response = client.models.generate_content(
+              model="gemini-2.5-flash",
+              contents=prompt
+          )
+
+          # Hantar komen terus ke Pull Request di GitHub
+          comment_body = f"### 🤖 Gemini Code Review\n\n{response.text}"
+          pr.create_issue_comment(comment_body)
+          print("Ulasan kod berjaya dihantar ke PR!")
+          EOF
