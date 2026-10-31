@@ -48,6 +48,11 @@
     <link rel="stylesheet" href="css/portal-refresh.css?v=20261029">
     <link rel="stylesheet" href="auth/email-otp.css?v=20261012">
 
+    <link rel="stylesheet" href="css/loan-calculator.css?v=20261031">
+    <script src="js/loan-calculator.js?v=20261031" defer></script>
+    <link rel="stylesheet" href="css/footer.css?v=20261031">
+    <script src="js/footer.js?v=20261031" defer></script>
+
     <!-- CSS KHAS UNTUK FAQ (+ & -) -->
     <style>
         details > summary { list-style: none; }
@@ -244,6 +249,82 @@
          MAIN PAGE — CTA & SOALAN LAZIM (FAQ)
          ========================================================= -->
     <div id="mainPage" class="flex flex-col min-h-screen justify-between">
+        <!-- Public loan information: available below login without signing in. -->
+        <section id="loanCalculator" class="duitjom-loan" lang="ms" aria-labelledby="loanCalculatorTitle">
+          <div class="loan-container">
+            <div class="calculator-panel">
+              <div class="calc-header">
+                <div class="calc-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 10h1m6 0h1M8 14h1m6 0h1M8 18h1m6 0h1"/></svg></div>
+                <div class="calc-title"><h2 id="loanCalculatorTitle">Kalkulator Pinjaman</h2><p>Dapatkan pengiraan segera</p></div>
+              </div>
+              <div class="amount-card">
+                <div class="amount-label">JUMLAH PINJAMAN</div>
+                <output class="amount-value" id="loanAmountDisplay" for="loanAmountSlider">RM 1,000</output>
+                <div class="amount-range" id="loanAmountRange">RM 300 - RM 5,000</div>
+              </div>
+              <div class="slider-wrap"><input type="range" id="loanAmountSlider" min="300" max="5000" step="100" value="1000" aria-label="Jumlah pinjaman" aria-describedby="loanAmountRange" aria-valuetext="RM 1,000"></div>
+              <div class="preset-buttons" role="group" aria-label="Pilih jumlah pinjaman">
+                <button type="button" class="preset-btn" data-loan-amount="300" aria-pressed="false" aria-label="RM 300">300</button>
+                <button type="button" class="preset-btn" data-loan-amount="500" aria-pressed="false" aria-label="RM 500">500</button>
+                <button type="button" class="preset-btn active" data-loan-amount="1000" aria-pressed="true" aria-label="RM 1,000">1K</button>
+                <button type="button" class="preset-btn" data-loan-amount="2000" aria-pressed="false" aria-label="RM 2,000">2K</button>
+                <button type="button" class="preset-btn" data-loan-amount="3000" aria-pressed="false" aria-label="RM 3,000">3K</button>
+                <button type="button" class="preset-btn" data-loan-amount="5000" aria-pressed="false" aria-label="RM 5,000">5K</button>
+              </div>
+              <form id="loanApplicationForm" class="form-section" novalidate>
+                <label class="form-label" for="loanPhoneInput"><span class="icon-phone"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m7 3 3 5-3 2a15 15 0 0 0 7 7l2-3 5 3v3a2 2 0 0 1-2 2C9 21 3 15 2 5a2 2 0 0 1 2-2Z"/></svg></span>Mulakan Permohonan Anda</label>
+                <div class="phone-input-wrap"><span class="phone-prefix" id="loanPhonePrefix">+60</span><input type="tel" id="loanPhoneInput" class="phone-input" placeholder="123456789" maxlength="12" inputmode="numeric" autocomplete="tel-national" required aria-describedby="loanPhonePrefix loanPhoneError"></div>
+                <p id="loanPhoneError" class="phone-error" role="alert" hidden></p>
+                <button type="submit" class="apply-btn">MOHON SEKARANG <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+              </form>
+              <div class="security-note"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6Z"/><path d="m8 12 3 3 5-6"/></svg><span>Data anda dilindungi dengan keselamatan gred bank</span></div>
+            </div>
+            <div class="process-section">
+              <div class="process-badge">PROSES MUDAH</div>
+              <h2 class="section-title">Cara Memohon Pinjaman Anda</h2>
+              <p class="section-desc">Dapatkan pinjaman anda diluluskan dalam 3 langkah mudah sahaja. Proses yang diperkemas kami memastikan anda mendapat dana yang diperlukan dengan cepat dan cekap.</p>
+            </div>
+            <div class="steps-grid">
+              <article class="step step-1" aria-labelledby="loanStep1Title">
+                <div class="step-number" aria-hidden="true">01</div>
+                <div class="step-illustration"><svg width="70" height="80" viewBox="0 0 70 80" fill="none" aria-hidden="true"><rect x="8" y="4" width="54" height="72" rx="6" fill="#fff" stroke="#1a3a5c" stroke-width="3"/><path d="M18 22h34M18 34h34" stroke="#1a3a5c" stroke-width="3" stroke-linecap="round"/><rect x="18" y="46" width="20" height="8" rx="2" fill="#1a3a5c"/><circle cx="52" cy="58" r="10" fill="#f5b041"/><path d="m48 58 3 3 6-6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="28" cy="64" r="8" fill="#5cb85c"/><path d="m24 64 3 3 6-6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="step-badge">LANGKAH 1</div>
+                <h3 class="step-title" id="loanStep1Title">Mohon Dalam Talian Dalam Minit</h3>
+                <p class="step-desc">Isi borang permohonan mudah kami dengan maklumat asas anda. Tiada kertas kerja yang rumit diperlukan.</p>
+                <ul class="step-features">
+                  <li><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 18h4"/></svg></span>Aplikasi mesra mudah alih</li>
+                  <li><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6Z"/><path d="m8 12 3 3 5-6"/></svg></span>Penyulitan data selamat</li>
+                  <li><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Hanya mengambil masa 5 minit</li>
+                </ul>
+              </article>
+              <article class="step step-2" aria-labelledby="loanStep2Title">
+                <div class="step-number" aria-hidden="true">02</div>
+                <div class="step-illustration"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true"><rect x="10" y="14" width="60" height="52" rx="6" fill="#fff" stroke="#9c27b0" stroke-width="3"/><g fill="#9c27b0"><circle cx="24" cy="46" r="4"/><circle cx="40" cy="36" r="4"/><circle cx="56" cy="30" r="4"/></g><path d="m24 46 16-10 16-6M16 58h48" stroke="#9c27b0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="66" cy="18" r="8" fill="#f5b041"/><path d="M64 18h4m-2-2v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="62" cy="52" r="8" fill="#5cb85c"/><path d="m59 52 2.5 3 4.5-7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="step-badge">LANGKAH 2</div>
+                <h3 class="step-title" id="loanStep2Title">Semakan Bertenaga AI Segera</h3>
+                <p class="step-desc">Sistem AI canggih kami menganalisis permohonan anda dengan serta-merta dan memberikan keputusan kelulusan segera.</p>
+                <div class="stat-boxes"><div class="stat-box"><div class="stat-value">5 min</div><div class="stat-label">MASA SEMAKAN PURATA</div></div><div class="stat-box"><div class="stat-value">95%</div><div class="stat-label">KADAR KELULUSAN</div></div></div>
+              </article>
+              <article class="step step-3" aria-labelledby="loanStep3Title">
+                <div class="step-number" aria-hidden="true">03</div>
+                <div class="step-illustration"><svg width="90" height="80" viewBox="0 0 90 80" fill="none" aria-hidden="true"><rect x="8" y="18" width="34" height="48" rx="5" fill="#fff" stroke="#5cb85c" stroke-width="3"/><circle cx="25" cy="34" r="6" fill="#e8f5e9" stroke="#5cb85c" stroke-width="2"/><path d="M48 38s10-8 18 0m-4-4 4 4-4 4" stroke="#f5b041" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><text x="16" y="58" font-family="Arial" font-weight="bold" font-size="10" fill="#5cb85c">RM</text><rect x="50" y="22" width="32" height="42" rx="5" fill="#fff" stroke="#1a3a5c" stroke-width="3"/><circle cx="66" cy="36" r="5" fill="#e8f1f8" stroke="#1a3a5c" stroke-width="2"/><text x="58" y="52" font-family="Arial" font-weight="bold" font-size="10" fill="#1a3a5c">RM</text><circle cx="78" cy="22" r="8" fill="#5cb85c"/><path d="m75 22 2 3 5-6" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="step-badge">LANGKAH 3</div>
+                <h3 class="step-title" id="loanStep3Title">Terima Dana Segera</h3>
+                <p class="step-desc">Sebaik sahaja diluluskan, jumlah pinjaman anda dipindahkan terus ke akaun bank anda dalam beberapa minit.</p>
+                <ul class="step-features">
+                  <li><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg></span>Pemindahan hari yang sama</li>
+                  <li><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 9 9-6 9 6H3Zm2 3v5m5-5v5m4-5v5m5-5v5M3 21h18M3 18h18"/></svg></span>Terus ke akaun bank</li>
+                  <li><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M9 21h6"/></svg></span>Pengesahan SMS &amp; e-mel</li>
+                </ul>
+              </article>
+            </div>
+            <div class="features-card">
+              <div class="feature"><div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 class="feature-title">Pantas Kilat</h3><p class="feature-desc">Proses lengkap dalam masa kurang dari 10 minit</p></div>
+              <div class="feature"><div class="feature-icon green"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/></svg></div><h3 class="feature-title">100% Selamat</h3><p class="feature-desc">Keselamatan gred bank untuk semua transaksi</p></div>
+              <div class="feature"><div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1M20 18v1a3 3 0 0 1-3 3h-4"/><rect x="2" y="12" width="5" height="7" rx="2"/><rect x="17" y="12" width="5" height="7" rx="2"/></svg></div><h3 class="feature-title">Sokongan 24/7</h3><p class="feature-desc">Bantuan tersedia bila-bila masa anda memerlukannya</p></div>
+            </div>
+          </div>
+        </section>
         <main class="w-full max-w-md mx-auto px-4 py-8 flex-grow flex flex-col items-center">
 
             <!-- CTA SECTION (Warna Biru + Gray Gelap) -->
@@ -279,7 +360,7 @@
             </section>
 
             <!-- SOALAN LAZIM (FAQ) -->
-            <section class="w-full mb-12">
+            <section id="soalan-lazim" class="w-full mb-12">
                 <div class="text-center mb-6">
                     <h2 class="text-2xl font-bold text-white">Soalan Lazim</h2>
                 </div>
@@ -421,223 +502,27 @@
         <div id="features-container" aria-live="polite"></div>
 
         <!-- FOOTER LEGAL LINKS (Kekal sama) -->
-        <footer id="siteFooter" class="bg-[#0d0f14] text-slate-300 font-sans pt-12 pb-8 px-6 border-t border-neutral-800">
-           <div class="max-w-md mx-auto"> 
-              
-              <!-- 1. BAHAGIAN BRAND & DESKRIPSI -->
-              <div class="mb-10">
-                 <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                       <path d="M4 14c2-5 6-9 10-7s5 7 2 11c-2 3-7 4-10 1"/>
-                       <path d="M9 9l3 6"/>
-                    </svg>
-                    <span class="text-white font-semibold tracking-wide text-sm">duitjom</span>
-                 </div>
-                 <h2 class="text-3xl font-bold text-white mb-2">DuitJom</h2>
-                 <p class="text-slate-400 text-sm mb-6">Rakan Kewangan Anda Yang Dipercayai</p>
-                 <p class="text-[#9ca3af] text-[15px] leading-relaxed mb-6">
-                    Platform pinjaman dalam talian terkemuka Malaysia yang menyediakan perkhidmatan pinjaman yang pantas, selamat, dan telus. Dapatkan kelulusan dalam minit dengan sistem bertenaga AI kami.
-                 </p>
-                 <div class="space-y-3 mb-8">
-                    <div class="flex items-center gap-3">
-                       <div class="bg-purple-600/20 p-1.5 rounded-md text-purple-500">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" /></svg>
-                       </div>
-                       <span class="text-[15px] text-[#d1d5db]">Berlesen oleh Bank Negara Malaysia</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                       <div class="bg-purple-600/20 p-1.5 rounded-md text-purple-500">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" /></svg>
-                       </div>
-                       <span class="text-[15px] text-[#d1d5db]">Penyulitan SSL 256-bit</span>
-                    </div>
-                 </div>
-                 <h3 class="text-white text-base font-semibold mb-4">Ikuti Kami:</h3>
-                 <ul class="flex gap-3">
-                    <li>
-                       <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Facebook">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 25" fill="#ffffff" class="w-5 h-5"><path d="M12 2.54c5.523 0 10 4.476 10 10c0 4.99-3.657 9.127-8.437 9.878V15.43h2.33l.443-2.89l-2.773-.001v-1.922c.015-.774.411-1.515 1.63-1.515h1.26V6.64s-1.144-.196-2.238-.196c-2.249 0-3.73 1.342-3.776 3.774l-.002.117v2.203H7.899v2.89h2.54v6.988C5.657 21.667 2 17.53 2 12.54c0-5.523 4.477-10 10-10"/></svg>
-                       </a>
-                    </li>
-                    <li>
-                       <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Instagram">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-300 fill-current" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><path fill="currentColor" d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5"/></svg>
-                       </a>
-                    </li>
-                    <li>
-                       <a href="mailto:support@duitjom.my" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition group" aria-label="Email">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 text-slate-300 group-hover:text-white transition-colors">
-                             <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M15.75 18.495A7.5 7.5 0 1 1 19.5 12"/>
-                                <path d="M19.5 13.75a2.25 2.25 0 0 1-4.5 0"/>
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.5 12v1.75"/>
-                                <path d="M15 9v5"/>
-                             </g>
-                          </svg>
-                       </a>
-                    </li>
-                    <li>
-                       <a href="#" class="flex items-center justify-center bg-[#1a1c23] w-11 h-11 rounded-xl hover:bg-[#2a2d37] transition" aria-label="Website">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffffff" class="w-5 h-5"><path d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7z"/></svg>
-                       </a>
-                    </li>
-                 </ul>
-              </div>
-
-              <!-- 2. PAUTAN PANTAS -->
-              <div class="mb-10">
-                 <div class="flex items-center gap-2 mb-4 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                    <h3 class="text-xl font-bold">Pautan Pantas</h3>
-                 </div>
-                 <ul class="space-y-4 pl-1 text-[15px] text-[#9ca3af]">
-                    <li><a href="#" class="hover:text-white transition">Mohon Sekarang</a></li>
-                    <li><a href="#" class="hover:text-white transition">Pakej Kami</a></li>
-                    <li><a href="#" class="hover:text-white transition">Kalkulator Pinjaman</a></li>
-                    <li><a href="#" class="hover:text-white transition">Soalan Lazim</a></li>
-                 </ul>
-              </div>
-
-              <!-- 3. UNDANG-UNDANG -->
-              <div class="mb-10">
-                 <div class="flex items-center gap-2 mb-4 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
-                    <h3 class="text-xl font-bold">Undang-undang</h3>
-                 </div>
-                 <ul class="space-y-4 pl-1 text-[15px] text-[#9ca3af]">
-                    <li><a href="#" class="hover:text-white transition">Terma & Syarat</a></li>
-                    <li><a href="#" class="hover:text-white transition">Dasar Privasi</a></li>
-                 </ul>
-              </div>
-
-              <!-- 4. HUBUNGAN & SOKONGAN -->
-              <div class="mb-10">
-                 <div class="flex items-center gap-2 mb-4 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                    <h3 class="text-xl font-bold">Hubungan & Sokongan</h3>
-                 </div>
-                 <div class="space-y-4">
-                    <div class="flex items-center gap-3 cursor-pointer group" onclick="if(typeof LiveChatWidget !== 'undefined') { LiveChatWidget.call('maximize'); }">
-                       <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400 group-hover:bg-[#2a3c55] transition">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                       </div>
-                       <div>
-                          <p class="text-sm text-[#9ca3af] group-hover:text-slate-300 transition">Sembang Langsung</p>
-                          <p class="text-[15px] text-white">Tersedia 24/7</p>
-                       </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                       <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                       </div>
-                       <div>
-                          <p class="text-sm text-[#9ca3af]">Alamat</p>
-                          <p class="text-[15px] text-white">Kuala Lumpur, Malaysia</p>
-                       </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                       <div class="flex-shrink-0 flex items-center justify-center bg-[#1d283a] w-12 h-12 rounded-xl text-blue-400">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                       </div>
-                       <div>
-                          <p class="text-sm text-[#9ca3af]">E-mel Sokongan</p>
-                          <a href="mailto:support@duitjom.my" class="text-[15px] text-white hover:text-blue-400 transition">support@duitjom.my</a>
-                       </div>
-                    </div>
-                 </div>
-                 <div class="mt-6">
-                    <h4 class="text-white text-base font-semibold mb-3">Waktu Beroperasi</h4>
-                    <div class="flex justify-between items-center text-[14px] text-[#9ca3af] mb-2">
-                       <span>Isnin - Jumaat</span>
-                       <span class="text-white">9:00 PG - 6:00 PTG</span>
-                    </div>
-                    <div class="flex justify-between items-center text-[14px] text-[#9ca3af]">
-                       <span>Hujung Minggu</span>
-                       <span class="text-white">Sokongan Dalam Talian Sahaja</span>
-                    </div>
-                 </div>
-              </div>
-
-              <!-- PEMBAHAGI -->
-              <hr class="border-[#252830] my-8">
-
-              <!-- 5. KAD KESELAMATAN -->
-              <div class="grid gap-3 mb-10">
-                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                    </div>
-                    <div>
-                       <h4 class="text-white font-semibold text-[15px]">Keselamatan Gred Bank</h4>
-                       <p class="text-[#9ca3af] text-sm">Penyulitan SSL 256-bit</p>
-                    </div>
-                 </div>
-                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                    </div>
-                    <div>
-                       <h4 class="text-white font-semibold text-[15px]">Pemberi Pinjam Berlesen</h4>
-                       <p class="text-[#9ca3af] text-sm">Dikawal selia oleh Bank Negara</p>
-                    </div>
-                 </div>
-                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18v-6a9 9 0 0 1 18 0v6" /><path stroke-linecap="round" stroke-linejoin="round" d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>
-                    </div>
-                    <div>
-                       <h4 class="text-white font-semibold text-[15px]">Sokongan 24/7</h4>
-                       <p class="text-[#9ca3af] text-sm">Sentiasa ada untuk membantu</p>
-                    </div>
-                 </div>
-                 <div class="bg-[#171921] rounded-2xl p-4 flex items-center gap-4">
-                    <div class="flex-shrink-0 flex items-center justify-center bg-blue-500 w-12 h-12 rounded-xl text-white">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    </div>
-                    <div>
-                       <h4 class="text-white font-semibold text-[15px]">50,000+ Pelanggan</h4>
-                       <p class="text-[#9ca3af] text-sm">Dipercayai oleh Rakyat Malaysia</p>
-                    </div>
-                 </div>
-              </div>
-
-              <!-- PEMBAHAGI -->
-              <hr class="border-[#252830] my-8">
-
-              <!-- 6. COPYRIGHT & BADGES BAWAH -->
-              <div class="text-center">
-                 <p class="text-white text-[15px] mb-3">© 2025 DuitJom. Hak cipta terpelihara.</p>
-                 <p class="text-[#9ca3af] text-[13px] leading-relaxed mb-6 px-2">
-                    DuitJom adalah tanda dagangan berdaftar. Berlesen oleh Bank Negara Malaysia di bawah Akta Perniagaan Perkhidmatan Wang 2011.
-                 </p>
-                 
-                 <!-- Green Pills -->
-                 <div class="flex justify-center flex-wrap gap-2.5">
-                    <span class="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                       SSL
-                    </span>
-                    <span class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider shadow-[0_0_10px_rgba(34,197,94,0.15)]">
-                       <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                       </span>
-                       BNM
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                       SELAMAT
-                    </span>
-                 </div>
-                 <div class="mt-6 flex justify-center">
-                     <a href="https://sonarcloud.io/summary/new_code?id=DuitJom_payment.ipay88.com" target="_blank" rel="noopener noreferrer">
-                         <img src="https://sonarcloud.io/images/project_badges/sonarcloud-light.svg" alt="SonarQube Cloud">
-                     </a>
-                 </div>
-              </div>
-           </div>
-        </footer>
+<footer id="siteFooter" class="duitjom-footer" lang="ms">
+  <div class="footer-main">
+    <div class="brand">
+      <div class="brand-row">
+        <svg class="brand-logo" width="44" height="44" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 4 42 14V28C42 38 34 44 24 46 14 44 6 38 6 28V14Z" fill="#fff"/><path d="m24 12 9 5v9c0 5-4 8.5-9 10-5-1.5-9-5-9-10v-9Z" fill="#1e2228"/><path d="m24 18 5 3v5c0 3-2 5-5 6-3-1-5-3-5-6v-5Z" fill="#fff"/></svg>
+        <div><div class="brand-name">DuitJom</div><div class="brand-tagline">Rakan Kewangan Anda Yang Dipercayai</div></div>
+      </div>
+      <p class="brand-desc">Platform pinjaman dalam talian terkemuka Malaysia yang menyediakan perkhidmatan pinjaman yang pantas, selamat, dan telus. Dapatkan kelulusan dalam minit dengan sistem bertenaga AI kami.</p>
+      <ul class="trust-list">
+<li><span class="icon-shield"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 20 6v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6Z"/><path d="m9 12 2 2 4-4"/></svg></span>Berlesen oleh Bank Negara Malaysia</li><li><span class="icon-lock"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="12" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Penyulitan SSL 256-bit</li></ul><div class="social-label">Ikuti Kami:</div><div class="social-icons"><a href="#" aria-label="Facebook" title="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 22v-9h3l.5-4H14V7c0-1 .5-2 2-2h2V2h-3c-3 0-5 2-5 5v2H7v4h3v9"/></svg></a><a href="#" aria-label="Instagram" title="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a><a href="mailto:support@duitjom.my" aria-label="E-mel" title="E-mel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg></a><a href="#" aria-label="Menara KWSP" title="Menara KWSP"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/></svg></a></div></div>
+<nav aria-label="Pautan Pantas"><h3 class="footer-heading"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>Pautan Pantas</h3><ul class="footer-links"><li><a href="?intent=register" class="active">Mohon Sekarang<span class="arrow" aria-hidden="true">→</span></a></li><li><a href="#">Pakej Kami<span class="arrow" aria-hidden="true">→</span></a></li><li><a href="#loanCalculator">Kalkulator Pinjaman<span class="arrow" aria-hidden="true">→</span></a></li><li><a href="#soalan-lazim">Soalan Lazim<span class="arrow" aria-hidden="true">→</span></a></li></ul></nav>
+<nav aria-label="Undang-undang"><h3 class="footer-heading"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M4 7l16-3M6 7l-2 6a3.5 3.5 0 0 0 4 0L6 7zM18 5l-2 6a3.5 3.5 0 0 0 4 0l-2-6zM8 21h8"/></svg>Undang-undang</h3><ul class="footer-links"><li><a href="page/term-conditional.html">Terma &amp; Syarat<span class="arrow" aria-hidden="true">→</span></a></li><li><a href="page/privacy-policy.html">Dasar Privasi<span class="arrow" aria-hidden="true">→</span></a></li></ul></nav><div><h3 class="footer-heading"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 16 0M3 14a2 2 0 0 1 2-2h1v5H5a2 2 0 0 1-2-2v-1zM21 14a2 2 0 0 0-2-2h-1v5h1a2 2 0 0 0 2-2v-1zM19 17v1a3 3 0 0 1-3 3h-3"/></svg>Hubungan &amp; Sokongan</h3><button type="button" class="contact-item contact-chat" data-footer-chat><span class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 16 0zM8 11h8M8 14h5"/></svg></span><span><span class="label">Sembang Langsung</span><span class="value">Tersedia 24/7</span></span></button><div class="contact-item"><div class="contact-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></div><div><div class="label">Alamat</div><div class="value normal">Kuala Lumpur, Malaysia</div></div></div><div class="hours"><div class="hours-title">Waktu Beroperasi</div><div class="hours-row"><span class="day">Isnin - Jumaat</span><span class="time">9:00 PG - 6:00 PTG</span></div><div class="hours-row"><span class="day">Hujung Minggu</span><span class="time online">Sokongan Dalam Talian Sahaja</span></div></div></div></div>
+<div class="trust-cards"><div class="trust-card"><div class="trust-card-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 20 6v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6Z"/><path d="m9 12 2 2 4-4"/></svg></div><div><h4>Keselamatan Gred Bank</h4><p>Penyulitan SSL 256-bit</p></div></div>
+<div class="trust-card"><div class="trust-card-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6M4 9h16M5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18M3 17h18"/></svg></div><div><h4>Pemberi Pinjam Berlesen</h4><p>Dikawal selia oleh Bank Negara</p></div></div>
+<div class="trust-card"><div class="trust-card-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 16 0M3 14a2 2 0 0 1 2-2h1v5H5a2 2 0 0 1-2-2v-1zM21 14a2 2 0 0 0-2-2h-1v5h1a2 2 0 0 0 2-2v-1zM19 17v1a3 3 0 0 1-3 3h-3"/></svg></div><div><h4>Sokongan 24/7</h4><p>Sentiasa ada untuk membantu</p></div></div>
+<div class="trust-card"><div class="trust-card-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c2.9.4 5 2.8 5 5.8"/></svg></div><div><h4>50,000+ Pelanggan</h4><p>Dipercayai oleh Rakyat Malaysia</p></div></div>
+</div><div class="footer-bottom"><p class="copyright">© <span data-footer-year>2026</span> DuitJom. Hak cipta terpelihara.</p><p class="disclaimer">DuitJom adalah tanda dagangan berdaftar. Berlesen oleh Bank Negara Malaysia di bawah Akta Perniagaan Perkhidmatan Wang 2011.</p><div class="bottom-badges"><span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="12" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>SSL</span><span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12.5 5.5 5.5L20 7"/></svg>BNM</span><span class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 20 6v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6Z"/><path d="m9 12 2 2 4-4"/></svg>SELAMAT</span></div></div>
+<button type="button" class="chat-fab" data-footer-chat aria-label="Sembang Langsung" title="Sembang Langsung — Tersedia 24/7"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 16 0zM8 11h8M8 14h5"/></svg></button>
+<div class="footer-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+<button type="button" class="back-to-top" aria-label="Kembali ke atas" title="Kembali ke atas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button>
+</footer>
     </div> <!-- Penutup kotak utama -->
     <!-- =========================================================
          END MAIN PAGE

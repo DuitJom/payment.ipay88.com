@@ -90,12 +90,6 @@ body.login-page > header #languageToggle {
     color: #e5e7eb !important;
 }
 
-body.login-page #siteFooter {
-    background: #05070b !important;
-    color: #d1d5db !important;
-    border-top: 1px solid #252b35 !important;
-}
-
 body.login-page #features-container {
     background-color: #080b11;
 }
