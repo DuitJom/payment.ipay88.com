@@ -66,3 +66,34 @@
 @media(max-width:1024px) { .duitjom-footer .footer-main { grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px; } .duitjom-footer .trust-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:600px) { .duitjom-footer .footer-main { grid-template-columns:minmax(0,1fr); padding:48px 20px 32px; } .duitjom-footer .trust-cards { grid-template-columns:minmax(0,1fr); } .duitjom-footer .brand-row { flex-direction:column; align-items:flex-start; } }
 @media(prefers-reduced-motion:reduce) { .duitjom-footer * { transition:none !important; } }
+
+
+/* ========================================
+   DUITJOM FOOTER NAVY BLUE
+======================================== */
+
+#siteFooter.duitjom-footer {
+    width: 100%;
+    max-width: 100%;
+    background: #003366 !important;
+    background-color: #003366 !important;
+    color: #ffffff;
+}
+
+#siteFooter .footer-main,
+#siteFooter .footer-bottom {
+    background-color: #003366;
+}
+
+#siteFooter .footer-heading,
+#siteFooter .brand-name {
+    color: #ffffff;
+}
+
+#siteFooter .footer-links a {
+    color: #e2e8f0;
+}
+
+#siteFooter .footer-links a:hover {
+    color: #7dd3fc;
+}
