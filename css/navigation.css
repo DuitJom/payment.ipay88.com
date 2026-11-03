@@ -1,0 +1,11 @@
+/* Shared white navigation across the portal and standalone pages. */
+body.login-page > header, header.navbar, header.page-nav, header.auth-brand {
+ background:#fff!important;background-image:none!important;color:#003366!important;border-bottom-color:#dceaf2!important;
+}
+body.login-page > header :is(button,span,i), header.navbar :is(a,button,.brand-name,.brand-text), header.page-nav :is(a,button){color:#003366!important}
+body.login-page > header #languageToggle{background:#f0f7ff!important;border-color:#c9deef!important;color:#003366!important}
+#languageMenu > div{background:#fff!important;color:#003366!important}
+#languageMenu > div > button{color:#003366!important;min-height:44px;cursor:pointer}
+#languageMenu > div > button:hover{background:#eaf6ff!important}
+#sidebarToggleButton{color:#003366!important;min-width:44px;min-height:44px;display:grid;place-items:center}
+.sidebar-nav a{text-decoration:none}

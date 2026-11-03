@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="features.css">
     <link rel="stylesheet" href="auth/login.css?v=20261012">
-    <link rel="stylesheet" href="css/welcome-popup.css?v=20261012">
+    <link rel="stylesheet" href="css/welcome-popup.css?v=20261103">
     <link rel="stylesheet" href="auth/auth-forms.css">
     <link rel="stylesheet" href="css/portal-refresh.css?v=20261029">
     <link rel="stylesheet" href="auth/email-otp.css?v=20261012">
@@ -80,6 +80,7 @@
     <!-- Page transition / loading overlay -->
     <script src="js/loading-screen.js"></script>
 
+    <link rel="stylesheet" href="/css/navigation.css?v=20261103">
 </head>
 
 <!-- TUKAR WARNA BACKGROUND KEPADA BIRU GELAP (Gambar 3) -->
@@ -121,44 +122,30 @@
         </div>
     </header>
 
-    <!-- DuitJom welcome popup (Kekal sama) -->
-    <div id="welcomePopup" class="welcome-overlay" aria-hidden="true">
-        <section class="welcome-popup" role="dialog" aria-modal="true"
-            aria-labelledby="welcomePopupTitle" aria-describedby="welcomePopupMessage"
-            tabindex="-1" lang="ms">
-            <div class="welcome-topbar">
-                <span class="welcome-brand">Duit<span>jom</span></span>
-                <button id="welcomePopupCloseX" class="welcome-close-x" type="button"
-                    aria-label="Tutup popup" title="Tutup popup">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                        <path d="m6 6 12 12M18 6 6 18"/>
-                    </svg>
-                </button>
-            </div>
-            <h2 id="welcomePopupTitle" class="welcome-sr-only">Notis penyelenggaraan DuitJom</h2>
-            <p id="welcomePopupMessage" class="welcome-sr-only">Laman web sedang dinaik taraf. Hubungi kami melalui email atau WhatsApp. Popup ditutup secara automatik selepas 60 saat.</p>
-            <p id="welcomeCopyStatus" class="welcome-copy-status" role="status" aria-live="polite"></p>
-            <div class="welcome-content">
-                <div class="welcome-artwork">
-                    <img id="welcomePopupImage" class="welcome-poster" src="images/IMG_0189.png"
-                        width="1024" height="1536" alt="Notis: Laman web DuitJom sedang dalam penyelenggaraan. Terima kasih atas kesabaran dan sokongan anda."
-                        fetchpriority="high" decoding="async">
-                    <p class="welcome-image-fallback" hidden>Laman web DuitJom sedang dinaik taraf. Terima kasih atas kesabaran anda.</p>
-                    <a id="welcomePopupWhatsApp" class="welcome-hotspot welcome-whatsapp"
-                        href="https://wa.me/601168462807" target="_blank" rel="noopener noreferrer"
-                        aria-label="Hubungi WhatsApp agent 01168462807" title="Hubungi WhatsApp"><span class="welcome-sr-only">Hubungi WhatsApp</span></a>
-                    <button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-email" data-copy="support@duitjom.my" aria-label="Salin support@duitjom.my"><span class="welcome-sr-only">Salin support@duitjom.my</span></button>
-                    <button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-com" data-copy="www.duitjom.com" aria-label="Salin www.duitjom.com"><span class="welcome-sr-only">Salin www.duitjom.com</span></button>
-                    <button type="button" class="welcome-hotspot welcome-copy-target welcome-copy-my" data-copy="www.duitjom.my" aria-label="Salin www.duitjom.my"><span class="welcome-sr-only">Salin www.duitjom.my</span></button>
-                    <button id="welcomePopupClose" class="welcome-hotspot welcome-poster-close" type="button">Tutup 60s</button>
-                    <a id="welcomePopupSupport" class="welcome-hotspot welcome-poster-email"
-                        href="mailto:support@duitjom.my?subject=Hi%20PM-PerlukanBantuan&amp;body=Hi%20PM-PerlukanBantuan" aria-label="Hubungi Kami melalui email support@duitjom.my"
-                        title="Hubungi Kami"><span class="welcome-sr-only">Hubungi Kami</span></a>
-                </div>
-            </div>
-        </section>
+    <!-- Launch welcome carousel -->
+    <div id="welcomePopup" class="welcome-overlay" aria-hidden="true" data-slide="0">
+      <section class="welcome-popup" role="dialog" aria-modal="true" aria-labelledby="welcomePopupTitle" tabindex="-1" lang="ms">
+        <h2 id="welcomePopupTitle" class="welcome-sr-only">Selamat datang ke DuitJom</h2>
+        <div class="welcome-close-row">
+          <button id="welcomePopupCloseX" type="button" class="welcome-close-x" aria-label="Tutup popup selepas 5 saat" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <div class="welcome-carousel" aria-roledescription="karusel" aria-label="Selamat datang dan panduan keselamatan">
+          <div class="welcome-track">
+            <div data-welcome-slide aria-label="1 daripada 2" aria-hidden="false"><img src="/images/IMG_0633.jpeg" alt="Selamat datang ke laman web DuitJom" width="1254" height="1254" fetchpriority="high" draggable="false"><p class="welcome-image-fallback" hidden>Selamat datang ke DuitJom. Layari www.duitjom.my.</p></div>
+            <div data-welcome-slide aria-label="2 daripada 2" aria-hidden="true"><img src="/images/EEE45CF7-97D7-4767-ACF3-930B174CD5A7.png" alt="Panduan keselamatan pelanggan DuitJom" width="1254" height="1254" draggable="false"><p class="welcome-image-fallback" hidden>Berurusan melalui saluran rasmi DuitJom. Hubungi support@duitjom.my untuk bantuan.</p></div>
+          </div>
+          <button type="button" class="welcome-arrow welcome-prev" aria-label="Gambar sebelumnya">&#8249;</button>
+          <button type="button" class="welcome-arrow welcome-next" aria-label="Gambar seterusnya">&#8250;</button>
+        </div>
+        <div class="welcome-dots" aria-label="Pilih gambar">
+          <button type="button" data-welcome-dot="0" aria-label="Gambar selamat datang" aria-current="true"></button>
+          <button type="button" data-welcome-dot="1" aria-label="Gambar keselamatan" aria-current="false"></button>
+        </div>
+        <label class="welcome-preference" for="welcomeDontShow"><input id="welcomeDontShow" type="checkbox"><span id="welcomeCountdown" role="status" aria-live="polite">5 s</span><span>Jangan tunjukkan lagi</span></label>
+      </section>
     </div>
-
 
     <div id="sidebar-container"></div>
     
@@ -623,8 +610,8 @@
     </div>
 
     <!-- Main Scripts -->
-    <script src="script.js"></script>
-    <script src="js/welcome-popup.js?v=20261012"></script>
+    <script src="script.js?v=20261103"></script>
+    <script src="js/welcome-popup.js?v=20261103"></script>
     <script type="module" src="auth/app-auth.js?v=20261012"></script>
 
     <!-- QR Code Library -->

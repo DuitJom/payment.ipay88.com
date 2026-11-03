@@ -1,119 +1,93 @@
-/* Welcome popup is independent of login, payment and navigation. */
+/* Launch carousel. Closing is a user action, unlocked after five elapsed seconds. */
 (function () {
-  "use strict";
-
-  function initWelcomePopup() {
-    const overlay = document.getElementById("welcomePopup");
-    const popup = overlay?.querySelector(".welcome-popup");
-    const closeButton = document.getElementById("welcomePopupClose");
-    const closeX = document.getElementById("welcomePopupCloseX");
-    if (!overlay || !popup || !closeButton || !closeX || overlay.dataset.initialized) return;
-    overlay.dataset.initialized = "true";
-
+  'use strict';
+  function init() {
+    const overlay = document.getElementById('welcomePopup');
+    if (!overlay || overlay.dataset.initialized) return;
+    overlay.dataset.initialized = 'true';
+    const storageKey = 'duitjom:welcome:launch-v1:hidden';
+    try { if (window.localStorage.getItem(storageKey) === '1') return; } catch {}
+    const popup = overlay.querySelector('.welcome-popup');
+    const close = document.getElementById('welcomePopupCloseX');
+    const checkbox = document.getElementById('welcomeDontShow');
+    const countdown = document.getElementById('welcomeCountdown');
+    const track = popup.querySelector('.welcome-track');
+    const slides = Array.from(popup.querySelectorAll('[data-welcome-slide]'));
+    const dots = Array.from(popup.querySelectorAll('[data-welcome-dot]'));
     const previousFocus = document.activeElement;
-    const deadline = Date.now() + 60000;
-    let interval = null;
-    let autoClose = null;
-    let isOpen = true;
-
-    function closePopup() {
-      if (!isOpen) return;
-      isOpen = false;
-      window.clearInterval(interval);
-      window.clearTimeout(autoClose);
-      overlay.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("welcome-popup-open");
-      if (previousFocus?.isConnected && typeof previousFocus.focus === "function") {
-        previousFocus.focus({ preventScroll: true });
+    let open = true, index = 0, startX = null, startY = null, autoSlide;
+    const deadline = Date.now() + 5000;
+    function show(next) {
+      index = (next + slides.length) % slides.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
+      overlay.dataset.slide = String(index);
+      slides.forEach((slide, i) => slide.setAttribute('aria-hidden', String(i !== index)));
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
+    }
+    function restart() {
+      window.clearInterval(autoSlide);
+      if (open) autoSlide = window.setInterval(() => { if (!document.hidden) show(index + 1); }, 1500);
+    }
+    function manual(next) { show(next); restart(); }
+    function tick() {
+      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      close.disabled = remaining > 0;
+      close.setAttribute('aria-label', remaining ? `Tutup popup selepas ${remaining} saat` : 'Tutup popup');
+      countdown.textContent = remaining ? `${remaining} s` : '';
+      countdown.hidden = remaining === 0;
+    }
+    function dismiss() {
+      if (!open || Date.now() < deadline) return;
+      open = false;
+      window.clearInterval(autoSlide); window.clearInterval(timer);
+      try { if (checkbox.checked) window.localStorage.setItem(storageKey, '1'); } catch {}
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('welcome-popup-open');
+      background.forEach(([el, inert]) => { el.inert = inert; });
+      previousFocus?.focus?.({preventScroll:true});
+    }
+    const background = Array.from(document.body.children).filter(el => el !== overlay && !['SCRIPT','STYLE','LINK'].includes(el.tagName)).map(el => [el, el.inert]);
+    background.forEach(([el]) => { el.inert = true; });
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('welcome-popup-open');
+    tick(); const timer = window.setInterval(tick, 100);
+    restart(); popup.focus({preventScroll:true});
+    close.addEventListener('click', dismiss);
+    // Backdrop taps deliberately never close the popup.
+    dots.forEach((dot, i) => dot.addEventListener('click', () => manual(i)));
+    popup.querySelector('.welcome-prev').addEventListener('click', () => manual(index - 1));
+    popup.querySelector('.welcome-next').addEventListener('click', () => manual(index + 1));
+    const carousel = popup.querySelector('.welcome-carousel');
+    carousel.addEventListener('pointerdown', e => { startX = e.clientX; startY = e.clientY; window.clearInterval(autoSlide); });
+    carousel.addEventListener('pointerup', e => {
+      if (startX !== null) {
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(index + (dx < 0 ? 1 : -1));
       }
-    }
-
-    function updateCountdown() {
-      if (!isOpen) return;
-      const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-      closeButton.textContent = `Tutup ${seconds}s`;
-      if (seconds === 0) closePopup();
-    }
-
-    overlay.setAttribute("aria-hidden", "false");
-    document.body.classList.add("welcome-popup-open");
-    updateCountdown();
-    interval = window.setInterval(updateCountdown, 1000);
-    autoClose = window.setTimeout(closePopup, 60000);
-    window.requestAnimationFrame(function () {
-      if (isOpen) closeX.focus({ preventScroll: true });
+      startX = null; restart();
     });
-
-    closeButton.addEventListener("click", closePopup);
-    closeX.addEventListener("click", closePopup);
-    overlay.addEventListener("click", function (event) {
-      if (event.target === overlay) closePopup();
-    });
-
-    document.addEventListener("keydown", function (event) {
-      if (!isOpen) return;
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closePopup();
-      } else if (event.key === "Tab") {
-        const controls = Array.from(popup.querySelectorAll('button:not([disabled]), a[href]'));
-        const first = controls[0];
-        const last = controls[controls.length - 1];
-        if (!first) return;
-        if (event.shiftKey && (document.activeElement === first || !popup.contains(document.activeElement))) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && (document.activeElement === last || !popup.contains(document.activeElement))) {
-          event.preventDefault();
-          first.focus();
-        }
+    carousel.addEventListener('pointercancel', () => { startX = null; restart(); });
+    carousel.addEventListener('pointerleave', () => { startX = null; restart(); });
+    document.addEventListener('visibilitychange', () => { if (open) { tick(); restart(); } });
+    document.addEventListener('keydown', e => {
+      if (!open) return;
+      if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); dismiss(); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); manual(index + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); manual(index - 1); }
+      if (e.key === 'Tab') {
+        const controls = Array.from(popup.querySelectorAll('button:not([disabled]), input'));
+        const first = controls[0], last = controls.at(-1);
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === popup)) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && (document.activeElement === last || document.activeElement === popup)) { e.preventDefault(); first.focus(); }
       }
+    }, true);
+    slides.forEach(slide => {
+      const img = slide.querySelector('img');
+      const fallback = () => { img.hidden = true; slide.querySelector('.welcome-image-fallback').hidden = false; };
+      img.addEventListener('error', fallback);
+      if (img.complete && !img.naturalWidth) fallback();
     });
-    document.addEventListener("visibilitychange", function () {
-      if (!document.hidden) updateCountdown();
-    });
-    window.addEventListener("pageshow", updateCountdown);
-    window.addEventListener("pagehide", closePopup);
-
-    popup.querySelectorAll('[data-copy]').forEach(button => {
-      button.addEventListener('click', async () => {
-        const value = button.dataset.copy;
-        const status = document.getElementById('welcomeCopyStatus');
-        try {
-          try {
-            if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable');
-            await navigator.clipboard.writeText(value);
-          } catch {
-            const input = document.createElement('textarea');
-            input.value = value;
-            input.style.cssText = 'position:fixed;left:0;top:0;opacity:0';
-            popup.appendChild(input); input.focus(); input.select();
-            input.setSelectionRange(0, value.length);
-            let copied = false;
-            try { copied = document.execCommand('copy'); }
-            finally { input.remove(); if (isOpen) button.focus({ preventScroll: true }); }
-            if (!copied) throw new Error('copy failed');
-          }
-          status.textContent = 'Berjaya disalin: ' + value;
-        } catch { status.textContent = 'Tidak dapat menyalin. Sila salin secara manual: ' + value; }
-      });
-    });
-
-    const poster = document.getElementById("welcomePopupImage");
-    function hideFailedPoster() {
-      if (poster) poster.hidden = true;
-      popup.querySelector(".welcome-content")?.classList.add("welcome-without-image");
-      const fallback = popup.querySelector(".welcome-image-fallback");
-      if (fallback) fallback.hidden = false;
-    }
-    poster?.addEventListener("error", hideFailedPoster);
-    if (poster?.complete && poster.naturalWidth === 0) hideFailedPoster();
-
   }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initWelcomePopup, { once: true });
-  } else {
-    initWelcomePopup();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
 })();
