@@ -190,9 +190,85 @@ export async function sendTransactionalEmail(env, email, content, requestId = cr
   return String(messageId);
 }
 function frame(title, body) {
-  return `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:28px;color:#1f2937"><h2>${title}</h2>${body}<p style="font-size:12px;color:#64748b">Email ini dijana secara automatik oleh DuitJom. Sila jangan balas email ini.</p></div>`;
+  return `<!doctype html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(String(title))}</title></head>
+<body style="margin:0;background:#f1f5fb;font-family:Arial,Helvetica,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:28px 16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#fff;border:1px solid #e2e8f0;border-radius:16px">
+<tr><td align="center" style="padding:28px;border-bottom:4px solid #003366"><a href="https://www.duitjom.my/"><img src="https://www.duitjom.my/logo.png" width="180" alt="DuitJom" style="display:block;width:180px;max-width:100%;height:auto;border:0"></a></td></tr>
+<tr><td style="padding:28px 24px 0"><h1 style="margin:0;color:#003366;font-size:26px">${escapeHTML(String(title))}</h1></td></tr>
+<tr><td style="padding:12px 24px 28px;color:#334155;font-size:16px;line-height:1.7;overflow-wrap:anywhere">${body}</td></tr>
+<tr><td style="padding:20px 24px;background:#f8fafc;color:#64748b;font-size:13px;line-height:1.7">Perlukan bantuan? <a href="mailto:support@duitjom.my" style="color:#0057b8">support@duitjom.my</a><br>Email ini dijana secara automatik oleh DuitJom.</td></tr>
+</table></td></tr></table></body></html>`;
 }
 function escapeHTML(value) { return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character])); }
+
+// Admin notification queue: no OTPs, credentials, tokens or MyKad in events.
+const ACTIVITY_LABELS = {
+  sign_in: 'Log masuk berjaya', sign_up: 'Pendaftaran berjaya',
+  otp_requested: 'Permintaan OTP diterima',
+  magic_link_requested: 'Permintaan Magic Link diterima'
+};
+function activityStatement(db, event, condition = '1', conditionArgs = []) {
+  return db.prepare(`INSERT OR IGNORE INTO email_auth_events
+    (id,email,event_type,method,intent,created_at,notification_status,next_attempt_at)
+    SELECT ?1,?2,?3,?4,?5,?6,?7,?6 WHERE ${condition}`)
+    .bind(event.id,event.email,event.type,event.method,event.intent,event.time,
+      ['sign_in','sign_up'].includes(event.type) ? 'pending' : 'skipped', ...conditionArgs);
+}
+export async function drainAdminNotifications(env) {
+  // Leave events queued until an administrator configures a destination.
+  if (!env.ADMIN_NOTIFY_EMAIL) return;
+  let recipient;
+  try { recipient = emailAddress(env.ADMIN_NOTIFY_EMAIL); }
+  catch { log('admin-notify-config-invalid', 'configuration'); return; }
+  const db = database(env);
+  await db.prepare(`UPDATE email_auth_events SET notification_status='failed'
+    WHERE notification_status='sending' AND attempts>=5 AND locked_until<=?1`)
+    .bind(now()).run();
+  // Bound work per invocation; Cron picks up remaining notifications.
+  for (let index=0; index<2; index++) {
+    const timestamp=now();
+    const event=await db.prepare(`UPDATE email_auth_events
+      SET notification_status='sending',attempts=attempts+1,locked_until=?1
+      WHERE id=(SELECT id FROM email_auth_events
+        WHERE attempts<5 AND next_attempt_at<=?2
+        AND (notification_status='pending' OR
+          (notification_status='sending' AND locked_until<=?2))
+        ORDER BY created_at,id LIMIT 1) RETURNING *`)
+      .bind(timestamp+90,timestamp).first();
+    if (!event) break;
+    try {
+      const title=ACTIVITY_LABELS[event.event_type];
+      const method=event.method==='email_otp' ? 'Email OTP' : 'Magic Link';
+      const time=new Intl.DateTimeFormat('ms-MY', {
+        timeZone:'Asia/Kuala_Lumpur',dateStyle:'medium',timeStyle:'long'
+      }).format(new Date(event.created_at*1000));
+      const messageId=await sendTransactionalEmail(env,recipient,{
+        Subject:`DuitJom: ${title}`,
+        TextPart:`${title}\nEmail pelanggan: ${event.email}\nKaedah: ${method}\nMasa Malaysia: ${time}\nRujukan: ${event.id}`,
+        HTMLPart:frame(title,`<p>Aktiviti pelanggan telah direkodkan.</p>
+          <p><strong>Email pelanggan:</strong> ${escapeHTML(event.email)}<br>
+          <strong>Kaedah:</strong> ${method}<br>
+          <strong>Masa Malaysia:</strong> ${escapeHTML(time)}<br>
+          <strong>Rujukan:</strong> ${escapeHTML(event.id)}</p>`)
+      },event.id);
+      await db.prepare(`UPDATE email_auth_events SET notification_status='sent',
+        mailjet_message_id=?1,locked_until=0 WHERE id=?2 AND attempts=?3`)
+        .bind(messageId,event.id,event.attempts).run();
+    } catch {
+      await db.prepare(`UPDATE email_auth_events SET notification_status=?1,
+        next_attempt_at=?2,locked_until=0 WHERE id=?3 AND attempts=?4`)
+        .bind(event.attempts>=5?'failed':'pending',timestamp+120,event.id,event.attempts).run();
+      log('admin-notify-retry',event.id,{attempt:event.attempts});
+    }
+  }
+}
+function scheduleAdminNotifications(env,context) {
+  if (context?.waitUntil) context.waitUntil(drainAdminNotifications(env).catch(() => {
+    log('admin-notify-drain-failed','background');
+  }));
+}
+
 function registrationProfile(value) {
   const fullName = typeof value?.fullName === 'string' ? value.fullName.trim() : '';
   const mykad = typeof value?.mykad === 'string' ? value.mykad.replace(/\D/g, '') : '';
@@ -257,6 +333,11 @@ async function sendOtp(request, env, db, origin, requestId, kind = "otp") {
     await db.prepare("UPDATE email_otp_challenges SET delivery_status = 'failed', consumed = 1 WHERE challenge_id = ?1").bind(challengeId).run();
     throw error;
   }
+  await activityStatement(db, {
+    id:`request:${challengeId}`,email,
+    type:kind==='link'?'magic_link_requested':'otp_requested',
+    method:kind==='link'?'magic_link':'email_otp',intent:flow.intent,time:timestamp
+  }).run();
   return { success: true, authFlowVersion: 2, message: "Permintaan diterima.", challengeId, delivery: "accepted", expiresIn: OTP_TTL, resendAfter: RESEND_SECONDS };
 }
 function sessionCookie(token, seconds) {
@@ -327,9 +408,17 @@ async function verifyOtp(request, env, db, context, requestId, kind = "otp") {
       SELECT ?2, ?3, 'welcome', ?4 WHERE ${liveChallenge}`)
       .bind(row.challenge_id, crypto.randomUUID(), email, timestamp));
   }
+  // The activity and notification queue entry commit with the new session.
+  statements.push(activityStatement(db, {
+    id:`auth:${row.challenge_id}`,email,
+    type:pending?.intent==='register'?'sign_up':'sign_in',
+    method:kind==='link'?'magic_link':'email_otp',
+    intent:pending?.intent || 'legacy',time:timestamp
+  }, 'EXISTS (SELECT 1 FROM email_auth_sessions WHERE challenge_id=?8)', [row.challenge_id]));
   const results = await db.batch(statements);
   if (results[1]?.meta?.changes !== 1) invalidOtp();
   if (env.WELCOME_EMAIL_ENABLED === "true") context?.waitUntil?.(drainWelcomeEmails(env));
+  scheduleAdminNotifications(env,context);
   return { body: { success: true, message: "OTP sah.", user: { email, fullName: pending?.full_name || "" }, expiresAt: (timestamp + ttl) * 1000 }, cookie: sessionCookie(token, ttl) };
 }
 export async function drainWelcomeEmails(env) {
@@ -416,6 +505,6 @@ export default {
     return await handleEmailAuth(request, env, context) || Response.json({ success: false, message: "Endpoint tidak dijumpai." }, { status: 404 });
   },
   async scheduled(controller, env, context) {
-    context.waitUntil(Promise.all([drainWelcomeEmails(env), cleanupEmailAuth(env)]));
+    context.waitUntil(Promise.all([drainWelcomeEmails(env), drainAdminNotifications(env), cleanupEmailAuth(env)]));
   }
 };
