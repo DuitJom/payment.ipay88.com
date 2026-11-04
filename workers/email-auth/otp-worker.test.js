@@ -1,258 +1,510 @@
-import test, { afterEach } from "node:test";
-import assert from "node:assert/strict";
-import worker, { handleEmailAuth, drainWelcomeEmails, requireEmailSession } from "./otp-worker.js";
-import { testEnvironment, providerMock, providerState, latestOtp } from "./test-support.js";
+// Dedicated email auth module. handleEmailAuth returns null for other routes.
+const AUTH_ROUTES = new Set(["/api/send-otp", "/api/verify-otp", "/api/send-link", "/api/verify-link", "/api/session", "/api/logout"]);
+const COOKIE_NAME = "__Host-duitjom_session";
+const OTP_TTL = 300;
+const RESEND_SECONDS = 60;
+const encoder = new TextEncoder();
+const now = () => Math.floor(Date.now() / 1000);
 
-const originalFetch = globalThis.fetch;
-const originalNow = Date.now;
-const originalLog = console.log;
-afterEach(() => { globalThis.fetch = originalFetch; Date.now = originalNow; console.log = originalLog; });
-function system() {
-  const env = testEnvironment();
-  const state = providerState();
-  state.logs = [];
-  console.log = line => state.logs.push(JSON.parse(line));
-  globalThis.fetch = providerMock(state);
-  let clock = Date.UTC(2026, 9, 2, 18, 0, 0);
-  Date.now = () => clock;
-  let requestNumber = 0;
-  const jobs = [];
-  const context = { waitUntil: promise => jobs.push(promise) };
-  async function call(path, body, extra = {}) {
-    const request = new Request(`https://e-kyc.duitjom.my${path}`, {
-      method: path === "/api/session" ? "GET" : "POST",
-      headers: { Origin: "https://www.duitjom.my", "CF-Connecting-IP": "203.0.113.10", "Content-Type": "application/json", ...extra },
-      body: path === "/api/session" ? undefined : JSON.stringify(body || {})
-    });
-    const response = await worker.fetch(request, env, context);
-    return { response, data: await response.json(), request };
+class AuthError extends Error {
+  constructor(code, status, message, retryAfter = 0) {
+    super(message);
+    this.code = code;
+    this.status = status;
+    this.retryAfter = retryAfter;
   }
-  const send = (email = "customer@example.com", token) => call("/api/send-otp", { email, intent: "register", profile: {fullName:"Test Customer",mykad:"000000-00-0000",phone:"+60123456789"}, turnstileToken: token || `test-token-${++requestNumber}` });
-  const verify = (email, otp, challengeId) => call("/api/verify-otp", { email, otp, challengeId });
-  return { env, state, call, send, verify, jobs, advance: seconds => { clock += seconds * 1000; } };
 }
-const count = (system, table) => system.env.AUTH_DB.sqlite.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n;
-
-test("real SQL + HTTP flow: accepted email, verified OTP, server session, logout", async () => {
-  const s = system();
-  const sent = await s.send(" CUSTOMER@example.com ");
-  assert.equal(sent.data.success, true);
-  assert.equal(sent.data.delivery, "accepted");
-  assert.equal(sent.data.resendAfter, 60);
-  assert.equal(s.state.mailjetCalls[0].SandboxMode, false);
-  assert.equal(s.state.mailjetCalls[0].Messages[0].To[0].Email, "customer@example.com");
-  assert.match(latestOtp(s.state), /^[0-9]{6}$/);
-  const verified = await s.verify("customer@example.com", latestOtp(s.state), sent.data.challengeId);
-  assert.equal(verified.data.success, true);
-  const cookie = verified.response.headers.get("Set-Cookie");
-  assert.match(cookie, /Secure; HttpOnly; SameSite=Lax/);
-  assert(!JSON.stringify(verified.data).includes(cookie.split(";")[0]));
-  const cookiePair = cookie.split(";")[0];
-  const session = await s.call("/api/session", null, { Cookie: cookiePair });
-  assert.equal(session.data.user.email, "customer@example.com");
-  assert.equal(count(s, "email_auth_users"), 1);
-  const proof = await requireEmailSession(session.request, s.env);
-  assert.equal(proof.email, "customer@example.com");
-  const logged = JSON.stringify(s.state.logs);
-  for (const privateValue of ["customer@example.com", s.env.MJ_APIKEY_PUBLIC, s.env.MJ_APIKEY_PRIVATE,
-    s.env.OTP_PEPPER, s.env.TURNSTILE_SECRET_KEY, cookiePair]) assert(!logged.includes(privateValue));
-  assert(!s.state.logs.some(entry => Object.values(entry).includes(latestOtp(s.state))));
-  assert(s.state.logs.some(entry => entry.event === "mailjet-accepted" && entry.messageId));
-  await s.call("/api/logout", { challengeId: sent.data.challengeId }, { Cookie: cookiePair });
-  assert.equal((await s.call("/api/session", null, { Cookie: cookiePair })).response.status, 401);
-});
-test("Turnstile gets the exact frontend token, secret, IP and expected action/hostname", async () => {
-  const s = system();
-  await s.send();
-  assert.equal(s.state.turnstileCalls[0].response, "test-token-1");
-  assert.equal(s.state.turnstileCalls[0].secret, s.env.TURNSTILE_SECRET_KEY);
-  assert.equal(s.state.turnstileCalls[0].remoteip, "203.0.113.10");
-  assert.match(s.state.turnstileCalls[0].idempotency_key, /^[a-f0-9-]{36}$/);
-});
-test("Turnstile errors, replayed tokens, hostname and action mismatch never send email", async () => {
-  for (const result of [
-    { success: false, "error-codes": ["timeout-or-duplicate"] },
-    { success: false, "error-codes": ["invalid-input-response"] },
-    { success: true, hostname: "attacker.example", action: "auth" },
-    { success: true, hostname: "www.duitjom.my", action: "other" }
-  ]) {
-    const s = system(); s.state.turnstileResult = result;
-    const response = await s.send();
-    assert.equal(response.response.status, 403);
-    assert.equal(response.data.success, false);
-    assert.equal(s.state.mailjetCalls.length, 0);
-    assert.equal(count(s, "email_otp_challenges"), 0);
+function reject(code, status, message, retryAfter) {
+  throw new AuthError(code, status, message, retryAfter);
+}
+function log(event, requestId, detail = {}) {
+  // No OTPs, tokens, cookies, API credentials or raw email/IP addresses in logs.
+  console.log(JSON.stringify({ component: "email-auth", event, requestId, ...detail }));
+}
+function database(env) {
+  if (!env.AUTH_DB?.prepare) reject("CONFIG_REQUIRED", 503, "Perkhidmatan OTP belum dikonfigurasi.");
+  return env.AUTH_DB.withSession ? env.AUTH_DB.withSession("first-primary") : env.AUTH_DB;
+}
+function secret(value, name, minimum = 1) {
+  if (typeof value !== "string" || value.length < minimum) {
+    reject("CONFIG_REQUIRED", 503, `Tetapan ${name} belum lengkap.`);
   }
-  const s = system();
-  await s.send("one@example.com", "single-use-token");
-  const replay = await s.send("two@example.com", "single-use-token");
-  assert.equal(replay.response.status, 403);
-  assert.equal(s.state.mailjetCalls.length, 1);
-});
-test("bad secret is a configuration error; provider/network errors are not success", async () => {
-  const s = system();
-  s.state.turnstileResult = { success: false, "error-codes": ["invalid-input-secret"] };
-  assert.equal((await s.send()).response.status, 503);
-  s.state.turnstileResult = null; s.state.networkError = true;
-  assert.equal((await s.send()).response.status, 502);
-  assert.equal(s.state.mailjetCalls.length, 0);
-});
-test("HTTP 200 with Mailjet Status:error is a failed send and cannot verify", async () => {
-  const s = system(); s.state.mailjetError = true;
-  const sent = await s.send();
-  assert.equal(sent.response.status, 502);
-  assert.equal(sent.data.code, "MAILJET_REJECTED");
-  assert.equal(sent.data.success, false);
-  assert.equal((await s.verify("customer@example.com", latestOtp(s.state))).response.status, 400);
-  const row = s.env.AUTH_DB.sqlite.prepare("SELECT delivery_status, consumed FROM email_otp_challenges").get();
-  assert.equal(row.delivery_status, "failed");
-  assert.equal(row.consumed, 1);
-});
-test("Mailjet HTTP errors and missing delivery metadata cannot report success", async () => {
-  const s = system(); s.state.mailjetError = true; s.state.mailjetStatus = 401;
-  assert.equal((await s.send()).response.status, 502);
-  const next = system(); const normalFetch = globalThis.fetch;
-  globalThis.fetch = (url, options) => String(url).includes("mailjet") ? Promise.resolve(Response.json({ Messages: [{ Status: "success" }] })) : normalFetch(url, options);
-  assert.equal((await next.send()).response.status, 502);
-});
-test("server resend cooldown and 5/hour email limit, with a fresh token every call", async () => {
-  const s = system();
-  await s.send();
-  const early = await s.send();
-  assert.equal(early.data.code, "RESEND_COOLDOWN");
-  assert.equal(early.response.status, 429);
-  assert.equal(Number(early.response.headers.get("Retry-After")), 60);
-  assert.equal(s.state.mailjetCalls.length, 1);
-  for (let i = 0; i < 3; i++) { s.advance(61); assert.equal((await s.send()).response.status, 200); }
-  s.advance(61);
-  assert.equal((await s.send()).data.code, "RATE_LIMITED");
-  // Rejected requests count toward the 5/hour request quota, documented in README.
-  assert.equal(s.state.mailjetCalls.length, 4);
-});
-test("simultaneous sends emit one email; atomic quotas cannot exceed 5", async () => {
-  const s = system();
-  const results = await Promise.all(Array.from({ length: 15 }, () => s.send()));
-  assert.equal(results.filter(result => result.data.success).length, 1);
-  assert.equal(s.state.mailjetCalls.length, 1);
-  const row = s.env.AUTH_DB.sqlite.prepare("SELECT MAX(hits) AS n FROM email_auth_rate_limits").get();
-  assert.equal(row.n, 15); // IP quota accounts for all requests.
-  assert.equal(s.env.AUTH_DB.sqlite.prepare("SELECT COUNT(*) AS n FROM email_auth_rate_limits WHERE hits = 5").get().n, 1);
-});
-test("30/hour IP quota is enforced separately across different emails", async () => {
-  const s = system();
-  for (let i = 0; i < 30; i++) assert.equal((await s.send(`person${i}@example.com`)).response.status, 200);
-  assert.equal((await s.send("person30@example.com")).response.status, 429);
-  assert.equal(s.state.mailjetCalls.length, 30);
-});
-test("invalid and absent codes match; expired codes return the requested expiry status", async () => {
-  const s = system(); const sent = await s.send();
-  const otp = latestOtp(s.state);
-  const bad = otp === "000000" ? "000001" : "000000";
-  const wrong = await s.verify("customer@example.com", bad, sent.data.challengeId);
-  const absent = await s.verify("nobody@example.com", otp);
-  assert.equal(wrong.data.code, absent.data.code);
-  assert.equal(wrong.data.message, absent.data.message);
-  s.advance(301);
-  const expired = await s.verify("customer@example.com", otp, sent.data.challengeId);
-  assert.equal(expired.data.code, "OTP_EXPIRED");
-  assert.equal(count(s, "email_auth_sessions"), 0);
-});
-test("five attempts, including a correct fifth attempt, and no sixth attempt", async () => {
-  const s = system(); const sent = await s.send(); const otp = latestOtp(s.state);
-  const bad = otp === "000000" ? "000001" : "000000";
-  for (let i = 0; i < 4; i++) assert.equal((await s.verify("customer@example.com", bad)).response.status, 400);
-  assert.equal((await s.verify("customer@example.com", otp, sent.data.challengeId)).response.status, 200);
-  assert.equal((await s.verify("customer@example.com", otp)).response.status, 400);
-  const blocked = system(); await blocked.send(); const blockedOtp = latestOtp(blocked.state);
-  for (let i = 0; i < 10; i++) await blocked.verify("customer@example.com", blockedOtp === "000000" ? "000001" : "000000");
-  assert.equal(blocked.env.AUTH_DB.sqlite.prepare("SELECT attempts FROM email_otp_challenges").get().attempts, 5);
-  assert.equal((await blocked.verify("customer@example.com", blockedOtp)).response.status, 400);
-});
-test("parallel correct verifications consume once and create only one session", async () => {
-  const s = system(); const sent = await s.send(); const otp = latestOtp(s.state);
-  const results = await Promise.all(Array.from({ length: 5 }, () => s.verify("customer@example.com", otp, sent.data.challengeId)));
-  assert.equal(results.filter(result => result.data.success).length, 1);
-  assert.equal(count(s, "email_auth_sessions"), 1);
-});
-test("logout cancels a verification even after consumption but before session insertion", async () => {
-  const s = system(); const sent = await s.send(); const otp = latestOtp(s.state);
-  const db = s.env.AUTH_DB;
-  const realBatch = db.batch.bind(db);
-  let release, entered;
-  const gate = new Promise(resolve => { release = resolve; });
-  const reached = new Promise(resolve => { entered = resolve; });
-  db.batch = async statements => {
-    if (statements.some(statement => statement.sql.includes("INSERT INTO email_auth_sessions"))) { entered(); await gate; }
-    return realBatch(statements);
+  return value;
+}
+function pepper(env) { return secret(env.OTP_PEPPER, "OTP_PEPPER", 32); }
+function emailAddress(value) {
+  if (typeof value !== "string") reject("INVALID_EMAIL", 400, "Sila isi email yang sah.");
+  const email = value.trim().toLowerCase();
+  if (email.length > 254 || /[\u0000-\u001f\u007f]/.test(email) || !/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]{2,}$/.test(email)) {
+    reject("INVALID_EMAIL", 400, "Sila isi email yang sah.");
+  }
+  return email;
+}
+function origins(env) {
+  return (env.ALLOWED_ORIGINS || "https://www.duitjom.my,https://duitjom.my")
+    .split(",").map(value => value.trim()).filter(Boolean);
+}
+function headers(origin, requestId) {
+  const result = new Headers({
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store", "Vary": "Origin", "X-Request-ID": requestId
+  });
+  if (origin) {
+    result.set("Access-Control-Allow-Origin", origin);
+    result.set("Access-Control-Allow-Credentials", "true");
+    result.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    result.set("Access-Control-Allow-Headers", "Content-Type");
+  }
+  return result;
+}
+function json(body, status, cors, extra = {}) {
+  const responseHeaders = new Headers(cors);
+  for (const [key, value] of Object.entries(extra)) responseHeaders.set(key, String(value));
+  return Response.json(body, { status, headers: responseHeaders });
+}
+async function readBody(request) {
+  if (!(request.headers.get("Content-Type") || "").toLowerCase().startsWith("application/json")) {
+    reject("JSON_REQUIRED", 415, "Permintaan mestilah dalam format JSON.");
+  }
+  const reader = request.body?.getReader();
+  const chunks = [];
+  let size = 0;
+  if (reader) {
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      size += value.length;
+      if (size > 8192) { await reader.cancel(); reject("BODY_TOO_LARGE", 413, "Permintaan terlalu besar."); }
+      chunks.push(value);
+    }
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+  try {
+    const data = JSON.parse(new TextDecoder().decode(bytes));
+    if (!data || Array.isArray(data) || typeof data !== "object") throw new Error("object required");
+    return data;
+  } catch { reject("INVALID_JSON", 400, "Permintaan JSON tidak sah."); }
+}
+function hex(bytes) { return Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, "0")).join(""); }
+function fromHex(value) {
+  if (typeof value !== "string" || !/^[a-f0-9]{64}$/.test(value)) return new Uint8Array(32);
+  return Uint8Array.from(value.match(/../g), byte => Number.parseInt(byte, 16));
+}
+async function hmacKey(env) {
+  return crypto.subtle.importKey("raw", encoder.encode(pepper(env)), { name: "HMAC", hash: "SHA-256" }, false, ["sign", "verify"]);
+}
+async function mac(env, value) {
+  return hex(await crypto.subtle.sign("HMAC", await hmacKey(env), encoder.encode(value)));
+}
+async function tokenHash(token) { return hex(await crypto.subtle.digest("SHA-256", encoder.encode(token))); }
+function randomToken() { return hex(crypto.getRandomValues(new Uint8Array(32))); }
+function sixDigitOTP() {
+  const limit = Math.floor(0x100000000 / 1_000_000) * 1_000_000;
+  const bytes = new Uint32Array(1);
+  do { crypto.getRandomValues(bytes); } while (bytes[0] >= limit);
+  return String(bytes[0] % 1_000_000).padStart(6, "0");
+}
+async function rateLimit(db, env, label, maximum) {
+  const timestamp = now();
+  const windowStart = Math.floor(timestamp / 3600) * 3600;
+  const bucketKey = await mac(env, label);
+  const row = await db.prepare(`INSERT INTO email_auth_rate_limits(bucket_key, window_start, hits)
+    VALUES (?1, ?2, 1) ON CONFLICT(bucket_key, window_start) DO UPDATE SET hits = hits + 1
+    WHERE hits < ?3 RETURNING hits`).bind(bucketKey, windowStart, maximum).first();
+  if (!row) reject("RATE_LIMITED", 429, "Terlalu banyak permintaan. Sila cuba kemudian.", windowStart + 3600 - timestamp);
+}
+async function upstream(url, init, timeoutMs, requestId, service) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...init, signal: controller.signal });
+    const data = await response.json();
+    return { response, data };
+  } catch {
+    log("upstream-unavailable", requestId, { service });
+    reject("UPSTREAM_UNAVAILABLE", 502, "Perkhidmatan tidak dapat dihubungi. Sila cuba lagi.");
+  } finally { clearTimeout(timer); }
+}
+async function verifyTurnstile(request, env, data, origin, requestId) {
+  const token = data.turnstileToken;
+  if (typeof token !== "string" || !token || token.length > 2048) {
+    reject("TURNSTILE_REQUIRED", 403, "Sila lengkapkan pengesahan keselamatan.");
+  }
+  const body = {
+    secret: secret(env.TURNSTILE_SECRET_KEY || env.TURNSTILE_SECRET, "TURNSTILE_SECRET_KEY"),
+    response: token, idempotency_key: requestId
   };
-  const verify = s.verify("customer@example.com", otp, sent.data.challengeId);
-  await reached;
-  await s.call("/api/logout", { challengeId: sent.data.challengeId });
-  release();
-  assert.equal((await verify).response.status, 400);
-  assert.equal(count(s, "email_auth_sessions"), 0);
-  assert.equal(count(s, "email_auth_users"), 0);
-});
-test("CORS/CSRF policy, preflight, method checks and existing route passthrough", async () => {
-  const s = system();
-  const denied = await s.call("/api/send-otp", { email: "a@example.com", turnstileToken: "test" }, { Origin: "https://attacker.example" });
-  assert.equal(denied.response.status, 403);
-  assert.equal(denied.response.headers.get("Access-Control-Allow-Origin"), null);
-  const options = await handleEmailAuth(new Request("https://e-kyc.duitjom.my/api/send-otp", { method: "OPTIONS", headers: { Origin: "https://www.duitjom.my" } }), s.env);
-  assert.equal(options.status, 204);
-  assert.equal(options.headers.get("Access-Control-Allow-Credentials"), "true");
-  assert.equal(options.headers.get("Access-Control-Allow-Origin"), "https://www.duitjom.my");
-  assert.equal(await handleEmailAuth(new Request("https://e-kyc.duitjom.my/api/other"), s.env), null);
-  assert.equal((await handleEmailAuth(new Request("https://e-kyc.duitjom.my/api/send-otp", { headers: { Origin: "https://www.duitjom.my" } }), s.env)).status, 405);
-});
-test("optional welcome queue only follows verification; it retries without breaking login", async () => {
-  const s = system(); s.env.WELCOME_EMAIL_ENABLED = "true"; s.state.welcomeError = true;
-  const sent = await s.send();
-  assert.equal(count(s, "email_auth_outbox"), 0);
-  const verified = await s.verify("customer@example.com", latestOtp(s.state), sent.data.challengeId);
-  assert.equal(verified.data.success, true);
-  await Promise.all(s.jobs);
-  const row = () => s.env.AUTH_DB.sqlite.prepare("SELECT * FROM email_auth_outbox").get();
-  assert.equal(row().status, "pending");
-  assert.equal(row().attempts, 1);
-  s.advance(121); await drainWelcomeEmails(s.env);
-  s.advance(121); await drainWelcomeEmails(s.env);
-  assert.equal(row().attempts, 3);
-  assert.equal(row().status, "failed");
-  assert.equal(count(s, "email_auth_sessions"), 1);
-});
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (ip) body.remoteip = ip;
+  const { response, data: result } = await upstream("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+  }, 6000, requestId, "turnstile");
+  const errorCodes = Array.isArray(result?.["error-codes"]) ? result["error-codes"] : [];
+  if (!response.ok || result?.success !== true || result.hostname !== new URL(origin).hostname ||
+      result.action !== (env.TURNSTILE_ACTION || "auth")) {
+    log("turnstile-rejected", requestId, { upstreamStatus: response.status, errorCodes, hostname: result?.hostname, action: result?.action });
+    if (errorCodes.some(code => code === "missing-input-secret" || code === "invalid-input-secret")) {
+      reject("TURNSTILE_CONFIG", 503, "Tetapan pengesahan keselamatan belum lengkap.");
+    }
+    if (!response.ok) reject("UPSTREAM_UNAVAILABLE", 502, "Perkhidmatan pengesahan tidak tersedia.");
+    reject("TURNSTILE_REJECTED", 403, "Pengesahan keselamatan gagal. Sila cuba semula.");
+  }
+}
+function mailSettings(env) {
+  let from;
+  try { from = emailAddress(env.MAIL_FROM_EMAIL || env.MAILJET_FROM_EMAIL); }
+  catch { reject("CONFIG_REQUIRED", 503, "Tetapan MAIL_FROM_EMAIL belum lengkap."); }
+  return {
+    apiKey: secret(env.MJ_APIKEY_PUBLIC || env.MAILJET_API_KEY, "MJ_APIKEY_PUBLIC"),
+    apiSecret: secret(env.MJ_APIKEY_PRIVATE || env.MAILJET_SECRET_KEY, "MJ_APIKEY_PRIVATE"),
+    from,
+    name: env.MAIL_FROM_NAME || "DuitJom"
+  };
+}
+// Server-only helper for other authorized transactional email flows.
+export async function sendTransactionalEmail(env, email, content, requestId = crypto.randomUUID()) {
+  const mail = mailSettings(env);
+  const { response, data } = await upstream("https://api.mailjet.com/v3.1/send", {
+    method: "POST", headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Basic ${btoa(`${mail.apiKey}:${mail.apiSecret}`)}`
+    }, body: JSON.stringify({ SandboxMode: false, Messages: [{
+      From: { Email: mail.from, Name: mail.name }, To: [{ Email: emailAddress(email) }],
+      Subject: content.Subject, TextPart: content.TextPart, HTMLPart: content.HTMLPart, CustomID: requestId
+    }] })
+  }, 10000, requestId, "mailjet");
+  const message = data?.Messages?.[0];
+  const recipient = message?.To?.[0];
+  const messageId = recipient?.MessageUUID || recipient?.MessageID;
+  if (!response.ok || message?.Status !== "success" || !messageId) {
+    log("mailjet-rejected", requestId, {
+      upstreamStatus: response.status,
+      errorCodes: message?.Errors?.map(error => error.ErrorCode),
+      errorIdentifiers: message?.Errors?.map(error => error.ErrorIdentifier)
+    });
+    reject("MAILJET_REJECTED", 502, "Email belum berjaya dihantar. Sila cuba lagi.");
+  }
+  log("mailjet-accepted", requestId, { messageId: String(messageId) });
+  return String(messageId);
+}
+function frame(title, body) {
+  return `<!doctype html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(String(title))}</title></head>
+<body style="margin:0;background:#f1f5fb;font-family:Arial,Helvetica,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:28px 16px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#fff;border:1px solid #e2e8f0;border-radius:16px">
+<tr><td align="center" style="padding:28px;border-bottom:4px solid #003366"><a href="https://www.duitjom.my/"><img src="https://www.duitjom.my/logo.png" width="180" alt="DuitJom" style="display:block;width:180px;max-width:100%;height:auto;border:0"></a></td></tr>
+<tr><td style="padding:28px 24px 0"><h1 style="margin:0;color:#003366;font-size:26px">${escapeHTML(String(title))}</h1></td></tr>
+<tr><td style="padding:12px 24px 28px;color:#334155;font-size:16px;line-height:1.7;overflow-wrap:anywhere">${body}</td></tr>
+<tr><td style="padding:20px 24px;background:#f8fafc;color:#64748b;font-size:13px;line-height:1.7">Perlukan bantuan? <a href="mailto:support@duitjom.my" style="color:#0057b8">support@duitjom.my</a><br>Email ini dijana secara automatik oleh DuitJom.</td></tr>
+</table></td></tr></table></body></html>`;
+}
+function escapeHTML(value) { return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character])); }
 
-test('explicit login rejects an unregistered email and registration requires a profile', async () => {
-  const s = system();
-  const login = await s.call('/api/send-otp', { email:'new@example.com', intent:'login', turnstileToken:'new-login' });
-  assert.equal(login.data.code, 'ACCOUNT_NOT_FOUND');
-  assert.equal(s.state.mailjetCalls.length, 0);
-  const signup = await s.call('/api/send-otp', { email:'new@example.com', intent:'register', turnstileToken:'new-signup' });
-  assert.equal(signup.data.code, 'INVALID_PROFILE');
-});
-test('registration persists verified profile; existing users cannot register again', async () => {
-  const s = system(), email = 'profile@example.com';
-  const profile = { fullName:'Test Customer', mykad:'000000-00-0000', phone:'+60123456789' };
-  const sent = await s.call('/api/send-otp', { email, intent:'register', profile, turnstileToken:'profile' });
-  assert.equal(sent.data.authFlowVersion, 2);
-  assert.equal(count(s, 'email_auth_users'), 0);
-  const verified = await s.verify(email, latestOtp(s.state), sent.data.challengeId);
-  assert.equal(verified.data.user.fullName, profile.fullName);
-  s.advance(61);
-  const duplicate = await s.call('/api/send-otp', { email, intent:'register', profile, turnstileToken:'duplicate' });
-  assert.equal(duplicate.data.code, 'ACCOUNT_EXISTS');
-});
-test('login link is single-use, server-bound, and cannot be verified as an OTP', async () => {
-  const s = system(), email = 'links@example.com';
-  s.env.AUTH_DB.sqlite.prepare('INSERT INTO email_auth_users(email, created_at) VALUES (?, ?)').run(email, 1);
-  const sent = await s.call('/api/send-link', { email, intent:'login', turnstileToken:'link' });
-  assert.equal(sent.data.success, true);
-  const text = s.state.mailjetCalls.at(-1).Messages[0].TextPart;
-  const url = new URL(text.match(/https:\/\/[^\s]+/)[0]);
-  const params = new URLSearchParams(url.hash.slice(1)), token = params.get('token');
-  assert.match(token, /^[a-f0-9]{64}$/);
-  assert.equal((await s.verify(email, '123456', sent.data.challengeId)).data.code, 'OTP_INVALID');
-  const done = await s.call('/api/verify-link', { email, token, challengeId:sent.data.challengeId });
-  assert.equal(done.data.success, true);
-  assert.equal((await s.call('/api/verify-link', { email, token, challengeId:sent.data.challengeId })).data.success, false);
-});
+// Admin notification queue: no OTPs, credentials, tokens or MyKad in events.
+const ACTIVITY_LABELS = {
+  sign_in: 'Log masuk berjaya', sign_up: 'Pendaftaran berjaya',
+  otp_requested: 'Permintaan OTP diterima',
+  magic_link_requested: 'Permintaan Magic Link diterima'
+};
+function activityStatement(db, event, condition = '1', conditionArgs = []) {
+  return db.prepare(`INSERT OR IGNORE INTO email_auth_events
+    (id,email,event_type,method,intent,created_at,notification_status,next_attempt_at)
+    SELECT ?1,?2,?3,?4,?5,?6,?7,?6 WHERE ${condition}`)
+    .bind(event.id,event.email,event.type,event.method,event.intent,event.time,
+      ['sign_in','sign_up'].includes(event.type) ? 'pending' : 'skipped', ...conditionArgs);
+}
+export async function drainAdminNotifications(env) {
+  // Leave events queued until an administrator configures a destination.
+  if (!env.ADMIN_NOTIFY_EMAIL) return;
+  let recipient;
+  try { recipient = emailAddress(env.ADMIN_NOTIFY_EMAIL); }
+  catch { log('admin-notify-config-invalid', 'configuration'); return; }
+  const db = database(env);
+  await db.prepare(`UPDATE email_auth_events SET notification_status='failed'
+    WHERE notification_status='sending' AND attempts>=5 AND locked_until<=?1`)
+    .bind(now()).run();
+  // Bound work per invocation; Cron picks up remaining notifications.
+  for (let index=0; index<2; index++) {
+    const timestamp=now();
+    const event=await db.prepare(`UPDATE email_auth_events
+      SET notification_status='sending',attempts=attempts+1,locked_until=?1
+      WHERE id=(SELECT id FROM email_auth_events
+        WHERE attempts<5 AND next_attempt_at<=?2
+        AND (notification_status='pending' OR
+          (notification_status='sending' AND locked_until<=?2))
+        ORDER BY created_at,id LIMIT 1) RETURNING *`)
+      .bind(timestamp+90,timestamp).first();
+    if (!event) break;
+    try {
+      const title=ACTIVITY_LABELS[event.event_type];
+      const method=event.method==='email_otp' ? 'Email OTP' : 'Magic Link';
+      const time=new Intl.DateTimeFormat('ms-MY', {
+        timeZone:'Asia/Kuala_Lumpur',dateStyle:'medium',timeStyle:'long'
+      }).format(new Date(event.created_at*1000));
+      const messageId=await sendTransactionalEmail(env,recipient,{
+        Subject:`DuitJom: ${title}`,
+        TextPart:`${title}\nEmail pelanggan: ${event.email}\nKaedah: ${method}\nMasa Malaysia: ${time}\nRujukan: ${event.id}`,
+        HTMLPart:frame(title,`<p>Aktiviti pelanggan telah direkodkan.</p>
+          <p><strong>Email pelanggan:</strong> ${escapeHTML(event.email)}<br>
+          <strong>Kaedah:</strong> ${method}<br>
+          <strong>Masa Malaysia:</strong> ${escapeHTML(time)}<br>
+          <strong>Rujukan:</strong> ${escapeHTML(event.id)}</p>`)
+      },event.id);
+      await db.prepare(`UPDATE email_auth_events SET notification_status='sent',
+        mailjet_message_id=?1,locked_until=0 WHERE id=?2 AND attempts=?3`)
+        .bind(messageId,event.id,event.attempts).run();
+    } catch {
+      await db.prepare(`UPDATE email_auth_events SET notification_status=?1,
+        next_attempt_at=?2,locked_until=0 WHERE id=?3 AND attempts=?4`)
+        .bind(event.attempts>=5?'failed':'pending',timestamp+120,event.id,event.attempts).run();
+      log('admin-notify-retry',event.id,{attempt:event.attempts});
+    }
+  }
+}
+function scheduleAdminNotifications(env,context) {
+  if (context?.waitUntil) context.waitUntil(drainAdminNotifications(env).catch(() => {
+    log('admin-notify-drain-failed','background');
+  }));
+}
+
+function registrationProfile(value) {
+  const fullName = typeof value?.fullName === 'string' ? value.fullName.trim() : '';
+  const mykad = typeof value?.mykad === 'string' ? value.mykad.replace(/\D/g, '') : '';
+  const phone = typeof value?.phone === 'string' ? value.phone.trim() : '';
+  if (fullName.length < 2 || fullName.length > 120 || /[\x00-\x1f]/.test(fullName) ||
+      !/^[0-9]{12}$/.test(mykad) || !/^\+601[0-9]{8,9}$/.test(phone)) {
+    reject('INVALID_PROFILE', 400, 'Sila lengkapkan nama penuh, nombor kad pengenalan dan nombor telefon yang sah.');
+  }
+  return { fullName, mykad, phone };
+}
+async function accountIntent(db, email, intent, profile) {
+  // Missing intent means login; never create a new account implicitly.
+  intent = intent || 'login';
+  if (!['login', 'register'].includes(intent)) reject('INVALID_INTENT', 400, 'Pilihan akaun tidak sah.');
+  const user = await db.prepare('SELECT email FROM email_auth_users WHERE email = ?1').bind(email).first();
+  if (intent === 'login' && !user) reject('ACCOUNT_NOT_FOUND', 404, 'Alamat e-mel ini belum didaftarkan. Sila daftar akaun baharu untuk meneruskan.');
+  if (intent === 'register' && user) reject('ACCOUNT_EXISTS', 409, 'Alamat e-mel ini sudah mempunyai akaun. Sila log masuk untuk meneruskan.');
+  return { intent, profile: intent === 'register' ? registrationProfile(profile) : null };
+}
+async function sendOtp(request, env, db, origin, requestId, kind = "otp") {
+  const data = await readBody(request);
+  const email = emailAddress(data.email);
+  pepper(env);
+  mailSettings(env);
+  await rateLimit(db, env, `send-ip:${request.headers.get("CF-Connecting-IP") || "unknown"}`, 30);
+  await verifyTurnstile(request, env, data, origin, requestId);
+  await rateLimit(db, env, `send-email:${email}`, 5);
+  if (kind === 'link' && data.intent !== 'login') reject('INVALID_INTENT', 400, 'Sila log masuk dengan akaun berdaftar.');
+  const flow = await accountIntent(db, email, data.intent, data.profile);
+  const otp = kind === 'link' ? randomToken() : sixDigitOTP();
+  const challengeId = crypto.randomUUID();
+  const timestamp = now();
+  const otpMac = await mac(env, `${challengeId}:${email}:${otp}`);
+  const row = await db.prepare(`INSERT INTO email_otp_challenges
+    (email, challenge_id, otp_mac, created_at, expires_at, attempts, consumed, delivery_status)
+    VALUES (?1, ?2, ?3, ?4, ?5, 0, 0, 'pending') ON CONFLICT(email) DO UPDATE SET
+    challenge_id = excluded.challenge_id, otp_mac = excluded.otp_mac, created_at = excluded.created_at,
+    expires_at = excluded.expires_at, attempts = 0, consumed = 0, cancelled = 0, delivery_status = 'pending', mailjet_message_id = NULL
+    WHERE delivery_status = 'failed' OR created_at <= ?6 RETURNING challenge_id`)
+    .bind(email, challengeId, otpMac, timestamp, timestamp + OTP_TTL, timestamp - RESEND_SECONDS).first();
+  if (!row) {
+    const existing = await db.prepare("SELECT created_at FROM email_otp_challenges WHERE email = ?1").bind(email).first();
+    reject("RESEND_COOLDOWN", 429, "Sila tunggu sebelum meminta OTP baharu.", Math.max(1, RESEND_SECONDS - (timestamp - existing.created_at)));
+  }
+  try {
+    await db.prepare(`INSERT INTO email_auth_pending_profiles(challenge_id, intent, kind, full_name, mykad, phone)
+      VALUES (?1, ?2, ?3, ?4, ?5, ?6)`).bind(challengeId, flow.intent, kind,
+      flow.profile?.fullName || null, flow.profile?.mykad || null, flow.profile?.phone || null).run();
+    const link = `${origin}/index.html#${new URLSearchParams({ auth:'link', email, token:otp, challengeId })}`;
+    const messageId = await sendTransactionalEmail(env, email, kind === 'link' ? {
+      Subject:'Pautan Log Masuk DuitJom',
+      TextPart:`Buka pautan ini untuk log masuk: ${link}\nPautan ini sah selama 5 minit dan hanya boleh digunakan sekali. Jika anda tidak meminta pautan ini, abaikan e-mel ini.`,
+      HTMLPart:frame('Pautan Log Masuk', `<p><a href="${escapeHTML(link)}">Log masuk ke DuitJom</a></p><p>Pautan ini sah selama 5 minit dan hanya boleh digunakan sekali. Jangan kongsikannya.</p>`)
+    } : {
+      Subject: "Kod Pengesahan DuitJom Anda",
+      TextPart: `Kod pengesahan anda ialah ${otp}. Kod ini sah selama 5 minit. Jangan kongsikan kod ini dengan sesiapa. Jika anda tidak meminta kod ini, abaikan email ini.`,
+      HTMLPart: frame("Kod Pengesahan", `<p>Gunakan kod ini untuk meneruskan:</p><p style="font-size:32px;font-weight:bold;letter-spacing:6px;text-align:center">${otp}</p><p>Kod ini sah selama 5 minit. Jangan kongsikan kod ini dengan sesiapa.</p><p>Jika anda tidak meminta kod ini, abaikan email ini.</p>`)
+    }, requestId);
+    await db.prepare("UPDATE email_otp_challenges SET delivery_status = 'accepted', mailjet_message_id = ?1 WHERE challenge_id = ?2")
+      .bind(messageId, challengeId).run();
+  } catch (error) {
+    await db.prepare("UPDATE email_otp_challenges SET delivery_status = 'failed', consumed = 1 WHERE challenge_id = ?1").bind(challengeId).run();
+    throw error;
+  }
+  await activityStatement(db, {
+    id:`request:${challengeId}`,email,
+    type:kind==='link'?'magic_link_requested':'otp_requested',
+    method:kind==='link'?'magic_link':'email_otp',intent:flow.intent,time:timestamp
+  }).run();
+  return { success: true, authFlowVersion: 2, message: "Permintaan diterima.", challengeId, delivery: "accepted", expiresIn: OTP_TTL, resendAfter: RESEND_SECONDS };
+}
+function sessionCookie(token, seconds) {
+  return `${COOKIE_NAME}=${token}; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=${seconds}`;
+}
+function cookieToken(request) {
+  const cookie = (request.headers.get("Cookie") || "").split(";").map(part => part.trim())
+    .find(part => part.startsWith(`${COOKIE_NAME}=`));
+  const value = cookie?.slice(COOKIE_NAME.length + 1);
+  return /^[a-f0-9]{64}$/.test(value || "") ? value : null;
+}
+// Use this on protected routes in the existing Worker before processing customer data.
+export async function requireEmailSession(request, env) {
+  const token = cookieToken(request);
+  if (!token) reject("SESSION_REQUIRED", 401, "Sila log masuk menggunakan OTP email.");
+  const row = await database(env).prepare("SELECT email, expires_at FROM email_auth_sessions WHERE token_hash = ?1 AND expires_at > ?2")
+    .bind(await tokenHash(token), now()).first();
+  if (!row) reject("SESSION_REQUIRED", 401, "Sesi telah tamat. Sila log masuk semula.");
+  const profile = await database(env).prepare('SELECT full_name FROM email_auth_profiles WHERE email = ?1').bind(row.email).first();
+  return { email: row.email, fullName: profile?.full_name || '', expiresAt: row.expires_at * 1000 };
+}
+function invalidOtp() { reject("OTP_INVALID", 400, "Kod OTP salah atau tamat tempoh. Sila minta kod baharu jika perlu."); }
+async function verifyOtp(request, env, db, context, requestId, kind = "otp") {
+  const data = await readBody(request);
+  const email = emailAddress(data.email);
+  const otp = kind === 'link' ? data.token : data.otp;
+  if (typeof otp !== 'string' || !(kind === 'link' ? /^[a-f0-9]{64}$/ : /^[0-9]{6}$/).test(otp)) invalidOtp();
+  if (data.challengeId !== undefined && (typeof data.challengeId !== "string" || !/^[a-f0-9-]{36}$/.test(data.challengeId))) invalidOtp();
+  pepper(env);
+  await rateLimit(db, env, `verify-ip:${request.headers.get("CF-Connecting-IP") || "unknown"}`, 150);
+  const pending = await db.prepare(`SELECT p.*, c.expires_at, c.consumed FROM email_otp_challenges c
+    LEFT JOIN email_auth_pending_profiles p ON p.challenge_id = c.challenge_id
+    WHERE c.email = ?1 AND (?2 IS NULL OR c.challenge_id = ?2)`).bind(email, data.challengeId || null).first();
+  if (pending && (pending.kind || 'otp') !== kind) invalidOtp();
+  if (pending?.expires_at <= now() && pending.consumed === 0) reject('OTP_EXPIRED', 400, 'Kod OTP telah tamat tempoh. Sila minta kod OTP baharu.');
+  // Reserve one of five attempts in one statement; simultaneous requests cannot exceed it.
+  const row = await db.prepare(`UPDATE email_otp_challenges SET attempts = attempts + 1
+    WHERE email = ?1 AND delivery_status = 'accepted' AND consumed = 0 AND cancelled = 0 AND expires_at > ?2 AND attempts < 5
+    AND (?3 IS NULL OR challenge_id = ?3) RETURNING challenge_id, otp_mac`).bind(email, now(), data.challengeId || null).first();
+  const valid = await crypto.subtle.verify("HMAC", await hmacKey(env), fromHex(row?.otp_mac),
+    encoder.encode(`${row?.challenge_id || "invalid"}:${email}:${otp}`));
+  if (!row || !valid) invalidOtp();
+  if (pending?.intent === 'login' || pending?.intent === 'register') {
+    await accountIntent(db, email, pending.intent, { fullName:pending.full_name, mykad:pending.mykad, phone:pending.phone });
+  }
+  // Exactly one verification can consume this challenge, even with the same correct code in parallel.
+  const consumed = await db.prepare(`UPDATE email_otp_challenges SET consumed = 1
+    WHERE challenge_id = ?1 AND consumed = 0 AND cancelled = 0 AND expires_at > ?2 RETURNING email`)
+    .bind(row.challenge_id, now()).first();
+  if (!consumed) invalidOtp();
+  const timestamp = now();
+  const ttl = Math.min(604800, Math.max(300, Number.parseInt(env.SESSION_TTL_SECONDS || "86400", 10) || 86400));
+  const token = randomToken();
+  const liveChallenge = "EXISTS (SELECT 1 FROM email_otp_challenges WHERE challenge_id = ?1 AND consumed = 1 AND cancelled = 0)";
+  const statements = [
+    db.prepare(`INSERT OR IGNORE INTO email_auth_users(email, created_at) SELECT ?2, ?3 WHERE ${liveChallenge}`)
+      .bind(row.challenge_id, email, timestamp),
+    db.prepare(`INSERT INTO email_auth_sessions(challenge_id, token_hash, email, created_at, expires_at)
+      SELECT ?1, ?2, ?3, ?4, ?5 WHERE ${liveChallenge}`)
+      .bind(row.challenge_id, await tokenHash(token), email, timestamp, timestamp + ttl)
+  ];
+  if (pending?.intent === 'register') {
+    statements.push(db.prepare(`INSERT OR IGNORE INTO email_auth_profiles(email, full_name, mykad, phone)
+      SELECT ?2, ?3, ?4, ?5 WHERE ${liveChallenge}`).bind(row.challenge_id, email, pending.full_name, pending.mykad, pending.phone));
+  }
+  if (env.WELCOME_EMAIL_ENABLED === "true") {
+    statements.push(db.prepare(`INSERT OR IGNORE INTO email_auth_outbox(id, email, kind, next_attempt_at)
+      SELECT ?2, ?3, 'welcome', ?4 WHERE ${liveChallenge}`)
+      .bind(row.challenge_id, crypto.randomUUID(), email, timestamp));
+  }
+  // The activity and notification queue entry commit with the new session.
+  statements.push(activityStatement(db, {
+    id:`auth:${row.challenge_id}`,email,
+    type:pending?.intent==='register'?'sign_up':'sign_in',
+    method:kind==='link'?'magic_link':'email_otp',
+    intent:pending?.intent || 'legacy',time:timestamp
+  }, 'EXISTS (SELECT 1 FROM email_auth_sessions WHERE challenge_id=?8)', [row.challenge_id]));
+  const results = await db.batch(statements);
+  if (results[1]?.meta?.changes !== 1) invalidOtp();
+  if (env.WELCOME_EMAIL_ENABLED === "true") context?.waitUntil?.(drainWelcomeEmails(env));
+  scheduleAdminNotifications(env,context);
+  return { body: { success: true, message: "OTP sah.", user: { email, fullName: pending?.full_name || "" }, expiresAt: (timestamp + ttl) * 1000 }, cookie: sessionCookie(token, ttl) };
+}
+export async function drainWelcomeEmails(env) {
+  const db = database(env);
+  await db.prepare("UPDATE email_auth_outbox SET status = 'failed' WHERE status = 'sending' AND attempts >= 3 AND locked_until <= ?1")
+    .bind(now()).run();
+  for (let index = 0; index < 20; index++) {
+    const timestamp = now();
+    const row = await db.prepare(`UPDATE email_auth_outbox SET status = 'sending', attempts = attempts + 1, locked_until = ?1
+      WHERE id = (SELECT id FROM email_auth_outbox WHERE attempts < 3 AND next_attempt_at <= ?2
+        AND (status = 'pending' OR (status = 'sending' AND locked_until <= ?2)) LIMIT 1) RETURNING *`)
+      .bind(timestamp + 90, timestamp).first();
+    if (!row) break;
+    try {
+      const name = escapeHTML(row.email.split("@")[0].slice(0, 64));
+      const messageId = await sendTransactionalEmail(env, row.email, {
+        Subject: "Selamat datang ke DuitJom!",
+        TextPart: "Email anda telah disahkan. Anda boleh log masuk ke www.duitjom.my menggunakan OTP email.",
+        HTMLPart: frame("Selamat datang ke DuitJom", `<p>Selamat datang, ${name}.</p><p>Email anda telah disahkan. Anda boleh log masuk menggunakan OTP email di <a href="https://www.duitjom.my/">www.duitjom.my</a>.</p>`)
+      }, row.id);
+      await db.prepare("UPDATE email_auth_outbox SET status = 'sent', mailjet_message_id = ?1 WHERE id = ?2 AND attempts = ?3")
+        .bind(messageId, row.id, row.attempts).run();
+    } catch {
+      await db.prepare("UPDATE email_auth_outbox SET status = ?1, next_attempt_at = ?2 WHERE id = ?3 AND attempts = ?4")
+        .bind(row.attempts >= 3 ? "failed" : "pending", timestamp + 120, row.id, row.attempts).run();
+      log("welcome-retry", row.id, { attempt: row.attempts });
+    }
+  }
+}
+export async function cleanupEmailAuth(env) {
+  const db = database(env);
+  const timestamp = now();
+  await db.batch([
+    db.prepare("DELETE FROM email_auth_pending_profiles WHERE challenge_id NOT IN (SELECT challenge_id FROM email_otp_challenges WHERE expires_at >= ?1)").bind(timestamp - 86400),
+    db.prepare("DELETE FROM email_otp_challenges WHERE expires_at < ?1").bind(timestamp - 86400),
+    db.prepare("DELETE FROM email_auth_rate_limits WHERE window_start < ?1").bind(timestamp - 7200),
+    db.prepare("DELETE FROM email_auth_sessions WHERE expires_at <= ?1").bind(timestamp)
+  ]);
+}
+export async function handleEmailAuth(request, env, context) {
+  const path = new URL(request.url).pathname;
+  if (!AUTH_ROUTES.has(path)) return null;
+  const requestId = crypto.randomUUID();
+  const origin = request.headers.get("Origin");
+  const allowedOrigin = origins(env).includes(origin) ? origin : null;
+  const cors = headers(allowedOrigin, requestId);
+  try {
+    if (!allowedOrigin) reject("ORIGIN_REJECTED", 403, "Laman ini tidak dibenarkan menggunakan pengesahan email.");
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+    const expectedMethod = path === "/api/session" ? "GET" : "POST";
+    if (request.method !== expectedMethod) reject("METHOD_NOT_ALLOWED", 405, "Kaedah permintaan tidak dibenarkan.");
+    const db = database(env);
+    if (path === "/api/send-otp" || path === "/api/send-link") return json({ ...await sendOtp(request, env, db, origin, requestId, path.endsWith("link") ? "link" : "otp"), requestId }, 200, cors);
+    if (path === "/api/verify-otp" || path === "/api/verify-link") {
+      const result = await verifyOtp(request, env, db, context, requestId, path.endsWith("link") ? "link" : "otp");
+      return json({ ...result.body, requestId }, 200, cors, { "Set-Cookie": result.cookie });
+    }
+    if (path === "/api/session") {
+      const session = await requireEmailSession(request, env);
+      return json({ success: true, user: { email: session.email, fullName: session.fullName }, expiresAt: session.expiresAt, requestId }, 200, cors);
+    }
+    const token = cookieToken(request);
+    const data = request.body ? await readBody(request) : {};
+    if (typeof data.challengeId === "string" && /^[a-f0-9-]{36}$/.test(data.challengeId)) {
+      // Cancels this browser's flow, including a verify response arriving after logout.
+      await db.batch([
+        db.prepare("UPDATE email_otp_challenges SET cancelled = 1, consumed = 1 WHERE challenge_id = ?1").bind(data.challengeId),
+        db.prepare("DELETE FROM email_auth_sessions WHERE challenge_id = ?1").bind(data.challengeId)
+      ]);
+    }
+    if (token) await db.prepare("DELETE FROM email_auth_sessions WHERE token_hash = ?1").bind(await tokenHash(token)).run();
+    return json({ success: true, requestId }, 200, cors, { "Set-Cookie": sessionCookie("", 0) });
+  } catch (error) {
+    const code = error instanceof AuthError ? error.code : "INTERNAL_ERROR";
+    log("request-failed", requestId, { code, path });
+    return json({ success: false, code, message: error instanceof AuthError ? error.message : "Perkhidmatan OTP mengalami masalah. Sila cuba lagi.",
+      requestId, ...(error.retryAfter ? { retryAfter: error.retryAfter } : {}) }, error.status || 500, cors,
+    error.retryAfter ? { "Retry-After": error.retryAfter } : {});
+  }
+}
+// Standalone entry. Integrate handleEmailAuth into the existing Worker to preserve its other APIs.
+export default {
+  async fetch(request, env, context) {
+    return await handleEmailAuth(request, env, context) || Response.json({ success: false, message: "Endpoint tidak dijumpai." }, { status: 404 });
+  },
+  async scheduled(controller, env, context) {
+    context.waitUntil(Promise.all([drainWelcomeEmails(env), drainAdminNotifications(env), cleanupEmailAuth(env)]));
+  }
+};
