@@ -1,6 +1,4 @@
-# duitjom.my
-
-[![DeepScan grade](https://deepscan.io/api/teams/31029/projects/32686/branches/1095818/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=31029&pid=32686&bid=1095818)
+# WWW.DUITJOM.COM
 
 [![CodeFactor](https://www.codefactor.io/repository/github/duitjom/payment.ipay88.com/badge)](https://www.codefactor.io/repository/github/duitjom/payment.ipay88.com)
 <a href="https://app.codacy.com/gh/DuitJom/payment.ipay88.com/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade">
