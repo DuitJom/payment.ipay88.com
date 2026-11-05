@@ -1,6 +1,6 @@
 # duitjom.my
 
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/DuitJom/payment.ipay88.com?utm_source=oss&utm_medium=github&utm_campaign=DuitJom%2Fpayment.ipay88.com&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+[![DeepScan grade](https://deepscan.io/api/teams/31029/projects/32686/branches/1095818/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=31029&pid=32686&bid=1095818)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/duitjom/payment.ipay88.com/badge)](https://www.codefactor.io/repository/github/duitjom/payment.ipay88.com)
 <a href="https://app.codacy.com/gh/DuitJom/payment.ipay88.com/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade">
